@@ -34,7 +34,7 @@ public class FloatingText : MonoBehaviour {
       var rb = instance.GetComponent<Rigidbody>();
       var txt = instance.GetComponent<Text>();
       rb.useGravity = false;
-      rb.velocity = instance.transform.up * 0.75f * (up ? 1 : -1) * scale;
+      rb.velocity = instance.transform.up * 0.75f * (up ? 1 : -1) * scale * 100;
       txt.text = (number > 0 ? "+" : "") + number + " " + postfix;
       txt.color = good ? new Color(1, 0.7534726f, 0) : new Color(1, 0.2953345f, 0);
       instance.transform.localScale = Vector3.one * scale;

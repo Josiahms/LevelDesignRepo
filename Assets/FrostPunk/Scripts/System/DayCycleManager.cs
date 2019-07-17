@@ -52,7 +52,7 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
 
          var isMorning = (currentTime % MIN_IN_DAY) < MIN_IN_HALF_DAY;
          clockText.text = "Day: " + (days + 1) + " " + hours + ":" + minutesText + (isMorning ? "am" : "pm");
-
+         
          if (currentTime > lastFoodTime) {
             lastFoodTime += MIN_IN_HALF_DAY;
             ResourceManager.GetInstance().EatMeal();

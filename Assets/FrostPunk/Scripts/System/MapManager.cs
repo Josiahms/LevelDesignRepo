@@ -51,15 +51,14 @@ public class MapManager : Singleton<MapManager> {
 
    private Coroutine loop;
 
-   private void Start() {
-      DontDestroyOnLoad(this);
+   private void Start() {   
       prevTime = DayCycleManager.GetInstance().CurrentTime;
    }
 
    private void Update() {
       if (FoodLabel.GetInstance() != null) {
          FoodLabel.GetInstance().text = deltaFood > 0 ? "+" + deltaFood : deltaFood.ToString();
-      }
+      } 
    }
 
    public void RegisterEntity(Simulatable entity) {

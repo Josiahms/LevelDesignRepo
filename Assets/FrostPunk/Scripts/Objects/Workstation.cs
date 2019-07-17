@@ -14,7 +14,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    public int GetQuantity() { return quantity; }
 
    [SerializeField]
-   [Range(0, 60)]
+   [Range(1, 900)]
    private int gatherPeriod = 5;
 
    private FilledCircle timer;

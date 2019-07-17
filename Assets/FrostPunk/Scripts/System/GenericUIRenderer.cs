@@ -40,7 +40,7 @@ public class GenericUIRenderer : MonoBehaviour {
          descriptionText.text = selectable.GetDescription();
       }
       if (assignable != null) {
-         workerText.text = assignable.GetWorkerCount().ToString();
+         workerText.text = assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees();
          addWorkerButton.onClick.RemoveAllListeners();
          addWorkerButton.onClick.AddListener(assignable.AddWorker);
          removeWorkerButton.onClick.RemoveAllListeners();

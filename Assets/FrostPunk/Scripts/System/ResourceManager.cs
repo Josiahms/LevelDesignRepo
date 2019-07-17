@@ -45,7 +45,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       metalText.text = metalAmount.ToString();
       foodText.text = foodAmount.ToString();
       populationText.text = population + "/" + maxPopulation;
-      DontDestroyOnLoad(this);
+      DontDestroyOnLoad(gameObject);
    }
 
    public bool CanAfford(int woodCost, int stoneCost, int metalCost, int foodCost = 0) {

@@ -56,14 +56,18 @@ public class SaveManager : Singleton<SaveManager> {
    private void Update() {
       if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.R)) {
          Reset();
+         return;
       }
 
       if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R)) {
+         DontDestroy.DestroyAll();
          SceneManager.LoadScene(0);
+         return;
       }
 
       if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.S)) {
          Save();
+         return;
       }
    }
 
@@ -71,10 +75,11 @@ public class SaveManager : Singleton<SaveManager> {
       if (File.Exists(Application.persistentDataPath + "/game.fun")) {
          File.Delete(Application.persistentDataPath + "/game.fun");
       }
+      DontDestroy.DestroyAll();
       SceneManager.LoadScene(0);
    }
 
-   private void Save() {
+   public void Save() {
       savedEntities.Clear();
       foreach (var saveable in entitiesToSave) {
          savedEntities.Add(new SavedGameObject(saveable));
