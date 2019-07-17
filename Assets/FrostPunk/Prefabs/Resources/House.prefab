@@ -90,7 +90,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6865106709919405624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 0bbbc7a323620b64e95911e9812c3149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -105,11 +104,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6865106709919405624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: b0e411f006b08574ba3ce0e25813b376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  woodCost: 25
+  woodCost: 20
   stoneCost: 0
   metalCost: 0
   isPlaced: 0
@@ -122,11 +120,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6865106709919405624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 0f0b5932a8971a04284951d0158ef7ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 5
   spawnpoint: {fileID: 3796787257776752402}
 --- !u!114 &4053290546470372450
 MonoBehaviour:
@@ -137,7 +133,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6865106709919405624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -151,11 +146,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6865106709919405624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: House
+  ignoreSave: 0
 --- !u!1 &7128800267595315489
 GameObject:
   m_ObjectHideFlags: 0

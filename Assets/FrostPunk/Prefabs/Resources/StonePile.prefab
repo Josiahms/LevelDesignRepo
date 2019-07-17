@@ -612,7 +612,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6941253840354513288}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 0bbbc7a323620b64e95911e9812c3149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -627,7 +626,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6941253840354513288}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -641,13 +639,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6941253840354513288}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: e5507e85bd0dd45488b8c5b7a9241c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
   quantity: 50
-  gatherPeriod: 35
+  gatherPeriod: 525
 --- !u!114 &4649487445740951624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -657,9 +654,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 6941253840354513288}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: StonePile
-  ignoreSceneLoading: 0
+  ignoreSave: 0

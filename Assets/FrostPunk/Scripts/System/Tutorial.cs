@@ -33,13 +33,10 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    }
 
    private void Start() {
-      if (currentStep != 0) {
-         return;
-      }
       if (skip) {
          Skip();
       } else {
-         StepOne();
+         GoToStep(currentStep);
       }
    }
 
@@ -163,6 +160,53 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
          StepNine();
       }
       MoveCameraToTarget();
+   }
+
+   private void GoToStep(int stepNum) {
+      switch (stepNum) {
+         case 0:
+            StepOne();
+            return;
+         case 1:
+            StepOne();
+            return;
+         case 2:
+            StepTwo();
+            return;
+         case 3:
+            StepThree();
+            return;
+         case 4:
+            StepFour();
+            return;
+         case 5:
+            StepFive();
+            return;
+         case 6:
+            StepSix();
+            return;
+         case 7:
+            StepSeven();
+            return;
+         case 8:
+            StepEight();
+            return;
+         case 9:
+            StepNine();
+            return;
+         case 10:
+            StepTen();
+            return;
+         case 11:
+            StepEleven();
+            return;
+         case 12:
+            StepTwelve();
+            return;
+         default:
+            Skip();
+            return;
+      }
    }
 
    public object OnSave() {
