@@ -10,7 +10,11 @@ public class Singleton<T> : MonoBehaviour, ISingleton {
    private static GameObject instance;
 
    protected void Awake() {
-      instance = gameObject;
+      if (instance != null) {
+         Destroy(gameObject);
+      } else {
+         instance = gameObject;
+      }
    }
 
    public static GameObject GetGameObject() {
