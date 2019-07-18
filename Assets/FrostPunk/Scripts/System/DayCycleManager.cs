@@ -17,9 +17,10 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    private float currentTime = 540;
    private float lastFoodTime;
 
+   public static readonly int MIN_IN_DAY = 1440;
+
    private const int FOOD_HOUR = 8;
    private const int MIN_IN_HOUR = 60;
-   private const int MIN_IN_DAY = 1440;
    private const int MIN_IN_HALF_DAY = 720;
    private const int HOURS_IN_HALF_DAY = 12;
    private const int HOURS_IN_DAY = 24;
@@ -43,7 +44,7 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    private IEnumerator ClockCycle() {
       while (true) {
          int days = (int)currentTime / MIN_IN_DAY;
-         var minutesMod60 = currentTime % MIN_IN_HOUR;
+         var minutesMod60 = (int)currentTime % MIN_IN_HOUR;
          var minutesText = minutesMod60 < 10 ? "0" + minutesMod60 : minutesMod60.ToString();
          int hours = (int)(currentTime / MIN_IN_HOUR % HOURS_IN_HALF_DAY);
          if (hours == 0) {
@@ -57,9 +58,17 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
             lastFoodTime += MIN_IN_HALF_DAY;
             ResourceManager.GetInstance().EatMeal();
          }
-         yield return new WaitForSeconds(1);
-         currentTime += (clockMinuteRate * clockSpeedMultiplier);
+         var prevTime = (int)(currentTime / clockMinuteRate) * clockMinuteRate;
+         yield return new WaitUntil(() => currentTime - prevTime >= clockMinuteRate);
       }
+   }
+
+   private void Update() {
+      currentTime += (clockMinuteRate * clockSpeedMultiplier) * Time.deltaTime;
+   }
+
+   public bool IsNight() {
+      return currentTime % MIN_IN_DAY < FOOD_HOUR * MIN_IN_HOUR || currentTime % MIN_IN_DAY > (FOOD_HOUR + HOURS_IN_HALF_DAY) * MIN_IN_HOUR;
    }
 
    public int GetCurrentHour() {

@@ -10,11 +10,11 @@ public class Assignable : MonoBehaviour, ISaveable {
    private int maxAssignees = 5;
    public int GetMaxAssignees() { return maxAssignees; }
 
-   private List<WorkerAI> workers = new List<WorkerAI>();
+   private List<Worker> workers = new List<Worker>();
 
    public void AddWorker() {
       var resourceManager = ResourceManager.GetInstance();
-      WorkerAI worker = null;
+      Worker worker = null;
       if (workers.Count < maxAssignees && resourceManager.AssignWorker(transform, ref worker)) {
          workers.Add(worker);
       }
@@ -39,6 +39,10 @@ public class Assignable : MonoBehaviour, ISaveable {
       }
    }
 
+   public int GetWorkersInRange() {
+      return workers.Where(x => (x.transform.position - transform.position).magnitude < 1).Count();
+   }
+
    public int GetWorkerCount() {
       return workers.Count;
    }
@@ -61,7 +65,7 @@ public class Assignable : MonoBehaviour, ISaveable {
                var savedComponent = savedEntity.components[i];
                loadedComponents[i].OnLoad(savedComponent.data);
             }
-            return instance.GetComponent<WorkerAI>();
+            return instance.GetComponent<Worker>();
          }).ToList();
          ResourceManager.GetInstance().OffsetMaxPopulation(workers.Count);
       }

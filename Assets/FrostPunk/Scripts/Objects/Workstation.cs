@@ -38,8 +38,8 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    }
 
    private void Update() {
-      var workerCount = GetComponent<Assignable>().GetWorkerCount();
-      if (workerCount == 0) {
+      var workerCount = GetComponent<Assignable>().GetWorkersInRange();
+      if (workerCount == 0 || DayCycleManager.GetInstance().IsNight()) {
          progress = 0;
       } else {
          progress += Time.deltaTime * workerCount * DayCycleManager.GetInstance().ClockMinuteRate;

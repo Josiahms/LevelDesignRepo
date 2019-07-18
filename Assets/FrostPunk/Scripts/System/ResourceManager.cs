@@ -21,7 +21,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
    public int Population { get { return population; } }
    private int maxPopulation = 0;
    public int MaxPopulation { get { return maxPopulation; } }
-   private List<WorkerAI> workers = new List<WorkerAI>();
+   private List<Worker> workers = new List<Worker>();
 
    [SerializeField]
    private Text woodText;
@@ -36,7 +36,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
    [SerializeField]
    private Text populationText;
    [SerializeField]
-   private WorkerAI workerPrefab;
+   private Worker workerPrefab;
 
    private new void Awake() {
       base.Awake();
@@ -129,7 +129,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       return true;
    }
 
-   public bool AssignWorker(Transform destination, ref WorkerAI worker) {
+   public bool AssignWorker(Transform destination, ref Worker worker) {
       if (OffsetWorkerCount(-1)) {
          worker = workers[0];
          workers.Remove(worker);
@@ -139,21 +139,19 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       return false;
    }
 
-   public void ReturnWorker(WorkerAI worker) {
+   public void ReturnWorker(Worker worker) {
       if (OffsetWorkerCount(1)) {
          workers.Add(worker);
          worker.SetDestination(null);
       }
    }
 
-   public void AddToWorkforce(int amount, Transform spawnpoint) {
-      OffsetPopulation(amount);
-      for (int i = 0; i < amount; i++) {
-         workers.Add(Instantiate(workerPrefab, spawnpoint.position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), spawnpoint.rotation));
-      }
+   public void AddToWorkforce(Worker worker) {
+      OffsetPopulation(1);
+      workers.Add(worker);
    }
 
-   public void AddExistingToWorkforce(WorkerAI worker) {
+   public void AddExistingToWorkforce(Worker worker) {
       OffsetPopulation(1);
       workers.Add(worker);
    }
@@ -224,7 +222,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
                var savedComponent = savedEntity.components[i];
                loadedComponents[i].OnLoad(savedComponent.data);
             }
-            return instance.GetComponent<WorkerAI>();
+            return instance.GetComponent<Worker>();
          }).ToList();
          OffsetPopulation(workers.Count);
       }

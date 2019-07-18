@@ -21,7 +21,6 @@ public interface ISimulatable {
 
 public class Simulatable : MonoBehaviour {
    private void Awake() {
-      Debug.Log("Registering simulatable");
       MapManager.GetInstance().RegisterEntity(this);
    }
 
@@ -31,7 +30,6 @@ public class Simulatable : MonoBehaviour {
 
    private void OnDestroy() {
       if (SceneManager.GetActiveScene().isLoaded) {
-         Debug.Log("Unregistering simulatable");
          MapManager.GetInstance().UnregisterEntity(this);
       }
    }

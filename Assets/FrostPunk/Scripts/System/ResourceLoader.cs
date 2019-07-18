@@ -23,4 +23,8 @@ public class ResourceLoader : Singleton<ResourceLoader> {
    [SerializeField]
    private TutorialPopup tutorialPopupDown;
    public TutorialPopup TutorialPopupDown { get { return tutorialPopupDown; } }
+
+   [SerializeField]
+   private Worker workerPrefab;
+   public Worker WorkerPrefab { get { return workerPrefab; } }
 }

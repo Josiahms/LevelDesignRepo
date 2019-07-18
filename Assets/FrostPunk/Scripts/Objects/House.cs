@@ -16,7 +16,9 @@ public class House : MonoBehaviour, IPlaceable {
    }
 
    public bool OnPlace() {
-      ResourceManager.GetInstance().AddToWorkforce(GetComponent<Assignable>().GetMaxAssignees(), spawnpoint);
+      for (int i = 0; i < GetComponent<Assignable>().GetMaxAssignees(); i++) {
+         Worker.Instantiate(this, spawnpoint.position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), spawnpoint.transform.rotation);
+      }
       return true;
    }
 

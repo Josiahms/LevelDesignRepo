@@ -3,13 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class WorkerAI : MonoBehaviour, ISaveable
+public class Worker : MonoBehaviour, ISaveable
 {   
    [SerializeField]
    private float deadZone = 0.2f;
 
    private Animator animator;
+   private Vector3? currentDestination;
    private Vector3? destination;
+
+   public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
+      var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);
+      ResourceManager.GetInstance().AddToWorkforce(result);
+      return result;
+   }
 
    private void Awake() {
       animator = GetComponent<Animator>();
@@ -20,14 +27,16 @@ public class WorkerAI : MonoBehaviour, ISaveable
    }
 
    private void Update() {
-      if (destination == null) {
+      currentDestination = destination;
+
+      if (currentDestination == null) {
          animator.SetFloat("Turn", 0);
          animator.SetFloat("Forward", 0);
          return;
       }
 
       var forward2D = new Vector2(transform.forward.x, transform.forward.z);
-      var direction = (destination.Value - transform.position).normalized;
+      var direction = (currentDestination.Value - transform.position).normalized;
       var direction2D = new Vector2(direction.x, direction.z);
       var angleBetween = Vector2.Angle(forward2D, direction2D);
       var between = Quaternion.AngleAxis(angleBetween / 2, transform.up) * transform.forward;
@@ -35,8 +44,8 @@ public class WorkerAI : MonoBehaviour, ISaveable
       var isRightTurn = angleBetween2 < angleBetween;
 
       animator.SetFloat("Turn", Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1));
-      animator.SetFloat("Forward", Mathf.Clamp((destination.Value - transform.position).magnitude * 10, 0, 1));
-      if ((destination.Value - transform.position).magnitude < deadZone || angleBetween > 15) {
+      animator.SetFloat("Forward", Mathf.Clamp((currentDestination.Value - transform.position).magnitude * 10, 0, 1));
+      if ((currentDestination.Value - transform.position).magnitude < deadZone || angleBetween > 15) {
          animator.SetFloat("Forward", 0);
       }
 
