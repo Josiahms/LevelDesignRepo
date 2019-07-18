@@ -10,7 +10,6 @@ public class DontDestroy : MonoBehaviour
    private void Awake() {
       DontDestroyOnLoad(gameObject);
       objects.Add(gameObject);
-      testName = Time.time.ToString();
    }
 
    public static void DestroyAll() {
