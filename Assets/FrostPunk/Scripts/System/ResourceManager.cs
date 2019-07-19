@@ -186,7 +186,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       data.Add("metalAmount", metalAmount);
       data.Add("foodAmount", foodAmount);
       data.Add("starvingPeopleAmount", starvingPeopleAmount);      
-      data.Add("workers", workers.Select(x => new SavedGameObject(x.GetComponent<Saveable>())).ToArray());
+      data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
       return data;
    }
 
@@ -213,16 +213,15 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
          starvingPeopleAmount = (int)result;
          starvingPeopleText.text = starvingPeopleAmount.ToString();
       }
+   }
+
+   public void OnLoadDependencies(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      object result = null;
       if (data.TryGetValue("workers", out result)) {
-         workers = ((SavedGameObject[])result).Select(savedEntity => {
-            var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
-            var instance = Instantiate(prefab, new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]), new Quaternion());
-            var loadedComponents = instance.GetComponents<ISaveable>();
-            for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
-               var savedComponent = savedEntity.components[i];
-               loadedComponents[i].OnLoad(savedComponent.data);
-            }
-            return instance.GetComponent<Worker>();
+         workers = ((int[])result).Select(workerSavedIndex => {
+            Debug.Log(SaveManager.GetInstance());
+            return SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(workerSavedIndex).GetComponent<Worker>();
          }).ToList();
          OffsetPopulation(workers.Count);
       }

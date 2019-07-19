@@ -902,7 +902,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!136 &1216607919
 CapsuleCollider:
@@ -927,7 +927,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1216607914}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: fc6434496ee718449bf3b89e20fbf158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -941,12 +940,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1216607914}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: Worker
-  ignoreSave: 1
+  ignoreSave: 0
 --- !u!1 &1271770409
 GameObject:
   m_ObjectHideFlags: 0

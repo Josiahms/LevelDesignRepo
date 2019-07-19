@@ -49,24 +49,19 @@ public class Assignable : MonoBehaviour, ISaveable {
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("workers", workers.Select(x => new SavedGameObject(x.GetComponent<Saveable>())).ToArray());
+      data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
       return data;
    }
 
    public void OnLoad(object savedData) {
+      // Ignored
+   }
+
+   public void OnLoadDependencies(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("workers", out result)) {
-         workers = ((SavedGameObject[])result).Select(savedEntity => {
-            var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
-            var instance = Instantiate(prefab, new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]), new Quaternion());
-            var loadedComponents = instance.GetComponents<ISaveable>();
-            for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
-               var savedComponent = savedEntity.components[i];
-               loadedComponents[i].OnLoad(savedComponent.data);
-            }
-            return instance.GetComponent<Worker>();
-         }).ToList();
+         workers = ((int[])result).Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>()).ToList();
          ResourceManager.GetInstance().OffsetMaxPopulation(workers.Count);
       }
    }

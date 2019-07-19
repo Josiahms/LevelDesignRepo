@@ -79,6 +79,10 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       }
    }
 
+   public void OnLoadDependencies(object savedData) {
+      // Ignored
+   }
+
    public SimulationInformation GetSimulationInformation() {
       var ratePerDay = 1440 / gatherPeriod * GetComponent<Assignable>().GetWorkerCount();
       var expirationTime = DayCycleManager.GetInstance().CurrentTime + (float)quantity / ratePerDay * 1440;

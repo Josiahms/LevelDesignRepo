@@ -104,4 +104,8 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
          lastFoodTime = (float)result;
       }
    }
+
+   public void OnLoadDependencies(object savedData) {
+      // Ignored
+   }
 }

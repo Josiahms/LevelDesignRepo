@@ -119,25 +119,25 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       Vector3 destination;
       if (resetCamera) {
          destination = initialCameraPosition;
+         Camera.main.orthographicSize = 35;
       } else if (target == null) {
          destination = Camera.main.transform.position;
       } else {
-         int distance;
          switch (zoomLevel) {
             case CameraZoom.Close:
-               distance = 20;
+               Camera.main.orthographicSize = 15;
                break;
             case CameraZoom.Medium:
-               distance = 30;
+               Camera.main.orthographicSize = 25;
                break;
             case CameraZoom.Far:
-               distance = 40;
+               Camera.main.orthographicSize = 35;
                break;
             default:
-               distance = 20;
+               Camera.main.orthographicSize = 35;
                break;
          }
-         destination = target.position - Camera.main.transform.forward * distance;
+         destination = target.position - Camera.main.transform.forward * 100;
       }
       Camera.main.transform.position += (destination - Camera.main.transform.position) / 10;
    }
@@ -212,6 +212,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("currentStep", currentStep);
+      data.Add("firstHouse", firstHouse.GetComponent<Saveable>().GetSavedIndex());
       return data;
    }
 
@@ -220,6 +221,14 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       object result = null;
       if (data.TryGetValue("currentStep", out result)) {
          currentStep = (int)result;
+      }
+   }
+
+   public void OnLoadDependencies(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      object result = null;
+      if (data.TryGetValue("firstHouse", out result)) {
+         firstHouse = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
       }
    }
 

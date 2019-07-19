@@ -29,7 +29,7 @@ public class Simulatable : MonoBehaviour {
    }
 
    private void OnDestroy() {
-      if (SceneManager.GetActiveScene().isLoaded) {
+      if (MapManager.GetInstance() != null) {
          MapManager.GetInstance().UnregisterEntity(this);
       }
    }

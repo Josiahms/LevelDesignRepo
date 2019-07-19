@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Threading;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.SceneManagement;
 public interface ISaveable {
    object OnSave();
    void OnLoad(object data);
+   void OnLoadDependencies(object data);
 }
 
 public class Saveable : MonoBehaviour {
@@ -18,7 +20,15 @@ public class Saveable : MonoBehaviour {
    [SerializeField]
    private bool ignoreSave;
 
+   private static int sharedIndex;
+   private int savedIndex;
+
+   public int GetSavedIndex() {
+      return savedIndex;
+   }
+
    private void Awake() {
+      savedIndex = Interlocked.Increment(ref sharedIndex);
       var saveExists = File.Exists(Application.persistentDataPath + "/game.fun");
       if (!SceneManager.GetActiveScene().isLoaded && saveExists && GetComponent<ISingleton>() == null) {
          Destroy(gameObject);

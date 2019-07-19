@@ -9,10 +9,13 @@ using UnityEngine.SceneManagement;
 
 [Serializable]
 public struct SavedGameObject {
+   public int index;
    public string prefabPath;
    public float[] position;
    public SavedComponent[] components;
+
    public SavedGameObject(Saveable saveableGameObject) {
+      index = saveableGameObject.GetSavedIndex();
       position = new float[] { saveableGameObject.transform.position.x, saveableGameObject.transform.position.y, saveableGameObject.transform.position.z };
       prefabPath = saveableGameObject.GetPrefabPath();
       components = saveableGameObject.gameObject.GetComponents<ISaveable>().Select(x => new SavedComponent(x)).ToArray();
@@ -33,6 +36,7 @@ public class SaveManager : Singleton<SaveManager> {
 
    private List<Saveable> entitiesToSave = new List<Saveable>();
    private List<SavedGameObject> savedEntities = new List<SavedGameObject>();
+   private Dictionary<int, GameObject> loadedEntities = new Dictionary<int, GameObject>();
 
    private new void Awake() {
       base.Awake();
@@ -79,6 +83,16 @@ public class SaveManager : Singleton<SaveManager> {
       SceneManager.LoadScene(0);
    }
 
+   public GameObject FindLoadedInstanceBySaveIndex(int saveIndex) {
+      GameObject instance;
+      if (loadedEntities.TryGetValue(saveIndex, out instance)) {
+         return instance;
+      } else {
+         Debug.LogWarning("Could not find saved entity with index: " + saveIndex);
+         return null;
+      }
+   }
+
    public void Save() {
       savedEntities.Clear();
       foreach (var saveable in entitiesToSave) {
@@ -118,6 +132,18 @@ public class SaveManager : Singleton<SaveManager> {
             for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
                var savedComponent = savedEntity.components[i];
                loadedComponents[i].OnLoad(savedComponent.data);
+            }
+            loadedEntities.Add(savedEntity.index, instance);
+         }
+      }
+
+      foreach (var savedEntity in savedEntities) {
+         GameObject loadedInstance;
+         if (loadedEntities.TryGetValue(savedEntity.index, out loadedInstance)) {
+            var loadedComponents = loadedInstance.GetComponents<ISaveable>();
+            for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
+               var savedComponent = savedEntity.components[i];
+               loadedComponents[i].OnLoadDependencies(savedComponent.data);
             }
          }
       }

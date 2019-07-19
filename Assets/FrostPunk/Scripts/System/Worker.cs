@@ -11,9 +11,11 @@ public class Worker : MonoBehaviour, ISaveable
    private Animator animator;
    private Vector3? currentDestination;
    private Vector3? destination;
+   private House house;
 
    public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
       var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);
+      result.house = house;
       ResourceManager.GetInstance().AddToWorkforce(result);
       return result;
    }
@@ -27,7 +29,11 @@ public class Worker : MonoBehaviour, ISaveable
    }
 
    private void Update() {
-      currentDestination = destination;
+      if (DayCycleManager.GetInstance().IsNight()) {
+         currentDestination = house.transform.position;
+      } else {
+         currentDestination = destination;
+      }
 
       if (currentDestination == null) {
          animator.SetFloat("Turn", 0);
@@ -58,6 +64,7 @@ public class Worker : MonoBehaviour, ISaveable
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("destination", destination.HasValue ? new float[] { destination.Value.x, destination.Value.y, destination.Value.z } : null);
+      data.Add("house", house.GetComponent<Saveable>().GetSavedIndex());
       return data;
    }
 
@@ -69,6 +76,14 @@ public class Worker : MonoBehaviour, ISaveable
          if (coords != null) {
             destination = new Vector3(coords[0], coords[1], coords[2]);
          }
+      }
+   }
+
+   public void OnLoadDependencies(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      object result = null;
+      if (data.TryGetValue("house", out result)) {
+         house = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
       }
    }
 }
