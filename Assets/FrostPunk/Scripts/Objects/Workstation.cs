@@ -39,7 +39,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
 
    private void Update() {
       var workerCount = GetComponent<Assignable>().GetWorkersInRange();
-      if (workerCount == 0 || DayCycleManager.GetInstance().IsNight()) {
+      if (workerCount == 0 || DayCycleManager.GetInstance().IsRestTime()) {
          progress = 0;
       } else {
          progress += Time.deltaTime * workerCount * DayCycleManager.GetInstance().ClockMinuteRate;
@@ -84,8 +84,8 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    }
 
    public SimulationInformation GetSimulationInformation() {
-      var ratePerDay = 1440 / gatherPeriod * GetComponent<Assignable>().GetWorkerCount();
-      var expirationTime = DayCycleManager.GetInstance().CurrentTime + (float)quantity / ratePerDay * 1440;
+      var ratePerDay = DayCycleManager.MIN_IN_DAY / gatherPeriod * GetComponent<Assignable>().GetWorkerCount();
+      var expirationTime = DayCycleManager.GetInstance().CurrentTime + (float)quantity / ratePerDay * DayCycleManager.MIN_IN_DAY;
       Debug.Log("Rate per day: " + ratePerDay + ", expiration time: " + expirationTime);
       return new SimulationInformation(type, ratePerDay, expirationTime);
    }

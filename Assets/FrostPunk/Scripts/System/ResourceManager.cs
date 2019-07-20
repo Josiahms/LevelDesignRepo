@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -220,7 +221,6 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       object result = null;
       if (data.TryGetValue("workers", out result)) {
          workers = ((int[])result).Select(workerSavedIndex => {
-            Debug.Log(SaveManager.GetInstance());
             return SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(workerSavedIndex).GetComponent<Worker>();
          }).ToList();
          OffsetPopulation(workers.Count);

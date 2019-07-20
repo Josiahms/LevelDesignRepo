@@ -108,8 +108,8 @@ public class MapManager : Singleton<MapManager> {
          var expiredSimulations = expirationTimes.PopSimulationInformationsUpToTime(currentTime);
          Debug.Log(expiredSimulations.Count + " simulations expired in that time block.  Current time: " + currentTime);
          expiredSimulations.ForEach(expiredSimulation => {
-            var partialAmount = expiredSimulation.rateOfChange * (expiredSimulation.expirationTime.Value - prevTime) / 1440;
-            Debug.Log("Adding " + (expiredSimulation.expirationTime.Value - prevTime) / 1440 + " of the full amount " + expiredSimulation.rateOfChange + ", " + partialAmount);
+            var partialAmount = expiredSimulation.rateOfChange * (expiredSimulation.expirationTime.Value - prevTime) / DayCycleManager.MIN_IN_DAY;
+            Debug.Log("Adding " + (expiredSimulation.expirationTime.Value - prevTime) / DayCycleManager.MIN_IN_DAY + " of the full amount " + expiredSimulation.rateOfChange + ", " + partialAmount);
             ResourceManager.GetInstance().AddResource(expiredSimulation.resourceType, (int)partialAmount);
             switch (expiredSimulation.resourceType) {
                case ResourceType.Wood:

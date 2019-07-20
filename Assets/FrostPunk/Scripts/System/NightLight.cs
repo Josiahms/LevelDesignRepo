@@ -12,7 +12,7 @@ public class NightLight : MonoBehaviour {
    }
 
    private void Update() {
-      li.enabled = DayCycleManager.GetInstance().IsNight();
+      li.enabled = DayCycleManager.GetInstance().IsRestTime();
    }
 
 }

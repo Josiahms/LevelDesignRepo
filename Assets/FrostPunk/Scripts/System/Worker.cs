@@ -29,7 +29,7 @@ public class Worker : MonoBehaviour, ISaveable
    }
 
    private void Update() {
-      if (DayCycleManager.GetInstance().IsNight()) {
+      if (DayCycleManager.GetInstance().IsRestTime()) {
          currentDestination = house.transform.position;
       } else {
          currentDestination = destination;
