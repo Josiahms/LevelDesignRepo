@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
@@ -15,7 +13,7 @@ public class EndDayButton : MonoBehaviour
    }
 
    private void Update() {
-      btn.interactable = DayCycleManager.GetInstance().CurrentTimeOfDay > DayCycleManager.MIN_IN_HOUR * 18
+      btn.interactable = DayCycleManager.GetInstance().CurrentTimeOfDay > DayCycleManager.MIN_END_WORK_DAY
          && DayCycleManager.GetInstance().IsWorkDay();
    }
 

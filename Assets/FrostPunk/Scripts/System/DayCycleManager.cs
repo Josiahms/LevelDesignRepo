@@ -24,6 +24,8 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    public static readonly int MIN_IN_HALF_DAY = 720;
    public static readonly int HOURS_IN_HALF_DAY = 12;
    public static readonly int HOURS_IN_DAY = 24;
+   public static readonly int MAX_END_WORK_DAY = 22 * MIN_IN_HOUR;
+   public static readonly int MIN_END_WORK_DAY = 18 * MIN_IN_HOUR;
 
    private void Start() {
       StartCoroutine(ClockCycle());
@@ -51,11 +53,11 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
          var isMorning = (currentTime % MIN_IN_DAY) < MIN_IN_HALF_DAY;
          clockText.text = "Day: " + (days + 1) + " " + hours + ":" + minutesText + (isMorning ? "am" : "pm");
 
-         if (CurrentTimeOfDay > 22 * MIN_IN_HOUR && IsWorkDay()) {
+         if (CurrentTimeOfDay > MAX_END_WORK_DAY && IsWorkDay()) {
             EndWorkDay();
          }
 
-         if (CurrentTimeOfDay > FOOD_HOUR * MIN_IN_HOUR && CurrentTimeOfDay < 18 * MIN_IN_HOUR) {
+         if (CurrentTimeOfDay > FOOD_HOUR * MIN_IN_HOUR && CurrentTimeOfDay < MIN_END_WORK_DAY) {
             StartWorkDay();
          }
 
