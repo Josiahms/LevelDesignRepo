@@ -132,7 +132,10 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
 
    public bool AssignWorker(Transform destination, ref Worker worker) {
       if (OffsetWorkerCount(-1)) {
-         worker = workers[0];
+         worker = workers
+            .OrderBy(x => Vector3.Distance(x.transform.position, destination.position))
+            .OrderBy(x => Vector3.Distance(x.House.transform.position, destination.position))
+            .First();
          workers.Remove(worker);
          worker.SetDestination(destination.position);
          return true;

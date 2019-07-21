@@ -22,8 +22,12 @@ public class Assignable : MonoBehaviour, ISaveable {
 
    public void RemoveWorker() {
       if (workers.Count > 0) {
-         ResourceManager.GetInstance().ReturnWorker(workers[0]);
-         workers.RemoveAt(0);
+         var worker = workers
+            .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
+            .OrderBy(x => Vector3.Distance(x.House.transform.position, transform.position))
+            .Last();
+         ResourceManager.GetInstance().ReturnWorker(worker);
+         workers.Remove(worker);
       }
    }
 

@@ -92,7 +92,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   quantity: 40
-  gatherPeriod: 225
+  gatherPeriod: 180
 --- !u!114 &7616729001944295439
 MonoBehaviour:
   m_ObjectHideFlags: 0

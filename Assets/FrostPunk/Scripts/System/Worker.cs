@@ -13,6 +13,8 @@ public class Worker : MonoBehaviour, ISaveable
    private Vector3? destination;
    private House house;
 
+   public House House { get { return house;  } }
+
    public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
       var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);
       result.house = house;
