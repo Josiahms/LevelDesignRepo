@@ -9,6 +9,9 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    [SerializeField]
    private Placeable buildingPrefab;
+   [SerializeField]
+   private GameObject buildDrawer;
+
    private Button button;
    private bool clickedThisFrame;
 
@@ -22,6 +25,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    private void OnClick() {
       Builder.GetInstance().SetBuilding(buildingPrefab);
+      buildDrawer.SetActive(false);
    }
 
    private void Update() {

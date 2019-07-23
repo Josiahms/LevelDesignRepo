@@ -87,7 +87,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    private void StepNine() {
       currentStep = 9;
       TutorialPopup.Instantiate(foodAmount, "Great!  You collected enough food for your 5 workers.  " +
-         "Each day at 8:00am and 8:00pm the workers will each eat 1 food.", StepTen);
+         "Your workers will eat each morning before the workday starts, at 8am sharp.", StepTen);
    }
 
    private void StepTen() {
@@ -125,16 +125,16 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       } else {
          switch (zoomLevel) {
             case CameraZoom.Close:
-               Camera.main.orthographicSize = 15;
+               Camera.main.orthographicSize += (15 - Camera.main.orthographicSize) / 10;
                break;
             case CameraZoom.Medium:
-               Camera.main.orthographicSize = 25;
+               Camera.main.orthographicSize += (20 - Camera.main.orthographicSize) / 10;
                break;
             case CameraZoom.Far:
-               Camera.main.orthographicSize = 35;
+               Camera.main.orthographicSize += (35 - Camera.main.orthographicSize) / 10;
                break;
             default:
-               Camera.main.orthographicSize = 35;
+               Camera.main.orthographicSize += (35 - Camera.main.orthographicSize) / 10;
                break;
          }
          destination = target.position - Camera.main.transform.forward * 100;
@@ -213,7 +213,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       var data = new Dictionary<string, object>();
       data.Add("currentStep", currentStep);
       data.Add("firstHouse", firstHouse.GetComponent<Saveable>().GetSavedIndex());
-      data.Add("fastWoodPile", fastWoodPile.GetComponent<Saveable>().GetSavedIndex());
+      data.Add("fastWoodPile", fastWoodPile != null ? fastWoodPile.GetComponent<Saveable>().GetSavedIndex() : -1);
       return data;
    }
 
@@ -232,7 +232,9 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
          firstHouse = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
       }
       if (data.TryGetValue("fastWoodPile", out result)) {
-         fastWoodPile = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).transform;
+         if ((int)result != -1) {
+            fastWoodPile = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).transform;
+         }
       }
    }
 

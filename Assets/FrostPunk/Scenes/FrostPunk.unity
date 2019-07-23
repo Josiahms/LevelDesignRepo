@@ -445,6 +445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 7616729001944295439, guid: f18092d9b2b42ef41a138ebc632eb027,
     type: 3}
+  buildDrawer: {fileID: 156431462}
 --- !u!114 &213041444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1107,6 +1108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 5208567313399390868, guid: 3c259a6ec39cb594186b8342c8a493cb,
     type: 3}
+  buildDrawer: {fileID: 156431462}
 --- !u!114 &370651716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1590,6 +1592,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af176be83fcfacc49b6a6566d508654a, type: 3}
+--- !u!224 &560894630 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5597618444993088734, guid: 84282104cf319914d935dea244c6341b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1388845721}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &593221889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2040,6 +2048,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4dda4800e879e449b4f35613925b986, type: 3}
+--- !u!224 &722215102 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5597618444893450791, guid: 84282104cf319914d935dea244c6341b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1388845721}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &733276289
 GameObject:
   m_ObjectHideFlags: 0
@@ -3906,6 +3920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 8400638940947928766, guid: b6295d611f44a4744b420ef1a98c2a2a,
     type: 3}
+  buildDrawer: {fileID: 156431462}
 --- !u!114 &1232347540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4878,7 +4893,7 @@ Canvas:
   m_GameObject: {fileID: 1408597049}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 1022201158}
   m_PlaneDistance: 2.4
   m_PixelPerfect: 0
@@ -5890,6 +5905,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingPrefab: {fileID: 3193540748359329870, guid: 03313a2fda18f394a84587fdc750d821,
     type: 3}
+  buildDrawer: {fileID: 156431462}
 --- !u!114 &1671884454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5972,6 +5988,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1671884451}
   m_CullTransparentMesh: 0
+--- !u!224 &1697379166 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5597618443817095451, guid: 84282104cf319914d935dea244c6341b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1388845721}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1698378681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6812,10 +6834,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstHouse: {fileID: 48793336}
   fastWoodPile: {fileID: 7151016149583186317}
-  woodAmount: {fileID: 0}
+  woodAmount: {fileID: 722215102}
   buildMenu: {fileID: 846210881}
-  foodAmount: {fileID: 0}
-  starvingAmount: {fileID: 0}
+  foodAmount: {fileID: 560894630}
+  starvingAmount: {fileID: 1697379166}
   skip: 0
 --- !u!224 &1906903924
 RectTransform:
