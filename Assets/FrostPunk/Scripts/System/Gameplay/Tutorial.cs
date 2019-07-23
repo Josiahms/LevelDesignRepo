@@ -213,6 +213,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       var data = new Dictionary<string, object>();
       data.Add("currentStep", currentStep);
       data.Add("firstHouse", firstHouse.GetComponent<Saveable>().GetSavedIndex());
+      data.Add("fastWoodPile", fastWoodPile.GetComponent<Saveable>().GetSavedIndex());
       return data;
    }
 
@@ -229,6 +230,9 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       object result = null;
       if (data.TryGetValue("firstHouse", out result)) {
          firstHouse = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
+      }
+      if (data.TryGetValue("fastWoodPile", out result)) {
+         fastWoodPile = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).transform;
       }
    }
 
