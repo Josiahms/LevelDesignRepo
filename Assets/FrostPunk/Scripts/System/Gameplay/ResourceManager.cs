@@ -130,14 +130,14 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       return true;
    }
 
-   public bool AssignWorker(Transform destination, ref Worker worker) {
+   public bool AssignWorker(Assignable destination, ref Worker worker) {
       if (OffsetWorkerCount(-1)) {
          worker = workers
-            .OrderBy(x => Vector3.Distance(x.transform.position, destination.position))
-            .OrderBy(x => Vector3.Distance(x.House.transform.position, destination.position))
+            .OrderBy(x => Vector3.Distance(x.transform.position, destination.transform.position))
+            .OrderBy(x => Vector3.Distance(x.House.transform.position, destination.transform.position))
             .First();
          workers.Remove(worker);
-         worker.SetDestination(destination.position);
+         worker.SetDestination(destination);
          return true;
       }
       return false;
@@ -155,9 +155,12 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       workers.Add(worker);
    }
 
-   public void AddExistingToWorkforce(Worker worker) {
-      OffsetPopulation(1);
-      workers.Add(worker);
+   public void RemoveFromWorkforce(Worker worker) {
+      if (workers.Remove(worker)) {
+         OffsetPopulation(-1);
+      } else {
+         OffsetMaxPopulation(-1);
+      }
    }
 
    private void OffsetPopulation(int offsetAmount) {

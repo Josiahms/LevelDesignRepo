@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public interface IPlaceable {
-   bool OnPlace();
-   bool OnRemove();
+   void OnPlace();
 }
 
-public class Placeable : MonoBehaviour {
+public class Placeable : MonoBehaviour, ISaveable {
 
    [SerializeField]
    protected int woodCost = 0;
@@ -23,11 +23,21 @@ public class Placeable : MonoBehaviour {
    private bool isPlaced;
    public bool IsPlaced() { return isPlaced; }
 
+   private bool isLoaded;
+
+   private void Start() {
+      if (GetComponent<Placeable>().IsPlaced() && !isLoaded) {
+         foreach (var placeable in GetComponents<IPlaceable>()) {
+            placeable.OnPlace();
+         }
+      }
+   }
+
    public bool Place() {
       if (ResourceManager.GetInstance().OffsetMaterials(-woodCost, -stoneCost, -metalCost)) {
          isPlaced = true;
-         foreach (var buildable in GetComponents<IPlaceable>()) {
-            buildable.OnPlace();
+         foreach (var placeable in GetComponents<IPlaceable>()) {
+            placeable.OnPlace();
          }
          return true;
       }
@@ -37,10 +47,26 @@ public class Placeable : MonoBehaviour {
    public void Remove() {
       if (isPlaced) {
          ResourceManager.GetInstance().OffsetMaterials(woodCost, stoneCost, metalCost);
-         foreach (var buildable in GetComponents<IPlaceable>()) {
-            buildable.OnRemove();
-         }
       }
       Destroy(gameObject);
+   }
+
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      data.Add("isPlaced", isPlaced);
+      return data;
+   }
+
+   public void OnLoad(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      object result = null;
+      if (data.TryGetValue("isPlaced", out result)) {
+         isPlaced = (bool)result;
+      }
+      isLoaded = true;
+   }
+
+   public void OnLoadDependencies(object savedData) {
+      // Ignored
    }
 }

@@ -9,8 +9,8 @@ public class Worker : MonoBehaviour, ISaveable
    private float deadZone = 0.2f;
 
    private Animator animator;
-   private Vector3? currentDestination;
-   private Vector3? destination;
+   private Assignable currentDestination;
+   private Assignable destination;
    private House house;
 
    public House House { get { return house;  } }
@@ -26,13 +26,25 @@ public class Worker : MonoBehaviour, ISaveable
       animator = GetComponent<Animator>();
    }
 
-   public void SetDestination(Vector3? destination) {
+   private void OnDestroy() {
+      if (house != null) {
+         house.RemoveWorker(this);
+      }
+      if (ResourceManager.GetInstance() != null) {
+         ResourceManager.GetInstance().RemoveFromWorkforce(this);
+      }
+      if (destination != null) {
+         destination.RemoveWorker(this);
+      }
+   }
+
+   public void SetDestination(Assignable destination) {
       this.destination = destination;
    }
 
    private void Update() {
       if (DayCycleManager.GetInstance().IsRestTime()) {
-         currentDestination = house.transform.position;
+         currentDestination = house.GetComponent<Assignable>();
       } else {
          currentDestination = destination;
       }
@@ -44,7 +56,7 @@ public class Worker : MonoBehaviour, ISaveable
       }
 
       var forward2D = new Vector2(transform.forward.x, transform.forward.z);
-      var direction = (currentDestination.Value - transform.position).normalized;
+      var direction = (currentDestination.transform.position - transform.position).normalized;
       var direction2D = new Vector2(direction.x, direction.z);
       var angleBetween = Vector2.Angle(forward2D, direction2D);
       var between = Quaternion.AngleAxis(angleBetween / 2, transform.up) * transform.forward;
@@ -52,8 +64,8 @@ public class Worker : MonoBehaviour, ISaveable
       var isRightTurn = angleBetween2 < angleBetween;
 
       animator.SetFloat("Turn", Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1));
-      animator.SetFloat("Forward", Mathf.Clamp((currentDestination.Value - transform.position).magnitude * 10, 0, 1));
-      if ((currentDestination.Value - transform.position).magnitude < deadZone || angleBetween > 15) {
+      animator.SetFloat("Forward", Mathf.Clamp((currentDestination.transform.position - transform.position).magnitude * 10, 0, 1));
+      if ((currentDestination.transform.position - transform.position).magnitude < deadZone || angleBetween > 15) {
          animator.SetFloat("Forward", 0);
       }
 
@@ -65,20 +77,13 @@ public class Worker : MonoBehaviour, ISaveable
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("destination", destination.HasValue ? new float[] { destination.Value.x, destination.Value.y, destination.Value.z } : null);
+      data.Add("destination", destination != null ? destination.GetComponent<Saveable>().GetSavedIndex() : -1);
       data.Add("house", house.GetComponent<Saveable>().GetSavedIndex());
       return data;
    }
 
    public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("destination", out result)) {
-         var coords = (float[])result;
-         if (coords != null) {
-            destination = new Vector3(coords[0], coords[1], coords[2]);
-         }
-      }
+      // Ignored
    }
 
    public void OnLoadDependencies(object savedData) {
@@ -86,6 +91,9 @@ public class Worker : MonoBehaviour, ISaveable
       object result = null;
       if (data.TryGetValue("house", out result)) {
          house = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
+      }
+      if (data.TryGetValue("destination", out result)) {
+         destination = (int)result == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Assignable>();
       }
    }
 }

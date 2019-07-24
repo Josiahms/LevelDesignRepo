@@ -15,7 +15,7 @@ public class Assignable : MonoBehaviour, ISaveable {
    public void AddWorker() {
       var resourceManager = ResourceManager.GetInstance();
       Worker worker = null;
-      if (workers.Count < maxAssignees && resourceManager.AssignWorker(transform, ref worker)) {
+      if (workers.Count < maxAssignees && resourceManager.AssignWorker(this, ref worker)) {
          workers.Add(worker);
       }
    }
@@ -29,6 +29,10 @@ public class Assignable : MonoBehaviour, ISaveable {
          ResourceManager.GetInstance().ReturnWorker(worker);
          workers.Remove(worker);
       }
+   }
+
+   public bool RemoveWorker(Worker worker) {
+      return workers.Remove(worker);
    }
 
    public void OnDestroy() {

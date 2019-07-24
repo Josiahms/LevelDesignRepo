@@ -19,6 +19,8 @@ public class GenericUIRenderer : MonoBehaviour {
    private Button addWorkerButton;
    [SerializeField]
    private Button removeWorkerButton;
+   [SerializeField]
+   private Button deleteButton;
 
    private void Start() {
       DoUpdate();
@@ -31,6 +33,7 @@ public class GenericUIRenderer : MonoBehaviour {
    private void DoUpdate() {
       var selectedItem = Selectable.GetSelected();
       var selectable = selectedItem.GetComponent<Selectable>();
+      var placeable = selectedItem.GetComponent<Placeable>();
       var assignable = selectedItem.GetComponent<Assignable>();
       var house = selectedItem.GetComponent<House>();
       var pile = selectedItem.GetComponent<Workstation>();
@@ -38,6 +41,11 @@ public class GenericUIRenderer : MonoBehaviour {
       if (selectable != null) {
          titleText.text = selectable.GetItemName();
          descriptionText.text = selectable.GetDescription();
+      }
+      if (placeable != null) {
+         deleteButton.gameObject.SetActive(true);
+      } else {
+         deleteButton.gameObject.SetActive(false);
       }
       if (assignable != null) {
          workerText.text = assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees();

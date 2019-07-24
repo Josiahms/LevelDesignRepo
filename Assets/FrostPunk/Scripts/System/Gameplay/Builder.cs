@@ -12,6 +12,10 @@ public class Builder : Singleton<Builder> {
       SetBuilding(buildingPrefab, Vector3.zero);
    }
 
+   public Placeable GetBuilding() {
+      return buildingInstance;
+   }
+
    public void SetBuilding(Placeable buildingPrefab, Vector3 position) {
       if (buildingInstance != null) {
          buildingInstance.Remove();
