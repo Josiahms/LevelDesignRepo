@@ -52,7 +52,9 @@ public class Selectable : MonoBehaviour {
             selectable.OnDeselect();
          }
          selectedItem.ChangeColor(Color.white);
-         Destroy(UIRenderLocation.GetInstance().transform.GetChild(0).gameObject);
+         if (UIRenderLocation.GetInstance() != null) {
+            Destroy(UIRenderLocation.GetInstance().transform.GetChild(0).gameObject);
+         }
          selectedItem = null;
       }
    }

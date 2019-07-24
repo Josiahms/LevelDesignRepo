@@ -42,6 +42,10 @@ public class Worker : MonoBehaviour, ISaveable
       this.destination = destination;
    }
 
+   public bool IsAssigned() {
+      return destination != null;
+   }
+
    private void Update() {
       if (DayCycleManager.GetInstance().IsRestTime()) {
          currentDestination = house.GetComponent<Assignable>();
@@ -69,10 +73,6 @@ public class Worker : MonoBehaviour, ISaveable
          animator.SetFloat("Forward", 0);
       }
 
-   }
-
-   private Vector3 Convert(Vector2 input) {
-      return new Vector3(input.x, 0, input.y);
    }
 
    public object OnSave() {

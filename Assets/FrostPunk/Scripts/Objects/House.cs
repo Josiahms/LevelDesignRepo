@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,8 +18,6 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
    }
 
    public void RemoveWorker(Worker worker) {
-      // I may implement some way for workers to be killed or otherwise removed
-      // from houses besides the house itself going away.
       workers.Remove(worker);
    }
 

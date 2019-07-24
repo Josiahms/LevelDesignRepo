@@ -13,10 +13,12 @@ public class Assignable : MonoBehaviour, ISaveable {
    private List<Worker> workers = new List<Worker>();
 
    public void AddWorker() {
-      var resourceManager = ResourceManager.GetInstance();
-      Worker worker = null;
-      if (workers.Count < maxAssignees && resourceManager.AssignWorker(this, ref worker)) {
-         workers.Add(worker);
+      if (workers.Count < maxAssignees) {
+         var worker = ResourceManager.GetInstance().PopNearestWorker(transform.position);
+         if (worker != null) {
+            workers.Add(worker);
+            worker.SetDestination(this);
+         }
       }
    }
 
@@ -26,7 +28,8 @@ public class Assignable : MonoBehaviour, ISaveable {
             .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
             .OrderBy(x => Vector3.Distance(x.House.transform.position, transform.position))
             .Last();
-         ResourceManager.GetInstance().ReturnWorker(worker);
+         ResourceManager.GetInstance().PushWorker(worker);
+         worker.SetDestination(null);
          workers.Remove(worker);
       }
    }
@@ -39,7 +42,8 @@ public class Assignable : MonoBehaviour, ISaveable {
       try {
          var resourceManager = ResourceManager.GetInstance();
          foreach (var worker in workers) {
-            resourceManager.ReturnWorker(worker);
+            resourceManager.PushWorker(worker);
+            worker.SetDestination(null);
          }
          workers.Clear();
       } catch (Exception) {
@@ -70,7 +74,6 @@ public class Assignable : MonoBehaviour, ISaveable {
       object result = null;
       if (data.TryGetValue("workers", out result)) {
          workers = ((int[])result).Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>()).ToList();
-         ResourceManager.GetInstance().OffsetMaxPopulation(workers.Count);
       }
    }
 }

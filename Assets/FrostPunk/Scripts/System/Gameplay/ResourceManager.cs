@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,19 +7,14 @@ public enum ResourceType { Wood, Stone, Metal, Food }
 
 public class ResourceManager : Singleton<ResourceManager>, ISaveable {
 
-   private int woodAmount = 5;
-   public int WoodAmount { get { return woodAmount; } }
-   private int stoneAmount = 0;
-   public int StoneAmount { get { return stoneAmount; } }
-   private int metalAmount = 0;
-   public int MetalAmount { get { return metalAmount; } }
-   private int foodAmount = 0;
-   public int FoodAmount { get { return foodAmount; } }
+   public int WoodAmount { get; private set; }
+   public int StoneAmount { get; private set; }
+   public int MetalAmount { get; private set; }
+   public int FoodAmount { get; private set; }
+
    private int starvingPeopleAmount = 0;
-   private int population = 0;
-   public int Population { get { return population; } }
-   private int maxPopulation = 0;
-   public int MaxPopulation { get { return maxPopulation; } }
+   private int maxPopulation;
+
    private List<Worker> workers = new List<Worker>();
 
    [SerializeField]
@@ -36,28 +29,26 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
    private Text starvingPeopleText;
    [SerializeField]
    private Text populationText;
-   [SerializeField]
-   private Worker workerPrefab;
 
    private new void Awake() {
       base.Awake();
-      woodText.text = woodAmount.ToString();
-      stoneText.text = stoneAmount.ToString();
-      metalText.text = metalAmount.ToString();
-      foodText.text = foodAmount.ToString();
-      populationText.text = population + "/" + maxPopulation;
+      WoodAmount = 5;
+      woodText.text = WoodAmount.ToString();
+      stoneText.text = StoneAmount.ToString();
+      metalText.text = MetalAmount.ToString();
+      foodText.text = FoodAmount.ToString();
       DontDestroyOnLoad(gameObject);
    }
 
    public bool CanAfford(int woodCost, int stoneCost, int metalCost, int foodCost = 0) {
-      return woodAmount - woodCost >= 0 && stoneAmount - stoneCost >= 0 && metalAmount - metalCost >= 0 && foodAmount - foodCost >= 0;
+      return WoodAmount - woodCost >= 0 && StoneAmount - stoneCost >= 0 && MetalAmount - metalCost >= 0 && FoodAmount - foodCost >= 0;
    }
 
    public void AddResource(ResourceType type, int amount) {
       if (amount < 0) {
          return;
       }
-      switch(type) {
+      switch (type) {
          case ResourceType.Wood:
             OffsetMaterials(amount, 0, 0);
             return;
@@ -68,20 +59,20 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
             OffsetMaterials(0, 0, amount);
             return;
          case ResourceType.Food:
-            foodAmount += amount;
-            foodText.text = foodAmount.ToString();
+            FoodAmount += amount;
+            foodText.text = FoodAmount.ToString();
             return;
       }
    }
 
    public bool OffsetMaterials(int woodOffset, int stoneOffset, int metalOffset) {
       if (CanAfford(-woodOffset, -stoneOffset, -metalOffset)) {
-         woodAmount += woodOffset;
-         stoneAmount += stoneOffset;
-         metalAmount += metalOffset;
-         woodText.text = woodAmount.ToString();
-         stoneText.text = stoneAmount.ToString();
-         metalText.text = metalAmount.ToString();
+         WoodAmount += woodOffset;
+         StoneAmount += stoneOffset;
+         MetalAmount += metalOffset;
+         woodText.text = WoodAmount.ToString();
+         stoneText.text = StoneAmount.ToString();
+         metalText.text = MetalAmount.ToString();
          if (woodOffset < 0) {
             FloatingText.Instantiate(woodText.transform, woodOffset, ResourceType.Wood.ToString(), false, false, 0.7f);
          }
@@ -98,29 +89,29 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
    }
 
    public bool EatMeal() {
-      if (foodAmount - starvingPeopleAmount < 0) {
+      if (FoodAmount - starvingPeopleAmount < 0) {
          Debug.Log("Game Over!");
          return false;
       }
-      var previousFoodAmount = foodAmount;
+      var previousFoodAmount = FoodAmount;
       var previousStarvingPeopleAmount = starvingPeopleAmount;
 
-      foodAmount -= starvingPeopleAmount;
+      FoodAmount -= starvingPeopleAmount;
       starvingPeopleAmount = 0;
-      if (foodAmount - maxPopulation >= 0) {
-         foodAmount -= maxPopulation;
-         foodText.text = foodAmount.ToString();
+      if (FoodAmount - maxPopulation >= 0) {
+         FoodAmount -= maxPopulation;
+         foodText.text = FoodAmount.ToString();
          starvingPeopleText.text = starvingPeopleAmount.ToString();
       } else {
-         starvingPeopleAmount += (maxPopulation - foodAmount);
-         foodAmount = 0;
-         foodText.text = foodAmount.ToString();
+         starvingPeopleAmount += (maxPopulation - FoodAmount);
+         FoodAmount = 0;
+         foodText.text = FoodAmount.ToString();
          starvingPeopleText.text = starvingPeopleAmount.ToString();
       }
 
-      var deltaFood = foodAmount - previousFoodAmount;
+      var deltaFood = FoodAmount - previousFoodAmount;
       if (deltaFood < 0) {
-         FloatingText.Instantiate(foodText.transform, foodAmount - previousFoodAmount, ResourceType.Food.ToString(), false, false, 0.7f);
+         FloatingText.Instantiate(foodText.transform, FoodAmount - previousFoodAmount, ResourceType.Food.ToString(), false, false, 0.7f);
       }
       var deltaStarving = starvingPeopleAmount - previousStarvingPeopleAmount;
       if (deltaStarving != 0) {
@@ -130,70 +121,43 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       return true;
    }
 
-   public bool AssignWorker(Assignable destination, ref Worker worker) {
-      if (OffsetWorkerCount(-1)) {
-         worker = workers
-            .OrderBy(x => Vector3.Distance(x.transform.position, destination.transform.position))
-            .OrderBy(x => Vector3.Distance(x.House.transform.position, destination.transform.position))
+   public Worker PopNearestWorker(Vector3 destination) {
+      var worker = workers.OrderBy(x => Vector3.Distance(x.transform.position, destination))
+            .OrderBy(x => Vector3.Distance(x.House.transform.position, destination))
             .First();
-         workers.Remove(worker);
-         worker.SetDestination(destination);
-         return true;
+      if (workers.Remove(worker)) {
+         populationText.text = workers.Count + "/" + maxPopulation;
+         return worker;
       }
-      return false;
+      return null;
    }
 
-   public void ReturnWorker(Worker worker) {
-      if (OffsetWorkerCount(1)) {
-         workers.Add(worker);
-         worker.SetDestination(null);
-      }
+   public void PushWorker(Worker worker) {
+      workers.Add(worker);
+      populationText.text = workers.Count + "/" + maxPopulation;
    }
 
    public void AddToWorkforce(Worker worker) {
-      OffsetPopulation(1);
       workers.Add(worker);
+      maxPopulation++;
+      populationText.text = workers.Count + "/" + maxPopulation;
    }
 
    public void RemoveFromWorkforce(Worker worker) {
-      if (workers.Remove(worker)) {
-         OffsetPopulation(-1);
-      } else {
-         OffsetMaxPopulation(-1);
-      }
-   }
-
-   private void OffsetPopulation(int offsetAmount) {
-      population += offsetAmount;
-      maxPopulation += offsetAmount;
-      Mathf.Max(0, population);
-      Mathf.Max(0, maxPopulation);
-      populationText.text = population + "/" + maxPopulation;
-   }
-
-   public void OffsetMaxPopulation(int offsetAmount) {
-      maxPopulation += offsetAmount;
-      maxPopulation = Mathf.Max(population, maxPopulation);
-      populationText.text = population + "/" + maxPopulation;
-   }
-
-   private bool OffsetWorkerCount(int offsetAmount) {
-      if (population + offsetAmount >= 0) {
-         population += offsetAmount;
-         populationText.text = population + "/" + maxPopulation;
-         return true;
-      }
-      return false;
+      workers.Remove(worker);
+      maxPopulation--;
+      populationText.text = workers.Count + "/" + maxPopulation;
    }
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("woodAmount", woodAmount);
-      data.Add("stoneAmount", stoneAmount);
-      data.Add("metalAmount", metalAmount);
-      data.Add("foodAmount", foodAmount);
-      data.Add("starvingPeopleAmount", starvingPeopleAmount);      
+      data.Add("woodAmount", WoodAmount);
+      data.Add("stoneAmount", StoneAmount);
+      data.Add("metalAmount", MetalAmount);
+      data.Add("foodAmount", FoodAmount);
+      data.Add("starvingPeopleAmount", starvingPeopleAmount);
       data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
+      data.Add("maxPopulation", maxPopulation);
       return data;
    }
 
@@ -201,24 +165,27 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("woodAmount", out result)) {
-         woodAmount = (int)result;
-         woodText.text = woodAmount.ToString();
+         WoodAmount = (int)result;
+         woodText.text = WoodAmount.ToString();
       }
       if (data.TryGetValue("stoneAmount", out result)) {
-         stoneAmount = (int)result;
-         stoneText.text = stoneAmount.ToString();
+         StoneAmount = (int)result;
+         stoneText.text = StoneAmount.ToString();
       }
       if (data.TryGetValue("metalAmount", out result)) {
-         metalAmount = (int)result;
-         metalText.text = metalAmount.ToString();
+         MetalAmount = (int)result;
+         metalText.text = MetalAmount.ToString();
       }
       if (data.TryGetValue("foodAmount", out result)) {
-         foodAmount = (int)result;
-         foodText.text = foodAmount.ToString();
+         FoodAmount = (int)result;
+         foodText.text = FoodAmount.ToString();
       }
       if (data.TryGetValue("starvingPeopleAmount", out result)) {
          starvingPeopleAmount = (int)result;
          starvingPeopleText.text = starvingPeopleAmount.ToString();
+      }
+      if (data.TryGetValue("maxPopulation", out result)) {
+         maxPopulation = (int)result;
       }
    }
 
@@ -226,10 +193,8 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("workers", out result)) {
-         workers = ((int[])result).Select(workerSavedIndex => {
-            return SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(workerSavedIndex).GetComponent<Worker>();
-         }).ToList();
-         OffsetPopulation(workers.Count);
+         workers = ((int[])result).Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>()).ToList();
       }
+      populationText.text = workers.Count + "/" + maxPopulation;
    }
 }
