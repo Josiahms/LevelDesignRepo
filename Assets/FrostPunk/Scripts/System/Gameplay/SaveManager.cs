@@ -127,7 +127,9 @@ public class SaveManager : Singleton<SaveManager> {
             if (savedEntity.components.Any(x => x.type.GetInterfaces().Contains(typeof(ISingleton)))) {
                var singleton = savedEntity.components.First(x => x.type.GetInterfaces().Contains(typeof(ISingleton)));
                instance = (GameObject)singleton.type.BaseType.GetMethod("GetGameObject").Invoke(null, null);
-               instance.transform.position = position;
+               if (savedEntity.position != null) {
+                  instance.transform.position = position;
+               }
             } else {
                Debug.LogError("Saved entity is not a singleton, nor does it have a prefab to load.");
             }
