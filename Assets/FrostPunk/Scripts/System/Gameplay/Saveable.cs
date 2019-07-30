@@ -18,7 +18,8 @@ public class Saveable : MonoBehaviour {
    public string GetPrefabPath() { return prefabPath; }
 
    [SerializeField]
-   private bool ignoreSave;
+   private bool savePosition = true;
+   public bool SavePosition { get { return savePosition; } }
 
    private static int sharedIndex;
    private int savedIndex;
@@ -33,9 +34,7 @@ public class Saveable : MonoBehaviour {
       if (!SceneManager.GetActiveScene().isLoaded && saveExists && GetComponent<ISingleton>() == null) {
          Destroy(gameObject);
       } else {
-         if (!ignoreSave) {
-            SaveManager.GetInstance().RegisterEntity(this);
-         }
+         SaveManager.GetInstance().RegisterEntity(this);
       }
    }
 

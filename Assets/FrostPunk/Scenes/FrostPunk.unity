@@ -4104,7 +4104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: 
-  ignoreSave: 0
+  savePosition: 1
 --- !u!1001 &1032178062
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6243,6 +6243,11 @@ PrefabInstance:
       propertyPath: clockMinuteRate
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 5597618443018937393, guid: 84282104cf319914d935dea244c6341b,
+        type: 3}
+      propertyPath: savePosition
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5597618443785189514, guid: 84282104cf319914d935dea244c6341b, type: 3}
     - {fileID: 5597618443785189517, guid: 84282104cf319914d935dea244c6341b, type: 3}
@@ -6360,7 +6365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: 
-  ignoreSave: 0
+  savePosition: 1
 --- !u!114 &1408597051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9278,7 +9283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: 
-  ignoreSave: 0
+  savePosition: 1
 --- !u!1 &1916398383
 GameObject:
   m_ObjectHideFlags: 0
@@ -14352,7 +14357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: WoodPile
-  ignoreSave: 0
+  savePosition: 1
 --- !u!4 &7151016149583186317
 Transform:
   m_ObjectHideFlags: 0

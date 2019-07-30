@@ -16,7 +16,11 @@ public struct SavedGameObject {
 
    public SavedGameObject(Saveable saveableGameObject) {
       index = saveableGameObject.GetSavedIndex();
-      position = new float[] { saveableGameObject.transform.position.x, saveableGameObject.transform.position.y, saveableGameObject.transform.position.z };
+      if (saveableGameObject.SavePosition) {
+         position = new float[] { saveableGameObject.transform.position.x, saveableGameObject.transform.position.y, saveableGameObject.transform.position.z };
+      } else {
+         position = null;
+      }
       prefabPath = saveableGameObject.GetPrefabPath();
       components = saveableGameObject.gameObject.GetComponents<ISaveable>().Select(x => new SavedComponent(x)).ToArray();
    }
@@ -116,17 +120,21 @@ public class SaveManager : Singleton<SaveManager> {
 
       foreach (var savedEntity in savedEntities) {
          GameObject instance = null;
+         var position = savedEntity.position.Length == 3 
+            ? new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]) 
+            : Vector3.zero;
          if (String.IsNullOrEmpty(savedEntity.prefabPath)) {
             if (savedEntity.components.Any(x => x.type.GetInterfaces().Contains(typeof(ISingleton)))) {
                var singleton = savedEntity.components.First(x => x.type.GetInterfaces().Contains(typeof(ISingleton)));
                instance = (GameObject)singleton.type.BaseType.GetMethod("GetGameObject").Invoke(null, null);
-               instance.transform.position = new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]);
+               instance.transform.position = position;
             } else {
                Debug.LogError("Saved entity is not a singleton, nor does it have a prefab to load.");
             }
          } else {
             var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
-            instance = Instantiate(prefab, new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]), new Quaternion());
+            
+            instance = Instantiate(prefab, position, new Quaternion());
          }
          if (instance != null) {
             var loadedComponents = instance.GetComponents<ISaveable>();
