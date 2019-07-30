@@ -120,9 +120,9 @@ public class SaveManager : Singleton<SaveManager> {
 
       foreach (var savedEntity in savedEntities) {
          GameObject instance = null;
-         var position = savedEntity.position.Length == 3 
-            ? new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]) 
-            : Vector3.zero;
+         var position = savedEntity.position == null
+            ? Vector3.zero
+            : new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]);
          if (String.IsNullOrEmpty(savedEntity.prefabPath)) {
             if (savedEntity.components.Any(x => x.type.GetInterfaces().Contains(typeof(ISingleton)))) {
                var singleton = savedEntity.components.First(x => x.type.GetInterfaces().Contains(typeof(ISingleton)));
