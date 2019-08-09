@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IPlaceable {
    void OnPlace();
+   void OnRemove();
 }
 
 public class Placeable : MonoBehaviour, ISaveable {
@@ -47,6 +49,7 @@ public class Placeable : MonoBehaviour, ISaveable {
    public void Remove() {
       if (isPlaced) {
          ResourceManager.GetInstance().OffsetMaterials(woodCost, stoneCost, metalCost);
+         GetComponents<IPlaceable>().ToList().ForEach(x => x.OnRemove());
       }
       Destroy(gameObject);
    }
