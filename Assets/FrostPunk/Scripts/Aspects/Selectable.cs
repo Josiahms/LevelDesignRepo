@@ -24,14 +24,15 @@ public class Selectable : MonoBehaviour {
 
    private Color highlightColor;
    private Color selectedColor;
-   private Renderer[] renderers;
+   private Outline outline;
 
    private GameObject uiInstance;
 
    protected void Awake() {
-      renderers = GetComponentsInChildren<Renderer>();
       selectedColor = new Color(0.97f, 0.88f, 0.76f);
       highlightColor = new Color(0.98f, 0.96f, 0.76f);
+      outline = gameObject.AddComponent<Outline>();
+      outline.OutlineMode = Outline.Mode.OutlineVisible;
    }
 
    public static Selectable GetSelected() {
@@ -72,9 +73,7 @@ public class Selectable : MonoBehaviour {
    }
 
    public void ChangeColor(Color color) {
-      foreach (var renderer in renderers) {
-         renderer.material.color = color;
-      }
+      outline.OutlineColor = color;
    }
 
    private void OnMouseOver() {
@@ -104,7 +103,7 @@ public class Selectable : MonoBehaviour {
       } else if (hoveredItem == this) {
          ChangeColor(highlightColor);
       } else {
-         ChangeColor(Color.white);
+         ChangeColor(Color.clear);
       }
 
       if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {

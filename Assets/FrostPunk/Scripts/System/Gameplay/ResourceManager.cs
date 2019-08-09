@@ -122,6 +122,9 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
    }
 
    public Worker PopNearestWorker(Vector3 destination) {
+      if (workers.Count == 0) {
+         return null;
+      }
       var worker = workers.OrderBy(x => Vector3.Distance(x.transform.position, destination))
             .OrderBy(x => Vector3.Distance(x.House.transform.position, destination))
             .First();
