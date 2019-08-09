@@ -4700,7 +4700,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &886332922
 GameObject:
@@ -5043,7 +5043,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 35
+  orthographic size: 30
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6641,7 +6641,7 @@ GameObject:
   - component: {fileID: 1232347540}
   - component: {fileID: 1232347539}
   m_Layer: 5
-  m_Name: BuildHouse
+  m_Name: BuildCamp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6679,8 +6679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf8156a9c144fe4cacb9b8812c56265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 8400638940947928766, guid: b6295d611f44a4744b420ef1a98c2a2a,
-    type: 3}
+  buildingPrefab: {fileID: 1061948849, guid: d3fcd5b753783154f9f319f7a2edd385, type: 3}
   buildDrawer: {fileID: 156431462}
 --- !u!114 &1232347540
 MonoBehaviour:
@@ -7051,7 +7050,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &1266011317
 RectTransform:
@@ -13176,6 +13175,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1061948849, guid: d3fcd5b753783154f9f319f7a2edd385, type: 3}
+      propertyPath: isPlaced
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3fcd5b753783154f9f319f7a2edd385, type: 3}
 --- !u!1001 &3718570163701351231
@@ -13233,7 +13236,7 @@ PrefabInstance:
     - target: {fileID: 3718570164314651073, guid: 907f87a7b3654ad46ab6f4960084dcee,
         type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 3718570164314651073, guid: 907f87a7b3654ad46ab6f4960084dcee,
         type: 3}
