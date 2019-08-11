@@ -18,7 +18,7 @@ public class Worker : MonoBehaviour, ISaveable
    public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
       var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);
       result.house = house;
-      ResourceManager.GetInstance().AddToWorkforce(result);
+      PopulationManager.GetInstance().AddToWorkforce(result);
       return result;
    }
 
@@ -31,7 +31,7 @@ public class Worker : MonoBehaviour, ISaveable
          house.RemoveWorker(this);
       }
       if (ResourceManager.GetInstance() != null) {
-         ResourceManager.GetInstance().RemoveFromWorkforce(this);
+         PopulationManager.GetInstance().RemoveFromWorkforce(this);
       }
       if (destination != null) {
          destination.RemoveWorker(this);

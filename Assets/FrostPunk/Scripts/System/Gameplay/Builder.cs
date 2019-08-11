@@ -57,7 +57,7 @@ public class Builder : Singleton<Builder> {
 
    private bool CanBuild() {
       if (buildingInstance != null) {
-         if (ResourceManager.GetInstance().CanAfford(buildingInstance.GetWoodCost(), buildingInstance.GetStoneCost(), buildingInstance.GetMetalCost())) {
+         if (ResourceManager.GetInstance().CanAfford(buildingInstance.GetWoodCost(), buildingInstance.GetStoneCost(), buildingInstance.GetMetalCost(), 0)) {
             // TODO: If the spot isn't blocked
             return true;
          }

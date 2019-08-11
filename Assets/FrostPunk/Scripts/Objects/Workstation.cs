@@ -41,13 +41,13 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       var workerCount = GetComponent<Assignable>().GetWorkersInRange();
       if (workerCount == 0 || DayCycleManager.GetInstance().IsRestTime()) {
          progress = 0;
-      } else if (!ResourceManager.GetInstance().IsFull(type)) {
+      } else if (!ResourceManager.GetInstance()[type].IsFull()) {
          progress += Time.deltaTime * workerCount * DayCycleManager.GetInstance().ClockMinuteRate;
       }
       var percentComplete = progress / gatherPeriod;
       timer.SetFill(percentComplete);
       if (percentComplete > 1) {
-         ResourceManager.GetInstance().AddResource(type, TakeFromPile(1));
+         ResourceManager.GetInstance()[type].OffsetValue(TakeFromPile(1));
          FloatingText.Instantiate(timer.transform, "+1 " + type.ToString());
          progress = progress - gatherPeriod;
       }

@@ -72,7 +72,7 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
 
    public void EndWorkDay() {
       isRestTime = true;
-      ResourceManager.GetInstance().EatMeal();
+      PopulationManager.GetInstance().EatMeal();
    }
 
    public void StartWorkDay() {

@@ -36,7 +36,7 @@ public class Placeable : MonoBehaviour, ISaveable {
    }
 
    public bool Place() {
-      if (ResourceManager.GetInstance().OffsetMaterials(-woodCost, -stoneCost, -metalCost)) {
+      if (ResourceManager.GetInstance().OffsetAll(-woodCost, -stoneCost, -metalCost, 0)) {
          isPlaced = true;
          foreach (var placeable in GetComponents<IPlaceable>()) {
             placeable.OnPlace();
@@ -48,7 +48,7 @@ public class Placeable : MonoBehaviour, ISaveable {
 
    public void Remove() {
       if (isPlaced) {
-         ResourceManager.GetInstance().OffsetMaterials(woodCost, stoneCost, metalCost);
+         ResourceManager.GetInstance().OffsetAll(woodCost, stoneCost, metalCost, 0);
          GetComponents<IPlaceable>().ToList().ForEach(x => x.OnRemove());
       }
       Destroy(gameObject);

@@ -76,7 +76,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    private void StepSeven() {
       currentStep = 7;
       var popup = TutorialPopup.Instantiate("Wow... That's super slow.  We'll work on making that faster as we advance, for now, here is 20 more wood, enough for 2 more farms.", StepEight);
-      ResourceManager.GetInstance().AddResource(ResourceType.Wood, 20);
+      ResourceManager.GetInstance()[ResourceType.Wood].OffsetValue(20);
       FloatingText.Instantiate(popup.transform, 20, ResourceType.Wood.ToString(), true, true, 1.5f);
    }
 
@@ -100,7 +100,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       currentStep = 11;
       resetCamera = true;
       var popup = TutorialPopup.Instantiate("That's it!  Start sending some workers out to collect resources, monitor your food value, and work towards sustainability!  Here is enough wood for a second house to get you started.", StepTwelve);
-      ResourceManager.GetInstance().AddResource(ResourceType.Wood, 35);
+      ResourceManager.GetInstance()[ResourceType.Wood].OffsetValue(35);
       FloatingText.Instantiate(popup.transform, 35, ResourceType.Wood.ToString(), true, true, 1.5f);
    }
 
@@ -111,7 +111,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
 
    private void Skip() {
       currentStep = 12;
-      ResourceManager.GetInstance().AddResource(ResourceType.Wood, 45);
+      ResourceManager.GetInstance()[ResourceType.Wood].OffsetValue(45);
       resetCamera = true;
    }
 
@@ -148,15 +148,16 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    }
 
    private void Update() {
-      if (currentStep == 3 && ResourceManager.GetInstance().WoodAmount >= 10) {
+      var resourceManager = ResourceManager.GetInstance();
+      if (currentStep == 3 && resourceManager[ResourceType.Wood].Amount >= 10) {
          StepFour();
       }
 
-      if (currentStep == 6 && ResourceManager.GetInstance().FoodAmount == 1) {
+      if (currentStep == 6 && resourceManager[ResourceType.Food].Amount == 1) {
          StepSeven();
       }
 
-      if (currentStep == 8 && ResourceManager.GetInstance().FoodAmount >= 5) {
+      if (currentStep == 8 && resourceManager[ResourceType.Food].Amount >= 5) {
          StepNine();
       }
       MoveCameraToTarget();

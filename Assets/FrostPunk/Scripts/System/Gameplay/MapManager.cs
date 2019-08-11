@@ -110,7 +110,7 @@ public class MapManager : Singleton<MapManager> {
          expiredSimulations.ForEach(expiredSimulation => {
             var partialAmount = expiredSimulation.rateOfChange * (expiredSimulation.expirationTime.Value - prevTime) / DayCycleManager.MIN_IN_DAY;
             Debug.Log("Adding " + (expiredSimulation.expirationTime.Value - prevTime) / DayCycleManager.MIN_IN_DAY + " of the full amount " + expiredSimulation.rateOfChange + ", " + partialAmount);
-            ResourceManager.GetInstance().AddResource(expiredSimulation.resourceType, (int)partialAmount);
+            ResourceManager.GetInstance()[expiredSimulation.resourceType].OffsetValue((int)partialAmount);
             switch (expiredSimulation.resourceType) {
                case ResourceType.Wood:
                   deltaWood -= expiredSimulation.rateOfChange;
@@ -127,10 +127,10 @@ public class MapManager : Singleton<MapManager> {
             }
          });
          Debug.Log("Adding " + deltaFood / 4 + " food");
-         ResourceManager.GetInstance().AddResource(ResourceType.Wood, deltaWood / 4);
-         ResourceManager.GetInstance().AddResource(ResourceType.Stone, deltaStone / 4);
-         ResourceManager.GetInstance().AddResource(ResourceType.Metal, deltaMetal / 4);
-         ResourceManager.GetInstance().AddResource(ResourceType.Food, deltaFood / 4);
+         ResourceManager.GetInstance()[ResourceType.Wood].OffsetValue(deltaWood / 4);
+         ResourceManager.GetInstance()[ResourceType.Stone].OffsetValue(deltaStone / 4);
+         ResourceManager.GetInstance()[ResourceType.Metal].OffsetValue(deltaMetal / 4);
+         ResourceManager.GetInstance()[ResourceType.Food].OffsetValue(deltaFood / 4);
          prevTime = currentTime;
       }
    }

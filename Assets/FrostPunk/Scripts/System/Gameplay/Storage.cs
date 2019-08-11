@@ -8,21 +8,17 @@ using UnityEngine;
 public class Storage : MonoBehaviour, IPlaceable
 {
    [SerializeField]
-   private int woodCapacity;
+   private ResourceType type;
    [SerializeField]
-   private int stoneCapacity;
-   [SerializeField]
-   private int metalCapacity;
-   [SerializeField]
-   private int foodCapacity;
+   private int amount;
 
    public void OnPlace() {
-      ResourceManager.GetInstance().OffsetCapacities(woodCapacity, stoneCapacity, metalCapacity, foodCapacity);
+      ResourceManager.GetInstance()[type].OffsetCapacity(amount);
    }
 
    public void OnRemove() {
       if (GetComponent<Placeable>().IsPlaced() && ResourceManager.GetInstance() != null) {
-         ResourceManager.GetInstance().OffsetCapacities(-woodCapacity, -stoneCapacity, -metalCapacity, -foodCapacity);
+         ResourceManager.GetInstance()[type].OffsetCapacity(-amount);
       }
    }
 }
