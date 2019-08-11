@@ -7490,6 +7490,11 @@ PrefabInstance:
       propertyPath: amount
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 736253603635755856, guid: 4f25968aa4e4a1a40aa6276ed12d8708,
+        type: 3}
+      propertyPath: type
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f25968aa4e4a1a40aa6276ed12d8708, type: 3}
 --- !u!1001 &1329881126
@@ -14015,31 +14020,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 736253603635755856, guid: 4f25968aa4e4a1a40aa6276ed12d8708,
-        type: 3}
-      propertyPath: woodCapacity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 736253603635755856, guid: 4f25968aa4e4a1a40aa6276ed12d8708,
-        type: 3}
-      propertyPath: stoneCapacity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 736253603635755856, guid: 4f25968aa4e4a1a40aa6276ed12d8708,
-        type: 3}
-      propertyPath: metalCapacity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 736253603635755856, guid: 4f25968aa4e4a1a40aa6276ed12d8708,
-        type: 3}
-      propertyPath: type
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 736253603635755856, guid: 4f25968aa4e4a1a40aa6276ed12d8708,
-        type: 3}
-      propertyPath: amount
-      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f25968aa4e4a1a40aa6276ed12d8708, type: 3}

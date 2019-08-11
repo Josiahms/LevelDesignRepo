@@ -21,26 +21,26 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    }
 
    public bool EatMeal() {
-      var FoodAmount = ResourceManager.GetInstance()[ResourceType.Food].Amount;
-      if (FoodAmount - starvingPeopleAmount < 0) {
+      var food = ResourceManager.GetInstance()[ResourceType.Food];
+      if (food.Amount - starvingPeopleAmount < 0) {
          Debug.Log("Game Over!");
          return false;
       }
-      var previousFoodAmount = FoodAmount;
+      var previousFoodAmount = food.Amount;
       var previousStarvingPeopleAmount = starvingPeopleAmount;
 
-      FoodAmount -= starvingPeopleAmount;
+      food.OffsetValue(-starvingPeopleAmount);
       starvingPeopleAmount = 0;
-      if (FoodAmount - maxPopulation >= 0) {
-         FoodAmount -= maxPopulation;
+      if (food.Amount - maxPopulation >= 0) {
+         food.OffsetValue(-maxPopulation);
          starvingPeopleText.text = starvingPeopleAmount.ToString();
       } else {
-         starvingPeopleAmount += (maxPopulation - FoodAmount);
-         FoodAmount = 0;
+         starvingPeopleAmount += (maxPopulation - food.Amount);
+         food.OffsetValue(-food.Amount);
          starvingPeopleText.text = starvingPeopleAmount.ToString();
       }
 
-      var deltaFood = FoodAmount - previousFoodAmount;
+      var deltaFood = food.Amount - previousFoodAmount;
       var deltaStarving = starvingPeopleAmount - previousStarvingPeopleAmount;
       if (deltaStarving != 0) {
          FloatingText.Instantiate(starvingPeopleText.transform, deltaStarving, "Starving", false, deltaStarving < 0, 0.7f);
