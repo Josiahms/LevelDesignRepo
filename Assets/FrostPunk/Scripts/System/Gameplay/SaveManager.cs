@@ -12,14 +12,17 @@ public struct SavedGameObject {
    public int index;
    public string prefabPath;
    public float[] position;
+   public float[] rotation;
    public SavedComponent[] components;
 
    public SavedGameObject(Saveable saveableGameObject) {
       index = saveableGameObject.GetSavedIndex();
       if (saveableGameObject.SavePosition) {
          position = new float[] { saveableGameObject.transform.position.x, saveableGameObject.transform.position.y, saveableGameObject.transform.position.z };
+         rotation = new float[] { saveableGameObject.transform.rotation.x, saveableGameObject.transform.rotation.y, saveableGameObject.transform.rotation.z, saveableGameObject.transform.rotation.w };
       } else {
          position = null;
+         rotation = null;
       }
       prefabPath = saveableGameObject.GetPrefabPath();
       components = saveableGameObject.gameObject.GetComponents<ISaveable>().Select(x => new SavedComponent(x)).ToArray();
@@ -123,12 +126,16 @@ public class SaveManager : Singleton<SaveManager> {
          var position = savedEntity.position == null
             ? Vector3.zero
             : new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]);
+         var rotation = savedEntity.rotation == null
+            ? new Quaternion()
+            : new Quaternion(savedEntity.rotation[0], savedEntity.rotation[1], savedEntity.rotation[2], savedEntity.rotation[3]);
          if (String.IsNullOrEmpty(savedEntity.prefabPath)) {
             if (savedEntity.components.Any(x => x.type.GetInterfaces().Contains(typeof(ISingleton)))) {
                var singleton = savedEntity.components.First(x => x.type.GetInterfaces().Contains(typeof(ISingleton)));
                instance = (GameObject)singleton.type.BaseType.GetMethod("GetGameObject").Invoke(null, null);
                if (savedEntity.position != null) {
                   instance.transform.position = position;
+                  instance.transform.rotation = rotation;
                }
             } else {
                Debug.LogError("Saved entity is not a singleton, nor does it have a prefab to load.");
@@ -136,7 +143,7 @@ public class SaveManager : Singleton<SaveManager> {
          } else {
             var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
             
-            instance = Instantiate(prefab, position, new Quaternion());
+            instance = Instantiate(prefab, position, rotation);
          }
          if (instance != null) {
             var loadedComponents = instance.GetComponents<ISaveable>();
