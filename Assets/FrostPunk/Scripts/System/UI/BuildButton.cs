@@ -29,7 +29,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void Update() {
-      button.interactable = ResourceManager.GetInstance().CanAfford(buildingPrefab.GetWoodCost(), buildingPrefab.GetStoneCost(), buildingPrefab.GetMetalCost(), 0);
+      button.interactable = ResourceManager.GetInstance().CanAfford(-buildingPrefab.GetWoodCost(), -buildingPrefab.GetStoneCost(), -buildingPrefab.GetMetalCost(), 0);
    }
 
    public void OnPointerEnter(PointerEventData eventData) {
