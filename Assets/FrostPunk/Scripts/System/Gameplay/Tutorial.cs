@@ -46,6 +46,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       FocusCameraOn(firstHouse.transform, CameraZoom.Close);
       TutorialPopup.Instantiate("Hello there!  Welcome to the village.  It's your duty to manage the workers here to ensure they have " +
          "the resources they need to survive.  If you are successful with this we can expand!", StepTwo);
+      ResourceManager.GetInstance()[ResourceType.Wood].OffsetValue(5);
    }
 
    private void StepTwo() {
@@ -53,6 +54,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       FocusCameraOn(fastWoodPile, CameraZoom.Medium);
       TutorialPopup.Instantiate("First things first, lets collect some wood.  Click on the stack of wood and assign a few workers to it.  " +
          "They'll start collecting wood immediately.  Gather 5 wood before moving on.", StepThree);
+      QuestManager.GetInstance().AddObjective(new GatherQuestObjective("Gather 5 wood", 5, ResourceType.Wood));
    }
 
    private void StepThree() {
@@ -67,6 +69,8 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    private void StepFive() {
       currentStep = 5;
       TutorialPopup.Instantiate(buildMenu, "Open the build menu to build a farm.  You can hover over any item to see its cost.  Build the farm, assign up to 2 workers to it, and collect 5 food to continue.", StepSix, true);
+      QuestManager.GetInstance().AddObjective(new PlaceQuestObjective("Build a farm", 1, "Field"));
+      QuestManager.GetInstance().AddObjective(new GatherQuestObjective("Gather 5 food", 5, ResourceType.Food));
    }
 
    private void StepSix() {
@@ -78,6 +82,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       var popup = TutorialPopup.Instantiate("Wow... That's super slow.  We'll work on making that faster as we advance, for now, here is 20 more wood, enough for 2 more farms.", StepEight);
       ResourceManager.GetInstance()[ResourceType.Wood].OffsetValue(20);
       FloatingText.Instantiate(popup.transform, 20, ResourceType.Wood.ToString(), true, true, 1.5f);
+      QuestManager.GetInstance().AddObjective(new PlaceQuestObjective("Build 2 more farms", 2, "Field"));
    }
 
    private void StepEight() {
@@ -87,13 +92,13 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    private void StepNine() {
       currentStep = 9;
       TutorialPopup.Instantiate(foodAmount, "Great!  You collected enough food for your 5 workers.  " +
-         "Your workers will eat each morning before the workday starts, at 8am sharp.", StepTen);
+         "Your workers will eat when they turn in for the night.  They won't stay out past 10pm, but you can dismiss them early starting at 6pm.", StepTen);
    }
 
    private void StepTen() {
       currentStep = 10;
-      TutorialPopup.Instantiate(starvingAmount, "If there isn't enough food for a worker at either meal time, he will become starving.  " +
-         "A starving worker will consume 2 food at the next meal time.  If there is not enough food for all the starving workers at either meal time, the village will fail!", StepEleven);
+      TutorialPopup.Instantiate(starvingAmount, "Each worker will eat 1 food.  If there isn't enough food for a worker at either meal time, he will become starving.  " +
+         "A starving worker will consume 2 food at the next meal time.  If there isn't food for a starving worker, the village will fail!", StepEleven);
    }
 
    private void StepEleven() {

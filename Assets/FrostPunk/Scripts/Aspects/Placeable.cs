@@ -1,13 +1,19 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public interface IPlaceable {
    void OnPlace();
    void OnRemove();
 }
 
+public class PlaceableEvent : UnityEvent<Placeable> { }
+
 public class Placeable : MonoBehaviour, ISaveable {
+
+   public static PlaceableEvent OnPlaceEvent = new PlaceableEvent();
+   public static PlaceableEvent OnRemoveEvent = new PlaceableEvent();
 
    [SerializeField]
    protected int woodCost = 0;
@@ -41,6 +47,7 @@ public class Placeable : MonoBehaviour, ISaveable {
          foreach (var placeable in GetComponents<IPlaceable>()) {
             placeable.OnPlace();
          }
+         OnPlaceEvent.Invoke(this);
          return true;
       }
       return false;
@@ -50,6 +57,7 @@ public class Placeable : MonoBehaviour, ISaveable {
       if (isPlaced) {
          ResourceManager.GetInstance().OffsetAll(woodCost, stoneCost, metalCost, 0);
          GetComponents<IPlaceable>().ToList().ForEach(x => x.OnRemove());
+         OnRemoveEvent.Invoke(this);
       }
       Destroy(gameObject);
    }

@@ -6,7 +6,12 @@ using UnityEngine.UI;
 
 public enum ResourceType { Wood, Stone, Metal, Food }
 
+public class GatherResourceEvent : UnityEvent<ResourceType, int> { }
+
 public class Resource {
+
+   public static GatherResourceEvent OnChangeEvent = new GatherResourceEvent();
+
    public int Amount { get; private set; }
    public int Capacity { get; private set; }
 
@@ -45,6 +50,7 @@ public class Resource {
          FloatingText.Instantiate(display.transform, amountAdded, type.ToString(), false, false, 0.7f);
       }
       display.text = Amount + "/" + Capacity;
+      OnChangeEvent.Invoke(type, amountAdded);
       return amountAdded;
    }
 
