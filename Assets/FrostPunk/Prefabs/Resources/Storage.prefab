@@ -729,7 +729,7 @@ MonoBehaviour:
   woodCost: 0
   stoneCost: 0
   metalCost: 0
-  isPlaced: 1
+  isPlaced: 0
 --- !u!114 &736253603635755871
 MonoBehaviour:
   m_ObjectHideFlags: 0

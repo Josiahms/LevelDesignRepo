@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Linq;
@@ -30,13 +31,83 @@ public struct SavedGameObject {
 }
 
 [Serializable]
-public struct SavedComponent {
+public class SavedComponent {
    public Type type;
-   public object data;
-   public SavedComponent(ISaveable saveable) {
-      type = saveable.GetType();
-      data = saveable.OnSave();
+   public Dictionary<string, object> data;
+
+   public SavedComponent(object itemToSave) {
+      type = itemToSave.GetType();
+      var allFields = itemToSave.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+      data = allFields.ToDictionary(x => x.Name, x => {
+         var value = GetSaveData(x.GetValue(itemToSave));
+         return value;
+      });
    }
+
+
+   public object GetSaveData(object fieldValue) {
+      if (fieldValue == null) {
+         return null;
+      }
+
+      var fieldType = fieldValue.GetType();
+
+      if (fieldType.IsPrimitive || fieldType.IsEnum) {
+         return fieldValue;
+      }
+
+      if (fieldType.GetCustomAttributes(false).Any(x => x.GetType() == typeof(SerializableAttribute))) {
+         if (!fieldType.IsGenericType) {
+            return fieldValue;
+         }
+      }
+
+      if (fieldType.GetInterfaces().Contains(typeof(IDictionary))) {
+         return HandleDictionary((IDictionary)fieldValue);
+      }
+
+      if (typeof(Component).IsAssignableFrom(fieldType)) {
+         return HandleReferenceToOther((Component)fieldValue);
+      }
+
+      if (fieldType == typeof(GameObject)) {
+         return null;
+      }
+
+      if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
+         return HandleList((IEnumerable)fieldValue);
+      }
+
+      return new SavedComponent(fieldValue);
+   }
+
+   private List<object> HandleList(IEnumerable list) {
+      List<object> result = new List<object>();
+      foreach (var item in list) {
+         result.Add(GetSaveData(item));
+      }
+      return result;
+   }
+
+   private object HandleReferenceToOther(Component component) {
+      if (component.GetComponent<Saveable>() != null) {
+         return component.GetComponent<Saveable>().GetSavedIndex();
+      }
+      return null;
+   }
+
+   private Dictionary<object, object> HandleDictionary(IDictionary dictionary) {
+      var result = new Dictionary<object, object>();
+      var keys = dictionary.Keys.GetEnumerator();
+      var values = dictionary.Values.GetEnumerator();
+
+      while (keys.MoveNext() && values.MoveNext()) {
+         result.Add(GetSaveData(keys.Current), GetSaveData(values.Current));
+      }
+
+      return result;
+   }
+
 }
 
 public class SaveManager : Singleton<SaveManager> {

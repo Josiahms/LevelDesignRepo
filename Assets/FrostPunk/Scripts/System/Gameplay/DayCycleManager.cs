@@ -95,15 +95,6 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       return hours;
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("clockMinuteRate", clockMinuteRate);
-      data.Add("clockSpeedMultiplier", clockSpeedMultiplier);
-      data.Add("currentTime", currentTime);
-      data.Add("isRestTime", isRestTime);
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;

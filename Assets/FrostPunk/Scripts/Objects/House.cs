@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,12 +30,6 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
       });
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
-      return data;
-   }
-
    public void OnLoad(object saveData) {
       // Ignored
    }
@@ -43,9 +38,10 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("workers", out result)) {
-         workers = ((int[])result).Select(workerSavedIndex => {
-            return SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(workerSavedIndex).GetComponent<Worker>();
-         }).ToList();
+         workers = new List<Worker>();
+         foreach (var item in (IEnumerable)result) {
+            workers.Add(SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)item).GetComponent<Worker>());
+         }
       }
    }
 }

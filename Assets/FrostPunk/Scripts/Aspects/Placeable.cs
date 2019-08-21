@@ -62,12 +62,6 @@ public class Placeable : MonoBehaviour, ISaveable {
       Destroy(gameObject);
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("isPlaced", isPlaced);
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;

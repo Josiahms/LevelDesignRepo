@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public interface ISaveable {
-   object OnSave();
    void OnLoad(object data);
    void OnLoadDependencies(object data);
 }

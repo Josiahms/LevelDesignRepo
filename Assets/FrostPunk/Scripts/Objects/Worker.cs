@@ -75,13 +75,6 @@ public class Worker : MonoBehaviour, ISaveable
 
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("destination", destination != null ? destination.GetComponent<Saveable>().GetSavedIndex() : -1);
-      data.Add("house", house.GetComponent<Saveable>().GetSavedIndex());
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       // Ignored
    }
@@ -93,7 +86,9 @@ public class Worker : MonoBehaviour, ISaveable
          house = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
       }
       if (data.TryGetValue("destination", out result)) {
-         destination = (int)result == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Assignable>();
+         if (result != null) {
+            destination = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Assignable>();
+         }
       }
    }
 }

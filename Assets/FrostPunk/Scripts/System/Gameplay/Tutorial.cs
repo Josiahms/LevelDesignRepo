@@ -215,14 +215,6 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       }
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("currentStep", currentStep);
-      data.Add("firstHouse", firstHouse != null ? firstHouse.GetComponent<Saveable>().GetSavedIndex() : -1);
-      data.Add("fastWoodPile", fastWoodPile != null ? fastWoodPile.GetComponent<Saveable>().GetSavedIndex() : -1);
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
@@ -235,12 +227,12 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("firstHouse", out result)) {
-         if ((int)result != -1) {
+         if (result != null) {
             firstHouse = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
          }
       }
       if (data.TryGetValue("fastWoodPile", out result)) {
-         if ((int)result != -1) {
+         if (result != null) {
             fastWoodPile = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).transform;
          }
       }

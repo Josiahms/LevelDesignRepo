@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5507e85bd0dd45488b8c5b7a9241c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  resourceType: 3
   quantity: 40
   gatherPeriod: 180
 --- !u!114 &7616729001944295439
@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: Field
-  ignoreSave: 0
+  savePosition: 1
 --- !u!114 &1292414651682044181
 MonoBehaviour:
   m_ObjectHideFlags: 0

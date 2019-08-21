@@ -9,10 +9,6 @@ public class TutorialPlayer : Singleton<Tutorial>, ISaveable {
       ""
    };
 
-   public object OnSave() {
-      return null;
-   }
-
    public void OnLoad(object data) {
       // Ignored
    }

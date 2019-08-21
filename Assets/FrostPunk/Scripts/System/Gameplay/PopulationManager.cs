@@ -80,14 +80,6 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
       populationText.text = workers.Count + "/" + maxPopulation;
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("starvingPeopleAmount", starvingPeopleAmount);
-      data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
-      data.Add("maxPopulation", maxPopulation);
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
@@ -104,7 +96,10 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("workers", out result)) {
-         workers = ((int[])result).Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>()).ToList();
+         workers = new List<Worker>();
+         foreach (var item in (IEnumerable)result) {
+            workers.Add(SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)item).GetComponent<Worker>());
+         }
       }
       populationText.text = workers.Count + "/" + maxPopulation;
    }

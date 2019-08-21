@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 [RequireComponent(typeof(Selectable))]
 [RequireComponent(typeof(Assignable))]
 public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
 
    [SerializeField]
-   private ResourceType type;
+   private ResourceType resourceType;
 
    [SerializeField]
    private int quantity;
@@ -41,32 +42,23 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       var workerCount = GetComponent<Assignable>().GetWorkersInRange();
       if (workerCount == 0 || DayCycleManager.GetInstance().IsRestTime()) {
          progress = 0;
-      } else if (!ResourceManager.GetInstance()[type].IsFull()) {
+      } else if (!ResourceManager.GetInstance()[resourceType].IsFull()) {
          progress += Time.deltaTime * workerCount * DayCycleManager.GetInstance().ClockMinuteRate;
       }
       var percentComplete = progress / gatherPeriod;
       timer.SetFill(percentComplete);
       if (percentComplete > 1) {
-         ResourceManager.GetInstance()[type].OffsetValue(TakeFromPile(1));
-         FloatingText.Instantiate(timer.transform, "+1 " + type.ToString());
+         ResourceManager.GetInstance()[resourceType].OffsetValue(TakeFromPile(1));
+         FloatingText.Instantiate(timer.transform, "+1 " + resourceType.ToString());
          progress = progress - gatherPeriod;
       }
-   }
-
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("type", type);
-      data.Add("quantity", quantity);
-      data.Add("gatherPeriod", gatherPeriod);
-      data.Add("progress", progress);
-      return data;
    }
 
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
-      if (data.TryGetValue("type", out result)) {
-         type = (ResourceType)result;
+      if (data.TryGetValue("resourceType", out result)) {
+         resourceType = (ResourceType)result;
       }
       if (data.TryGetValue("quantity", out result)) {
          quantity = (int)result;
@@ -87,6 +79,6 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       var ratePerDay = DayCycleManager.MIN_IN_DAY / gatherPeriod * GetComponent<Assignable>().GetWorkerCount();
       var expirationTime = DayCycleManager.GetInstance().CurrentTime + (float)quantity / ratePerDay * DayCycleManager.MIN_IN_DAY;
       Debug.Log("Rate per day: " + ratePerDay + ", expiration time: " + expirationTime);
-      return new SimulationInformation(type, ratePerDay, expirationTime);
+      return new SimulationInformation(resourceType, ratePerDay, expirationTime);
    }
 }

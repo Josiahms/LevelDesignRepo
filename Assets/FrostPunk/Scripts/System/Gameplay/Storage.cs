@@ -39,13 +39,6 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
       }
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("type", type);
-      data.Add("amount", amount);
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;

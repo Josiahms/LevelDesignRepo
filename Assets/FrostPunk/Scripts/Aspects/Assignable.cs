@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,12 +60,6 @@ public class Assignable : MonoBehaviour, ISaveable {
       return workers.Count;
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       // Ignored
    }
@@ -73,7 +68,10 @@ public class Assignable : MonoBehaviour, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("workers", out result)) {
-         workers = ((int[])result).Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>()).ToList();
+         workers = new List<Worker>();
+         foreach(var item in (IEnumerable)result) {
+            workers.Add(SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)item).GetComponent<Worker>());
+         }
       }
    }
 }

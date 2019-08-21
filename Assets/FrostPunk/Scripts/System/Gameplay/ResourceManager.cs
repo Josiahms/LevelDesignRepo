@@ -8,6 +8,7 @@ public enum ResourceType { Wood, Stone, Metal, Food }
 
 public class GatherResourceEvent : UnityEvent<ResourceType, int> { }
 
+[System.Serializable]
 public class Resource {
 
    public static GatherResourceEvent OnChangeEvent = new GatherResourceEvent();
@@ -16,11 +17,9 @@ public class Resource {
    public int Capacity { get; private set; }
 
    private ResourceType type;
-   private Text display;
 
-   public Resource(ResourceType type, Text display, int initialValue = 0, int initialCapacity = 0) {
+   public Resource(ResourceType type, int initialValue = 0, int initialCapacity = 0) {
       this.type = type;
-      this.display = display;
       OffsetCapacity(initialCapacity);
       OffsetValue(initialValue);
    }
@@ -47,9 +46,9 @@ public class Resource {
       }
 
       if (amountAdded < 0) {
-         FloatingText.Instantiate(display.transform, amountAdded, type.ToString(), false, false, 0.7f);
+         FloatingText.Instantiate(ResourceManager.GetInstance().GetText(type).transform, amountAdded, type.ToString(), false, false, 0.7f);
       }
-      display.text = Amount + "/" + Capacity;
+      ResourceManager.GetInstance().GetText(type).text = Amount + "/" + Capacity;
       OnChangeEvent.Invoke(type, amountAdded);
       return amountAdded;
    }
@@ -64,7 +63,7 @@ public class Resource {
       if (Amount > Capacity) {
          Amount = Capacity;
       }
-      display.text = Amount + "/" + Capacity;
+      ResourceManager.GetInstance().GetText(type).text = Amount + "/" + Capacity;
       return true;
    }
 }
@@ -85,10 +84,24 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
    private new void Awake() {
       base.Awake();
       resources = new Dictionary<ResourceType, Resource>();
-      resources.Add(ResourceType.Wood, new Resource(ResourceType.Wood, woodText));
-      resources.Add(ResourceType.Stone, new Resource(ResourceType.Stone, stoneText));
-      resources.Add(ResourceType.Metal, new Resource(ResourceType.Metal, metalText));
-      resources.Add(ResourceType.Food, new Resource(ResourceType.Food, foodText));
+      resources.Add(ResourceType.Wood, new Resource(ResourceType.Wood));
+      resources.Add(ResourceType.Stone, new Resource(ResourceType.Stone));
+      resources.Add(ResourceType.Metal, new Resource(ResourceType.Metal));
+      resources.Add(ResourceType.Food, new Resource(ResourceType.Food));
+   }
+
+   public Text GetText(ResourceType type) {
+      switch(type) {
+         case ResourceType.Wood:
+            return woodText;
+         case ResourceType.Stone:
+            return stoneText;
+         case ResourceType.Metal:
+            return metalText;
+         case ResourceType.Food:
+            return foodText;
+      }
+      return null;
    }
 
    public Resource this[ResourceType i] {
@@ -111,50 +124,18 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
          resources[ResourceType.Wood].OffsetValue(woodOffset);
          resources[ResourceType.Stone].OffsetValue(stoneOffset);
          resources[ResourceType.Metal].OffsetValue(metalOffset);
+         resources[ResourceType.Food].OffsetValue(foodOffset);
          return true;
       }
       return false;
    }
 
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      data.Add("woodAmount", resources[ResourceType.Wood].Amount);
-      data.Add("stoneAmount", resources[ResourceType.Stone].Amount);
-      data.Add("metalAmount", resources[ResourceType.Metal].Amount);
-      data.Add("foodAmount", resources[ResourceType.Food].Amount);
-      data.Add("woodCapacity", resources[ResourceType.Wood].Capacity);
-      data.Add("stoneCapacity", resources[ResourceType.Stone].Capacity);
-      data.Add("metalCapacity", resources[ResourceType.Metal].Capacity);
-      data.Add("foodCapacity", resources[ResourceType.Food].Capacity);
-      return data;
-   }
-
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
-      if (data.TryGetValue("woodCapacity", out result)) {
-         resources[ResourceType.Wood].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("woodAmount", out result)) {
-         resources[ResourceType.Wood].OffsetValue((int)result);
-      }
-      if (data.TryGetValue("stoneCapacity", out result)) {
-         resources[ResourceType.Stone].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("stoneAmount", out result)) {
-         resources[ResourceType.Stone].OffsetValue((int)result);
-      }
-      if (data.TryGetValue("metalCapacity", out result)) {
-         resources[ResourceType.Metal].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("metalAmount", out result)) {
-         resources[ResourceType.Metal].OffsetValue((int)result);
-      }
-      if (data.TryGetValue("foodCapacity", out result)) {
-         resources[ResourceType.Food].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("foodAmount", out result)) {
-         resources[ResourceType.Food].OffsetValue((int)result);
+      if (data.TryGetValue("resources", out result)) {
+         resources = ((Dictionary<object, object>)result).ToDictionary(x => (ResourceType)x.Key, x => (Resource)x.Value);
+         OffsetAll(0, 0, 0, 0);
       }
    }
 
