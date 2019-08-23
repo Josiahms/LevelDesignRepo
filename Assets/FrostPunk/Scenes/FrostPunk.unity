@@ -8504,6 +8504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dd827401db522c4987309cb21321e96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  workers: []
   starvingPeopleText: {fileID: 1388845724}
   populationText: {fileID: 1388845722}
 --- !u!1001 &1412946751
@@ -11758,7 +11759,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1906903923
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -140,6 +140,6 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
    }
 
    public void OnLoadDependencies(object savedData) {
-      // Ignored
+      Debug.Log(resources.First().Value.Amount + ", " + resources.First().Value.Capacity);
    }
 }

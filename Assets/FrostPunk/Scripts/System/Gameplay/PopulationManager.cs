@@ -8,6 +8,7 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    private int starvingPeopleAmount = 0;
    private int maxPopulation;
 
+   [SerializeField]
    private List<Worker> workers = new List<Worker>();
 
    [SerializeField]

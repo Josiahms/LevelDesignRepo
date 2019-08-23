@@ -217,10 +217,10 @@ public class SaveManager : Singleton<SaveManager> {
             instance = Instantiate(prefab, position, rotation);
          }
          if (instance != null) {
-            var loadedComponents = instance.GetComponents<ISaveable>();
+            var loadedComponents = instance.GetComponents(typeof(ISaveable));
             for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
                var savedComponent = savedEntity.components[i];
-               loadedComponents[i].OnLoad(savedComponent.data);
+               LoadComponent(loadedComponents[i], savedComponent.data);
             }
             loadedEntities.Add(savedEntity.index, instance);
          }
@@ -229,10 +229,10 @@ public class SaveManager : Singleton<SaveManager> {
       foreach (var savedEntity in savedEntities) {
          GameObject loadedInstance;
          if (loadedEntities.TryGetValue(savedEntity.index, out loadedInstance)) {
-            var loadedComponents = loadedInstance.GetComponents<ISaveable>();
+            var loadedComponents = loadedInstance.GetComponents(typeof(ISaveable));
             for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
                var savedComponent = savedEntity.components[i];
-               loadedComponents[i].OnLoadDependencies(savedComponent.data);
+               LoadComponentDependencies(loadedComponents[i], savedComponent.data);
             }
          }
       }
@@ -246,4 +246,114 @@ public class SaveManager : Singleton<SaveManager> {
       SceneManager.sceneLoaded -= OnSceneLoad;
    }
 
+   private void LoadComponent(Component instance, Dictionary<string, object> data) {
+      var allFields = instance.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+      foreach (var field in allFields) {
+         object result;
+         if (data.TryGetValue(field.Name, out result)) {
+            var savedData = GetSaveData(field.FieldType, result, false);
+            if (result != null) {
+               field.SetValue(instance, savedData);
+            }
+         }
+      }
+   }
+
+   private void LoadComponentDependencies(Component instance, Dictionary<string ,object> data) {
+      var allFields = instance.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+      foreach (var field in allFields) {
+         object result;
+         if (data.TryGetValue(field.Name, out result)) {
+            var savedData = GetSaveData(field.FieldType, result, true);
+            if (result != null) {
+               field.SetValue(instance, savedData);
+            }
+         }
+      }
+   }
+
+   public object GetSaveData(Type fieldType, object value, bool forDependencies) {
+      if (fieldType.IsPrimitive || fieldType.IsEnum) {
+         return value;
+      }
+
+      if (fieldType.GetCustomAttributes(false).Any(x => x.GetType() == typeof(SerializableAttribute))) {
+         if (!fieldType.IsGenericType) {
+            return value;
+         }
+      }
+
+      if (fieldType.GetInterfaces().Contains(typeof(IDictionary))) {
+         var keyType = fieldType.GetGenericArguments().ElementAt(0);
+         var valueType = fieldType.GetGenericArguments().ElementAt(1);
+
+         var dictionary = (IDictionary)value;
+         var keysEnumerator = dictionary.Keys.GetEnumerator();
+         var valuesEnumerator = dictionary.Values.GetEnumerator();
+
+         var result = (IDictionary)typeof(Dictionary<,>)
+            .MakeGenericType(new Type[] { keyType, valueType })
+            .GetConstructor(new Type[] { })
+            .Invoke(new object[] { });
+
+         while (keysEnumerator.MoveNext() && valuesEnumerator.MoveNext()) {
+            var keyToAdd = GetSaveData(keyType, keysEnumerator.Current, forDependencies);
+            var valueToAdd = GetSaveData(valueType, valuesEnumerator.Current, forDependencies);
+            if (keyToAdd != null && valueToAdd != null) {
+               result.Add(
+                  keyToAdd,
+                  valueToAdd
+               );
+            }
+         }
+
+
+         if (result.Count == 0) {
+            return null;
+         }
+
+         return result;
+      }
+
+      if (typeof(Component).IsAssignableFrom(fieldType)) {
+         if (value != null && forDependencies) {
+            var loadedInstance = FindLoadedInstanceBySaveIndex((int)value);
+            if (loadedInstance != null) {
+               return loadedInstance.GetComponent(fieldType);
+            }
+         }
+         return null;
+      }
+
+      if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
+         if (fieldType.IsGenericType) {
+            var result = new List<object>();
+            var containedType = fieldType.GetGenericArguments().First();
+            foreach (var item in ((IEnumerable)value)) {
+               var dataToAdd = GetSaveData(containedType, item, forDependencies);
+               if (dataToAdd != null) {
+                  result.Add(dataToAdd);
+               }
+            }
+
+            var enumeratorResult = typeof(Enumerable).GetMethod("Cast", new[] { typeof(IEnumerable) })
+               .MakeGenericMethod(containedType)
+               .Invoke(null, new object[] { result });
+
+            var listResult = (IList)typeof(Enumerable).GetMethod("ToList")
+               .MakeGenericMethod(containedType)
+               .Invoke(null, new object[] { enumeratorResult });
+
+            if (listResult.Count == 0) {
+               return null;
+            } 
+
+            return listResult;
+
+         }
+         return value;
+      }
+
+      return null;
+   }
 }
