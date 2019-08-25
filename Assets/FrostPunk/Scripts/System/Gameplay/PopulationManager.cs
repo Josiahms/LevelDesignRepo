@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PopulationManager : Singleton<PopulationManager>, ISaveable {
+public class PopulationManager : Singleton<PopulationManager>, ISaveable, IAfterLoadCallback {
    private int starvingPeopleAmount = 0;
    private int maxPopulation;
 
@@ -81,28 +81,8 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
       populationText.text = workers.Count + "/" + maxPopulation;
    }
 
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("starvingPeopleAmount", out result)) {
-         starvingPeopleAmount = (int)result;
-         starvingPeopleText.text = starvingPeopleAmount.ToString();
-      }
-      if (data.TryGetValue("maxPopulation", out result)) {
-         maxPopulation = (int)result;
-      }
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("workers", out result)) {
-         workers = new List<Worker>();
-         foreach (var item in (IEnumerable)result) {
-            workers.Add(SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)item).GetComponent<Worker>());
-         }
-      }
+   public void AfterLoad() {
+      starvingPeopleText.text = starvingPeopleAmount.ToString();
       populationText.text = workers.Count + "/" + maxPopulation;
    }
-
 }

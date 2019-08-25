@@ -94,25 +94,4 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       }
       return hours;
    }
-
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("clockMinuteRate", out result)) {
-         clockMinuteRate = (float)result;
-      }
-      if (data.TryGetValue("clockSpeedMultiplier", out result)) {
-         clockSpeedMultiplier = (float)result;
-      }
-      if (data.TryGetValue("currentTime", out result)) {
-         currentTime = (float)result;
-      }
-      if (data.TryGetValue("isRestTime", out result)) {
-         isRestTime = (bool)result;
-      }
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      // Ignored
-   }
 }

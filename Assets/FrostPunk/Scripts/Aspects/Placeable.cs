@@ -10,6 +10,7 @@ public interface IPlaceable {
 
 public class PlaceableEvent : UnityEvent<Placeable> { }
 
+[RequireComponent(typeof(Saveable))]
 public class Placeable : MonoBehaviour, ISaveable {
 
    public static PlaceableEvent OnPlaceEvent = new PlaceableEvent();
@@ -31,10 +32,8 @@ public class Placeable : MonoBehaviour, ISaveable {
    private bool isPlaced;
    public bool IsPlaced() { return isPlaced; }
 
-   private bool isLoaded;
-
    private void Start() {
-      if (GetComponent<Placeable>().IsPlaced() && !isLoaded) {
+      if (IsPlaced() && !GetComponent<Saveable>().IsLoaded) {
          foreach (var placeable in GetComponents<IPlaceable>()) {
             placeable.OnPlace();
          }
@@ -60,18 +59,5 @@ public class Placeable : MonoBehaviour, ISaveable {
          OnRemoveEvent.Invoke(this);
       }
       Destroy(gameObject);
-   }
-
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("isPlaced", out result)) {
-         isPlaced = (bool)result;
-      }
-      isLoaded = true;
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      // Ignored
    }
 }

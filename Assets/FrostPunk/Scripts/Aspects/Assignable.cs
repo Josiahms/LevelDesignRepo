@@ -59,19 +59,4 @@ public class Assignable : MonoBehaviour, ISaveable {
    public int GetWorkerCount() {
       return workers.Count;
    }
-
-   public void OnLoad(object savedData) {
-      // Ignored
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("workers", out result)) {
-         workers = new List<Worker>();
-         foreach(var item in (IEnumerable)result) {
-            workers.Add(SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)item).GetComponent<Worker>());
-         }
-      }
-   }
 }

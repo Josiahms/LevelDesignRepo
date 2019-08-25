@@ -54,27 +54,6 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       }
    }
 
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("resourceType", out result)) {
-         resourceType = (ResourceType)result;
-      }
-      if (data.TryGetValue("quantity", out result)) {
-         quantity = (int)result;
-      }
-      if (data.TryGetValue("gatherPeriod", out result)) {
-         gatherPeriod = (int)result;
-      }
-      if (data.TryGetValue("progress", out result)) {
-         progress = (float)result;
-      }
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      // Ignored
-   }
-
    public SimulationInformation GetSimulationInformation() {
       var ratePerDay = DayCycleManager.MIN_IN_DAY / gatherPeriod * GetComponent<Assignable>().GetWorkerCount();
       var expirationTime = DayCycleManager.GetInstance().CurrentTime + (float)quantity / ratePerDay * DayCycleManager.MIN_IN_DAY;

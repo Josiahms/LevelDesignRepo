@@ -74,21 +74,4 @@ public class Worker : MonoBehaviour, ISaveable
       }
 
    }
-
-   public void OnLoad(object savedData) {
-      // Ignored
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("house", out result)) {
-         house = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
-      }
-      if (data.TryGetValue("destination", out result)) {
-         if (result != null) {
-            destination = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Assignable>();
-         }
-      }
-   }
 }

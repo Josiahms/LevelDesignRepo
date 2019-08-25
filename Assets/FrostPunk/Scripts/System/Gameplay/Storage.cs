@@ -14,7 +14,7 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
    private int amount;
 
    [SerializeField]
-   private List<GameObject> contents;
+   public List<GameObject> contents;
    private Resource resourceInstance;
 
    private void Start() {
@@ -37,20 +37,5 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
       for (int i = 0; i < contents.Count; i++) {
          contents[i].SetActive(i < numEnabled);
       }
-   }
-
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("type", out result)) {
-         type = (ResourceType)result;
-      }
-      if (data.TryGetValue("amount", out result)) {
-         amount = (int)result;
-      }
-   }
-
-   public void OnLoadDependencies(object data) {
-      // Ignored
    }
 }

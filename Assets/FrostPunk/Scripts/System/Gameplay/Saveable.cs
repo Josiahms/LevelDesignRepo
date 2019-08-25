@@ -6,8 +6,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public interface ISaveable {
-   void OnLoad(object data);
-   void OnLoadDependencies(object data);
+   
+}
+
+public interface IAfterLoadCallback {
+   void AfterLoad();
 }
 
 public class Saveable : MonoBehaviour {
@@ -19,6 +22,8 @@ public class Saveable : MonoBehaviour {
    [SerializeField]
    private bool savePosition = true;
    public bool SavePosition { get { return savePosition; } }
+
+   public bool IsLoaded = false;
 
    private static int sharedIndex;
    private int savedIndex;

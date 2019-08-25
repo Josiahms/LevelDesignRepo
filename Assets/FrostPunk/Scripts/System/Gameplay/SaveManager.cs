@@ -233,6 +233,9 @@ public class SaveManager : Singleton<SaveManager> {
             for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
                var savedComponent = savedEntity.components[i];
                LoadComponentDependencies(loadedComponents[i], savedComponent.data);
+               foreach (var afterLoadCallback in loadedComponents[i].GetComponents<IAfterLoadCallback>()) {
+                  afterLoadCallback.AfterLoad();
+               }
             }
          }
       }
@@ -247,29 +250,52 @@ public class SaveManager : Singleton<SaveManager> {
    }
 
    private void LoadComponent(Component instance, Dictionary<string, object> data) {
+      Debug.Log("Loading Component for: " + instance);
       var allFields = instance.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
       foreach (var field in allFields) {
-         object result;
-         if (data.TryGetValue(field.Name, out result)) {
-            var savedData = GetSaveData(field.FieldType, result, false);
-            if (result != null) {
-               field.SetValue(instance, savedData);
-            }
-         }
+         SetFieldValue(instance, field, data, false);
       }
    }
 
    private void LoadComponentDependencies(Component instance, Dictionary<string ,object> data) {
+      Debug.Log("Loading Component Dependencies for: " + instance);
       var allFields = instance.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-      foreach (var field in allFields) {
-         object result;
-         if (data.TryGetValue(field.Name, out result)) {
-            var savedData = GetSaveData(field.FieldType, result, true);
-            if (result != null) {
-               field.SetValue(instance, savedData);
-            }
+      foreach (var field in allFields) {         
+         SetFieldValue(instance, field, data, true);
+         if (instance.GetComponent<Saveable>() != null) {
+            instance.GetComponent<Saveable>().IsLoaded = true;
          }
       }
+   }
+
+   private void SetFieldValue(Component instance, FieldInfo field, Dictionary<string ,object> data, bool forDependencies) {
+      var currentFieldValue = field.GetValue(instance);
+      object result;
+      if (data.TryGetValue(field.Name, out result)) {
+         var savedData = GetSaveData(field.FieldType, result, forDependencies);
+         if (!IsNullOrEmpty(savedData)) {
+            Debug.Log("Setting value of " + field + " on instance " + instance + " to value: " + savedData);
+            field.SetValue(instance, savedData);
+         } else {
+            Debug.Log("NOT Setting value of " + field + " on instance " + instance + " to value: " + savedData + " because the new value was null or empty");
+         }
+      }
+   }
+
+   private bool IsPrimative(Type type) {
+      return type.IsPrimitive || type.IsEnum;
+   }
+
+   private bool IsNullOrEmpty(object thing) {
+      if (thing == null) {
+         return true;
+      }
+
+      if (thing as IEnumerable != null) {
+         return !(thing as IEnumerable).GetEnumerator().MoveNext();
+      }
+
+      return false;
    }
 
    public object GetSaveData(Type fieldType, object value, bool forDependencies) {
@@ -307,21 +333,18 @@ public class SaveManager : Singleton<SaveManager> {
             }
          }
 
-
-         if (result.Count == 0) {
-            return null;
-         }
-
          return result;
       }
 
-      if (typeof(Component).IsAssignableFrom(fieldType)) {
+      if (fieldType.IsSubclassOf(typeof(Component))) {
          if (value != null && forDependencies) {
             var loadedInstance = FindLoadedInstanceBySaveIndex((int)value);
             if (loadedInstance != null) {
+               Debug.Log("Found loaded instance " + loadedInstance + " for savedIndex of " + value + " returning " + loadedInstance.GetComponent(fieldType) + " for type " + fieldType);
                return loadedInstance.GetComponent(fieldType);
             }
          }
+         Debug.Log("Component is assignable from fieldType: " + fieldType + ", but value == null: " + (value == null).ToString() + " and forDependencies: " + forDependencies.ToString());
          return null;
       }
 
@@ -330,9 +353,9 @@ public class SaveManager : Singleton<SaveManager> {
             var result = new List<object>();
             var containedType = fieldType.GetGenericArguments().First();
             foreach (var item in ((IEnumerable)value)) {
-               var dataToAdd = GetSaveData(containedType, item, forDependencies);
-               if (dataToAdd != null) {
-                  result.Add(dataToAdd);
+               var foo = GetSaveData(containedType, item, forDependencies);
+               if (foo != null) {
+                  result.Add(foo);
                }
             }
 
@@ -343,10 +366,6 @@ public class SaveManager : Singleton<SaveManager> {
             var listResult = (IList)typeof(Enumerable).GetMethod("ToList")
                .MakeGenericMethod(containedType)
                .Invoke(null, new object[] { enumeratorResult });
-
-            if (listResult.Count == 0) {
-               return null;
-            } 
 
             return listResult;
 

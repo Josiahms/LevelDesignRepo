@@ -46,12 +46,4 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
 
       Camera.main.transform.position += rotation * deltaPosition;
    }
-
-   public void OnLoad(object data) {
-      // Ignored;
-   }
-
-   public void OnLoadDependencies(object data) {
-      // Ignored;
-   }
 }

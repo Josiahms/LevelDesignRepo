@@ -214,28 +214,4 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
             return;
       }
    }
-
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("currentStep", out result)) {
-         currentStep = (int)result;
-      }
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("firstHouse", out result)) {
-         if (result != null) {
-            firstHouse = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
-         }
-      }
-      if (data.TryGetValue("fastWoodPile", out result)) {
-         if (result != null) {
-            fastWoodPile = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).transform;
-         }
-      }
-   }
-
 }

@@ -68,7 +68,7 @@ public class Resource {
    }
 }
 
-public class ResourceManager : Singleton<ResourceManager>, ISaveable {
+public class ResourceManager : Singleton<ResourceManager>, ISaveable, IAfterLoadCallback {
 
    [SerializeField]
    private Text woodText;
@@ -130,16 +130,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
       return false;
    }
 
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("resources", out result)) {
-         resources = ((Dictionary<object, object>)result).ToDictionary(x => (ResourceType)x.Key, x => (Resource)x.Value);
-         OffsetAll(0, 0, 0, 0);
-      }
-   }
-
-   public void OnLoadDependencies(object savedData) {
-      Debug.Log(resources.First().Value.Amount + ", " + resources.First().Value.Capacity);
+   public void AfterLoad() {
+      OffsetAll(0, 0, 0, 0);
    }
 }
