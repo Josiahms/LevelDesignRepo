@@ -8,7 +8,7 @@ public enum ResourceType { Wood, Stone, Metal, Food }
 
 public class GatherResourceEvent : UnityEvent<ResourceType, int> { }
 
-public class Resource {
+public class Resource : ISaveable {
 
    public static GatherResourceEvent OnChangeEvent = new GatherResourceEvent();
 
@@ -67,6 +67,26 @@ public class Resource {
       display.text = Amount + "/" + Capacity;
       return true;
    }
+
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      data.Add("amount", Amount);
+      data.Add("capacity", Capacity);
+      data.Add("type", type);
+      return data;
+   }
+
+   public void OnLoad(object data) {
+      var savedData = (Dictionary<string, object>)data;
+      Amount = (int)savedData["amount"];
+      Capacity = (int)savedData["capacity"];
+      type = (ResourceType)savedData["type"];
+      display.text = Amount + "/" + Capacity;
+   }
+
+   public void OnLoadDependencies(object data) {
+      // Ignored
+   }
 }
 
 public class ResourceManager : Singleton<ResourceManager>, ISaveable {
@@ -118,43 +138,19 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("woodAmount", resources[ResourceType.Wood].Amount);
-      data.Add("stoneAmount", resources[ResourceType.Stone].Amount);
-      data.Add("metalAmount", resources[ResourceType.Metal].Amount);
-      data.Add("foodAmount", resources[ResourceType.Food].Amount);
-      data.Add("woodCapacity", resources[ResourceType.Wood].Capacity);
-      data.Add("stoneCapacity", resources[ResourceType.Stone].Capacity);
-      data.Add("metalCapacity", resources[ResourceType.Metal].Capacity);
-      data.Add("foodCapacity", resources[ResourceType.Food].Capacity);
+      var savedResources = new Dictionary<ResourceType, object>();
+      foreach(var resource in resources) {
+         savedResources.Add(resource.Key, resource.Value.OnSave());
+      }
+      data.Add("resources", savedResources);
       return data;
    }
 
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("woodCapacity", out result)) {
-         resources[ResourceType.Wood].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("woodAmount", out result)) {
-         resources[ResourceType.Wood].OffsetValue((int)result);
-      }
-      if (data.TryGetValue("stoneCapacity", out result)) {
-         resources[ResourceType.Stone].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("stoneAmount", out result)) {
-         resources[ResourceType.Stone].OffsetValue((int)result);
-      }
-      if (data.TryGetValue("metalCapacity", out result)) {
-         resources[ResourceType.Metal].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("metalAmount", out result)) {
-         resources[ResourceType.Metal].OffsetValue((int)result);
-      }
-      if (data.TryGetValue("foodCapacity", out result)) {
-         resources[ResourceType.Food].OffsetCapacity((int)result);
-      }
-      if (data.TryGetValue("foodAmount", out result)) {
-         resources[ResourceType.Food].OffsetValue((int)result);
+      var savedResources = (Dictionary<ResourceType, object>)data["resources"];
+      foreach(var resource in savedResources) {
+         resources[resource.Key].OnLoad(resource.Value);
       }
    }
 

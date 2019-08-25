@@ -9,7 +9,7 @@ public class GatherQuestObjective : QuestObjective {
 
    private UnityAction action;
 
-   public GatherQuestObjective(string text, int goal, ResourceType type) : base(text, goal) {
+   public GatherQuestObjective(string text, int goal, int amount, ResourceType type) : base(text, goal, amount) {
       resourceType = type;
    }
 

@@ -10,7 +10,6 @@ public abstract class QuestObjective {
    public QuestUI uiInstance { get; private set; }
 
    private int amount;
-
    public int Amount {
       get { return amount; }
 
@@ -20,8 +19,16 @@ public abstract class QuestObjective {
             QuestManager.GetInstance().CompleteObjective(this);
             OnRemove();
          }
-         uiInstance.UpdateUI();
+         if (uiInstance != null) {
+            uiInstance.UpdateUI();
+         }
       }
+   }
+
+   public QuestObjective(string text, int goal, int amount) {
+      Text = text;
+      Goal = goal;
+      Amount = amount;
    }
 
    protected abstract void OnInit();
@@ -31,14 +38,9 @@ public abstract class QuestObjective {
    }
 
    protected abstract void OnRemove();
-
-   public QuestObjective(string text, int goal) {
-      Text = text;
-      Goal = goal;
-   }
 }
 
-public class QuestManager : Singleton<QuestManager> {
+public class QuestManager : Singleton<QuestManager>, ISaveable {
 
    private List<QuestObjective> objectives = new List<QuestObjective>();
 
@@ -62,4 +64,41 @@ public class QuestManager : Singleton<QuestManager> {
 
    }
 
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      var savedObjectives = new List<Dictionary<string, object>>();
+      foreach (var objective in objectives) {
+         var savedObjective = new Dictionary<string, object>();
+         savedObjective.Add("text", objective.Text);
+         savedObjective.Add("goal", objective.Goal);
+         savedObjective.Add("amount", objective.Amount);
+         savedObjective.Add("type", objective.GetType());
+         if (objective.GetType() == typeof(PlaceQuestObjective)) {
+            savedObjective.Add("placeableName", ((PlaceQuestObjective)objective).placeableName);
+         } else if (objective.GetType() == typeof(GatherQuestObjective)) {
+            savedObjective.Add("resourceType", ((GatherQuestObjective)objective).resourceType);
+         }
+         savedObjectives.Add(savedObjective);
+      }
+
+      data.Add("objectives", savedObjectives);
+
+      return data;
+   }
+
+   public void OnLoad(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      var loadedObjectives = (List<Dictionary<string, object>>)data["objectives"];
+      foreach(var loadedObjective in loadedObjectives) {
+         if ((Type)loadedObjective["type"] == typeof(PlaceQuestObjective)) {
+            AddObjective(new PlaceQuestObjective((string)loadedObjective["text"], (int)loadedObjective["goal"], (int)loadedObjective["amount"], (string)loadedObjective["placeableName"]));
+         } else if ((Type)loadedObjective["type"] == typeof(GatherQuestObjective)) {
+            AddObjective(new GatherQuestObjective((string)loadedObjective["text"], (int)loadedObjective["goal"], (int)loadedObjective["amount"], (ResourceType)loadedObjective["resourceType"]));
+         }
+      }
+   }
+
+   public void OnLoadDependencies(object data) {
+      // Ignored
+   }
 }

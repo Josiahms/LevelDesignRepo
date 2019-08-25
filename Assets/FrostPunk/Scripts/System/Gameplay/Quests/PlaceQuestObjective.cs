@@ -7,7 +7,7 @@ public class PlaceQuestObjective : QuestObjective {
 
    public string placeableName { get; private set; }
 
-   public PlaceQuestObjective(string text, int goal, string placeableName) : base(text, goal) {
+   public PlaceQuestObjective(string text, int goal, int amount, string placeableName) : base(text, goal, amount) {
       this.placeableName = placeableName;
    }
 

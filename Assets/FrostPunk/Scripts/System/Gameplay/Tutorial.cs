@@ -54,7 +54,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       FocusCameraOn(fastWoodPile, CameraZoom.Medium);
       TutorialPopup.Instantiate("First things first, lets collect some wood.  Click on the stack of wood and assign a few workers to it.  " +
          "They'll start collecting wood immediately.  Gather 5 wood before moving on.", StepThree);
-      QuestManager.GetInstance().AddObjective(new GatherQuestObjective("Gather 5 wood", 5, ResourceType.Wood));
+      QuestManager.GetInstance().AddObjective(new GatherQuestObjective("Gather 10 wood", 10, 5, ResourceType.Wood));
    }
 
    private void StepThree() {
@@ -69,8 +69,8 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
    private void StepFive() {
       currentStep = 5;
       TutorialPopup.Instantiate(buildMenu, "Open the build menu to build a farm.  You can hover over any item to see its cost.  Build the farm, assign up to 2 workers to it, and collect 5 food to continue.", StepSix, true);
-      QuestManager.GetInstance().AddObjective(new PlaceQuestObjective("Build a farm", 1, "Field"));
-      QuestManager.GetInstance().AddObjective(new GatherQuestObjective("Gather 5 food", 5, ResourceType.Food));
+      QuestManager.GetInstance().AddObjective(new PlaceQuestObjective("Build a farm", 1, 0, "Field"));
+      QuestManager.GetInstance().AddObjective(new GatherQuestObjective("Gather 5 food", 5, 0, ResourceType.Food));
    }
 
    private void StepSix() {
@@ -82,7 +82,7 @@ public class Tutorial : Singleton<Tutorial>, ISaveable {
       var popup = TutorialPopup.Instantiate("Wow... That's super slow.  We'll work on making that faster as we advance, for now, here is 20 more wood, enough for 2 more farms.", StepEight);
       ResourceManager.GetInstance()[ResourceType.Wood].OffsetValue(20);
       FloatingText.Instantiate(popup.transform, 20, ResourceType.Wood.ToString(), true, true, 1.5f);
-      QuestManager.GetInstance().AddObjective(new PlaceQuestObjective("Build 2 more farms", 2, "Field"));
+      QuestManager.GetInstance().AddObjective(new PlaceQuestObjective("Build 2 more farms", 2, 0, "Field"));
    }
 
    private void StepEight() {
