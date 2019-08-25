@@ -8,108 +8,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[Serializable]
-public struct SavedGameObject {
-   public int index;
-   public string prefabPath;
-   public float[] position;
-   public float[] rotation;
-   public SavedComponent[] components;
-
-   public SavedGameObject(Saveable saveableGameObject) {
-      index = saveableGameObject.GetSavedIndex();
-      if (saveableGameObject.SavePosition) {
-         position = new float[] { saveableGameObject.transform.position.x, saveableGameObject.transform.position.y, saveableGameObject.transform.position.z };
-         rotation = new float[] { saveableGameObject.transform.rotation.x, saveableGameObject.transform.rotation.y, saveableGameObject.transform.rotation.z, saveableGameObject.transform.rotation.w };
-      } else {
-         position = null;
-         rotation = null;
-      }
-      prefabPath = saveableGameObject.GetPrefabPath();
-      components = saveableGameObject.gameObject.GetComponents<ISaveable>().Select(x => new SavedComponent(x)).ToArray();
-   }
-}
-
-[Serializable]
-public class SavedComponent {
-   public Type type;
-   public Dictionary<string, object> data;
-
-   public SavedComponent(object itemToSave) {
-      type = itemToSave.GetType();
-      var allFields = itemToSave.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-      data = allFields.ToDictionary(x => x.Name, x => {
-         var value = GetSaveData(x.GetValue(itemToSave));
-         return value;
-      });
-   }
-
-
-   public object GetSaveData(object fieldValue) {
-      if (fieldValue == null) {
-         return null;
-      }
-
-      var fieldType = fieldValue.GetType();
-
-      if (fieldType.IsPrimitive || fieldType.IsEnum) {
-         return fieldValue;
-      }
-
-      if (fieldType.GetCustomAttributes(false).Any(x => x.GetType() == typeof(SerializableAttribute))) {
-         if (!fieldType.IsGenericType) {
-            return fieldValue;
-         }
-      }
-
-      if (fieldType.GetInterfaces().Contains(typeof(IDictionary))) {
-         return HandleDictionary((IDictionary)fieldValue);
-      }
-
-      if (typeof(Component).IsAssignableFrom(fieldType)) {
-         return HandleReferenceToOther((Component)fieldValue);
-      }
-
-      if (fieldType == typeof(GameObject)) {
-         return null;
-      }
-
-      if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
-         return HandleList((IEnumerable)fieldValue);
-      }
-
-      return new SavedComponent(fieldValue);
-   }
-
-   private List<object> HandleList(IEnumerable list) {
-      List<object> result = new List<object>();
-      foreach (var item in list) {
-         result.Add(GetSaveData(item));
-      }
-      return result;
-   }
-
-   private object HandleReferenceToOther(Component component) {
-      if (component.GetComponent<Saveable>() != null) {
-         return component.GetComponent<Saveable>().GetSavedIndex();
-      }
-      return null;
-   }
-
-   private Dictionary<object, object> HandleDictionary(IDictionary dictionary) {
-      var result = new Dictionary<object, object>();
-      var keys = dictionary.Keys.GetEnumerator();
-      var values = dictionary.Values.GetEnumerator();
-
-      while (keys.MoveNext() && values.MoveNext()) {
-         result.Add(GetSaveData(keys.Current), GetSaveData(values.Current));
-      }
-
-      return result;
-   }
-
-}
-
 public class SaveManager : Singleton<SaveManager> {
 
    private List<Saveable> entitiesToSave = new List<Saveable>();
@@ -213,14 +111,14 @@ public class SaveManager : Singleton<SaveManager> {
             }
          } else {
             var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
-            
+
             instance = Instantiate(prefab, position, rotation);
          }
          if (instance != null) {
             var loadedComponents = instance.GetComponents(typeof(ISaveable));
             for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
                var savedComponent = savedEntity.components[i];
-               LoadComponent(loadedComponents[i], savedComponent.data);
+               LoadComponent(loadedComponents[i], savedComponent.data, false);
             }
             loadedEntities.Add(savedEntity.index, instance);
          }
@@ -232,7 +130,7 @@ public class SaveManager : Singleton<SaveManager> {
             var loadedComponents = loadedInstance.GetComponents(typeof(ISaveable));
             for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
                var savedComponent = savedEntity.components[i];
-               LoadComponentDependencies(loadedComponents[i], savedComponent.data);
+               LoadComponent(loadedComponents[i], savedComponent.data, true);
                foreach (var afterLoadCallback in loadedComponents[i].GetComponents<IAfterLoadCallback>()) {
                   afterLoadCallback.AfterLoad();
                }
@@ -241,49 +139,21 @@ public class SaveManager : Singleton<SaveManager> {
       }
    }
 
-   private void OnApplicationQuit() {
-      Save();
-   }
-
-   private void OnDestroy() {
-      SceneManager.sceneLoaded -= OnSceneLoad;
-   }
-
-   private void LoadComponent(Component instance, Dictionary<string, object> data) {
-      Debug.Log("Loading Component for: " + instance);
+   private void LoadComponent(Component instance, Dictionary<string ,object> data, bool forDependencies) {
       var allFields = instance.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
       foreach (var field in allFields) {
-         SetFieldValue(instance, field, data, false);
-      }
-   }
-
-   private void LoadComponentDependencies(Component instance, Dictionary<string ,object> data) {
-      Debug.Log("Loading Component Dependencies for: " + instance);
-      var allFields = instance.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-      foreach (var field in allFields) {         
-         SetFieldValue(instance, field, data, true);
-         if (instance.GetComponent<Saveable>() != null) {
+         var currentFieldValue = field.GetValue(instance);
+         object result;
+         if (data.TryGetValue(field.Name, out result)) {
+            var savedData = GetSaveData(field.FieldType, result, forDependencies);
+            if (!IsNullOrEmpty(savedData)) {
+               field.SetValue(instance, savedData);
+            }
+         }
+         if (forDependencies && instance.GetComponent<Saveable>() != null) {
             instance.GetComponent<Saveable>().IsLoaded = true;
          }
       }
-   }
-
-   private void SetFieldValue(Component instance, FieldInfo field, Dictionary<string ,object> data, bool forDependencies) {
-      var currentFieldValue = field.GetValue(instance);
-      object result;
-      if (data.TryGetValue(field.Name, out result)) {
-         var savedData = GetSaveData(field.FieldType, result, forDependencies);
-         if (!IsNullOrEmpty(savedData)) {
-            Debug.Log("Setting value of " + field + " on instance " + instance + " to value: " + savedData);
-            field.SetValue(instance, savedData);
-         } else {
-            Debug.Log("NOT Setting value of " + field + " on instance " + instance + " to value: " + savedData + " because the new value was null or empty");
-         }
-      }
-   }
-
-   private bool IsPrimative(Type type) {
-      return type.IsPrimitive || type.IsEnum;
    }
 
    private bool IsNullOrEmpty(object thing) {
@@ -310,69 +180,85 @@ public class SaveManager : Singleton<SaveManager> {
       }
 
       if (fieldType.GetInterfaces().Contains(typeof(IDictionary))) {
-         var keyType = fieldType.GetGenericArguments().ElementAt(0);
-         var valueType = fieldType.GetGenericArguments().ElementAt(1);
-
-         var dictionary = (IDictionary)value;
-         var keysEnumerator = dictionary.Keys.GetEnumerator();
-         var valuesEnumerator = dictionary.Values.GetEnumerator();
-
-         var result = (IDictionary)typeof(Dictionary<,>)
-            .MakeGenericType(new Type[] { keyType, valueType })
-            .GetConstructor(new Type[] { })
-            .Invoke(new object[] { });
-
-         while (keysEnumerator.MoveNext() && valuesEnumerator.MoveNext()) {
-            var keyToAdd = GetSaveData(keyType, keysEnumerator.Current, forDependencies);
-            var valueToAdd = GetSaveData(valueType, valuesEnumerator.Current, forDependencies);
-            if (keyToAdd != null && valueToAdd != null) {
-               result.Add(
-                  keyToAdd,
-                  valueToAdd
-               );
-            }
-         }
-
-         return result;
+         return GetDictionary(fieldType, (IDictionary)value, forDependencies);
       }
 
       if (fieldType.IsSubclassOf(typeof(Component))) {
-         if (value != null && forDependencies) {
-            var loadedInstance = FindLoadedInstanceBySaveIndex((int)value);
-            if (loadedInstance != null) {
-               Debug.Log("Found loaded instance " + loadedInstance + " for savedIndex of " + value + " returning " + loadedInstance.GetComponent(fieldType) + " for type " + fieldType);
-               return loadedInstance.GetComponent(fieldType);
-            }
-         }
-         Debug.Log("Component is assignable from fieldType: " + fieldType + ", but value == null: " + (value == null).ToString() + " and forDependencies: " + forDependencies.ToString());
-         return null;
+         return GetSavedComponent(fieldType, value, forDependencies);
       }
 
       if (typeof(IEnumerable).IsAssignableFrom(fieldType)) {
-         if (fieldType.IsGenericType) {
-            var result = new List<object>();
-            var containedType = fieldType.GetGenericArguments().First();
-            foreach (var item in ((IEnumerable)value)) {
-               var foo = GetSaveData(containedType, item, forDependencies);
-               if (foo != null) {
-                  result.Add(foo);
-               }
-            }
-
-            var enumeratorResult = typeof(Enumerable).GetMethod("Cast", new[] { typeof(IEnumerable) })
-               .MakeGenericMethod(containedType)
-               .Invoke(null, new object[] { result });
-
-            var listResult = (IList)typeof(Enumerable).GetMethod("ToList")
-               .MakeGenericMethod(containedType)
-               .Invoke(null, new object[] { enumeratorResult });
-
-            return listResult;
-
-         }
-         return value;
+         return GetList(fieldType, (IEnumerable)value, forDependencies);
       }
 
       return null;
+   }
+
+   private object GetDictionary(Type fieldType, IDictionary dictionary, bool forDependencies) {
+      var keyType = fieldType.GetGenericArguments().ElementAt(0);
+      var valueType = fieldType.GetGenericArguments().ElementAt(1);
+      var keysEnumerator = dictionary.Keys.GetEnumerator();
+      var valuesEnumerator = dictionary.Values.GetEnumerator();
+
+      var result = (IDictionary)typeof(Dictionary<,>)
+         .MakeGenericType(new Type[] { keyType, valueType })
+         .GetConstructor(new Type[] { })
+         .Invoke(new object[] { });
+
+      while (keysEnumerator.MoveNext() && valuesEnumerator.MoveNext()) {
+         var keyToAdd = GetSaveData(keyType, keysEnumerator.Current, forDependencies);
+         var valueToAdd = GetSaveData(valueType, valuesEnumerator.Current, forDependencies);
+         if (keyToAdd != null && valueToAdd != null) {
+            result.Add(
+               keyToAdd,
+               valueToAdd
+            );
+         }
+      }
+
+      return result;
+   }
+
+   private object GetSavedComponent(Type fieldType, object value, bool forDependencies) {
+      if (value != null && forDependencies) {
+         var loadedInstance = FindLoadedInstanceBySaveIndex((int)value);
+         if (loadedInstance != null) {
+            return loadedInstance.GetComponent(fieldType);
+         }
+      }
+      return null;
+   }
+
+   private object GetList(Type fieldType, IEnumerable value, bool forDependencies) {
+      if (fieldType.IsGenericType) {
+         var result = new List<object>();
+         var containedType = fieldType.GetGenericArguments().First();
+         foreach (var item in value) {
+            var nestedValue = GetSaveData(containedType, item, forDependencies);
+            if (nestedValue != null) {
+               result.Add(nestedValue);
+            }
+         }
+
+         var enumeratorResult = typeof(Enumerable).GetMethod("Cast", new[] { typeof(IEnumerable) })
+            .MakeGenericMethod(containedType)
+            .Invoke(null, new object[] { result });
+
+         var listResult = (IList)typeof(Enumerable).GetMethod("ToList")
+            .MakeGenericMethod(containedType)
+            .Invoke(null, new object[] { enumeratorResult });
+
+         return listResult;
+
+      }
+      return value;
+   }
+
+   private void OnApplicationQuit() {
+      Save();
+   }
+
+   private void OnDestroy() {
+      SceneManager.sceneLoaded -= OnSceneLoad;
    }
 }
