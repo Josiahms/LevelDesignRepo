@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuestUI : MonoBehaviour
+public class QuestUI : MonoBehaviour, ISaveable
 {
    [SerializeField]
    private Text description;

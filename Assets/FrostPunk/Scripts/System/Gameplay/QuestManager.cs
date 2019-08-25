@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 public abstract class QuestObjective {
    public string Text { get; private set; }
    public int Goal { get; private set; }
-   public QuestUI uiInstance { get; private set; }
+   public QuestUI UiInstance { get; private set; }
 
    private int amount;
 
@@ -20,13 +17,13 @@ public abstract class QuestObjective {
             QuestManager.GetInstance().CompleteObjective(this);
             OnRemove();
          }
-         uiInstance.UpdateUI();
+         UiInstance.UpdateUI();
       }
    }
 
    protected abstract void OnInit();
    public void Init(QuestUI ui) {
-      uiInstance = ui;
+      UiInstance = ui;
       OnInit();
    }
 
@@ -38,7 +35,7 @@ public abstract class QuestObjective {
    }
 }
 
-public class QuestManager : Singleton<QuestManager> {
+public class QuestManager : Singleton<QuestManager>, ISaveable {
 
    private List<QuestObjective> objectives = new List<QuestObjective>();
 
@@ -51,10 +48,10 @@ public class QuestManager : Singleton<QuestManager> {
 
    public void CompleteObjective(QuestObjective objective) {
       objectives.Remove(objective);
-      Destroy(objective.uiInstance.gameObject);
+      Destroy(objective.UiInstance.gameObject);
       for (int i = 0; i < objectives.Count; i++) {
          var obj = objectives[i];
-         obj.uiInstance.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30 * i);
+         obj.UiInstance.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30 * i);
       }
    }
 

@@ -5453,6 +5453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: 
   savePosition: 1
+  IsLoaded: 0
 --- !u!1001 &1032178062
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8384,6 +8385,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: 
   savePosition: 1
+  IsLoaded: 0
 --- !u!114 &1408597051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11759,7 +11761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1906903923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11812,6 +11814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: 
   savePosition: 1
+  IsLoaded: 0
 --- !u!1 &1916398383
 GameObject:
   m_ObjectHideFlags: 0
@@ -13111,6 +13114,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2083343322}
   - component: {fileID: 2083343323}
+  - component: {fileID: 2083343324}
   m_Layer: 5
   m_Name: QuestManager
   m_TagString: Untagged
@@ -13149,6 +13153,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d356bf95abdfb4bb6f93dd32d37319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2083343324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2083343321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPath: 
+  savePosition: 0
+  IsLoaded: 0
 --- !u!1 &2091069843
 GameObject:
   m_ObjectHideFlags: 0
@@ -14573,6 +14592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: WoodPile
   savePosition: 1
+  IsLoaded: 0
 --- !u!4 &7151016149583186317
 Transform:
   m_ObjectHideFlags: 0

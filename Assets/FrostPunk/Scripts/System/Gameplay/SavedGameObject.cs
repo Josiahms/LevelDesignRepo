@@ -8,6 +8,7 @@ using UnityEngine;
 [Serializable]
 public struct SavedGameObject {
    public int index;
+   public int? parentIndex;
    public string prefabPath;
    public float[] position;
    public float[] rotation;
@@ -16,14 +17,31 @@ public struct SavedGameObject {
    public SavedGameObject(Saveable saveableGameObject) {
       index = saveableGameObject.GetSavedIndex();
       if (saveableGameObject.SavePosition) {
-         position = new float[] { saveableGameObject.transform.position.x, saveableGameObject.transform.position.y, saveableGameObject.transform.position.z };
-         rotation = new float[] { saveableGameObject.transform.rotation.x, saveableGameObject.transform.rotation.y, saveableGameObject.transform.rotation.z, saveableGameObject.transform.rotation.w };
+         if (saveableGameObject.GetComponent<RectTransform>()) {
+            var rectTransform = saveableGameObject.GetComponent<RectTransform>();
+            position = new float[] {
+               rectTransform.pivot.x, rectTransform.pivot.y,
+               rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y,
+               rectTransform.anchorMax.x, rectTransform.anchorMax.y,
+               rectTransform.anchorMin.x, rectTransform.anchorMin.y,
+               rectTransform.sizeDelta.x, rectTransform.sizeDelta.y};
+            rotation = null; ;
+         } else {
+            position = new float[] { saveableGameObject.transform.position.x, saveableGameObject.transform.position.y, saveableGameObject.transform.position.z };
+            rotation = new float[] { saveableGameObject.transform.rotation.x, saveableGameObject.transform.rotation.y, saveableGameObject.transform.rotation.z, saveableGameObject.transform.rotation.w };
+         }
       } else {
          position = null;
          rotation = null;
       }
       prefabPath = saveableGameObject.GetPrefabPath();
       components = saveableGameObject.gameObject.GetComponents<ISaveable>().Select(x => new SavedComponent(x)).ToArray();
+      var parent = saveableGameObject.transform.parent;
+      if (parent != null && parent.GetComponent<Saveable>() != null) {
+         parentIndex = parent.GetComponent<Saveable>().GetSavedIndex();
+      } else {
+         parentIndex = null;
+      }
    }
 }
 

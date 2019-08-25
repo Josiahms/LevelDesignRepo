@@ -15,11 +15,6 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
 
    [SerializeField]
    public List<GameObject> contents;
-   private Resource resourceInstance;
-
-   private void Start() {
-      resourceInstance = ResourceManager.GetInstance()[type];
-   }
 
    public void OnPlace() {
       ResourceManager.GetInstance()[type].OffsetCapacity(amount);
@@ -32,7 +27,7 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
    }
 
    private void Update() {
-      var percentFull = (float)resourceInstance.Amount / resourceInstance.Capacity;
+      var percentFull = (float)ResourceManager.GetInstance()[type].Amount / ResourceManager.GetInstance()[type].Capacity;
       var numEnabled = contents.Count * percentFull;
       for (int i = 0; i < contents.Count; i++) {
          contents[i].SetActive(i < numEnabled);

@@ -76,8 +76,13 @@ public class SaveManager : Singleton<SaveManager> {
       }
       BinaryFormatter bf = new BinaryFormatter();
       FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Create);
-      bf.Serialize(fs, savedEntities);
-      fs.Close();
+      try {
+         bf.Serialize(fs, savedEntities);
+      } catch (Exception e) {
+         Debug.LogException(e);
+      } finally {
+         fs.Close();
+      }
    }
 
    private void Load() {
@@ -86,33 +91,27 @@ public class SaveManager : Singleton<SaveManager> {
       }
 
       FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Open);
-      BinaryFormatter bf = new BinaryFormatter();
-      savedEntities = (List<SavedGameObject>)bf.Deserialize(fs);
-      fs.Close();
+      try {
+         BinaryFormatter bf = new BinaryFormatter();
+         savedEntities = (List<SavedGameObject>)bf.Deserialize(fs);
+      } catch (Exception e) {
+         Debug.LogException(e);
+      } finally {
+         fs.Close();
+      }
 
       foreach (var savedEntity in savedEntities) {
          GameObject instance = null;
-         var position = savedEntity.position == null
-            ? Vector3.zero
-            : new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]);
-         var rotation = savedEntity.rotation == null
-            ? new Quaternion()
-            : new Quaternion(savedEntity.rotation[0], savedEntity.rotation[1], savedEntity.rotation[2], savedEntity.rotation[3]);
          if (String.IsNullOrEmpty(savedEntity.prefabPath)) {
             if (savedEntity.components.Any(x => x.type.GetInterfaces().Contains(typeof(ISingleton)))) {
                var singleton = savedEntity.components.First(x => x.type.GetInterfaces().Contains(typeof(ISingleton)));
                instance = (GameObject)singleton.type.BaseType.GetMethod("GetGameObject").Invoke(null, null);
-               if (savedEntity.position != null) {
-                  instance.transform.position = position;
-                  instance.transform.rotation = rotation;
-               }
             } else {
                Debug.LogError("Saved entity is not a singleton, nor does it have a prefab to load.");
             }
          } else {
             var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
-
-            instance = Instantiate(prefab, position, rotation);
+            instance = Instantiate(prefab);
          }
          if (instance != null) {
             var loadedComponents = instance.GetComponents(typeof(ISaveable));
@@ -135,23 +134,61 @@ public class SaveManager : Singleton<SaveManager> {
                   afterLoadCallback.AfterLoad();
                }
             }
+
+            if (savedEntity.parentIndex.HasValue) {
+               loadedInstance.transform.SetParent(FindLoadedInstanceBySaveIndex(savedEntity.parentIndex.Value).transform, false);
+            }
+
+            SetPosition(loadedInstance, savedEntity);
          }
       }
    }
 
-   private void LoadComponent(Component instance, Dictionary<string ,object> data, bool forDependencies) {
-      var allFields = instance.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+   private void SetPosition(GameObject instance, SavedGameObject savedEntity) {
+      var rectTransform = instance.GetComponent<RectTransform>();
+      if (savedEntity.position != null) {
+         if (rectTransform != null) {
+            Vector2 pivot = new Vector2(savedEntity.position[0], savedEntity.position[1]);
+            Vector2 anchoredPosition = new Vector2(savedEntity.position[2], savedEntity.position[3]); ;
+            Vector2 anchoredMax = new Vector2(savedEntity.position[4], savedEntity.position[5]); ;
+            Vector2 anchoredMin = new Vector2(savedEntity.position[6], savedEntity.position[7]); ;
+            Vector2 sizeDelta = new Vector2(savedEntity.position[8], savedEntity.position[9]);
+
+            rectTransform.pivot = pivot;
+            rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.anchorMax = anchoredMax;
+            rectTransform.anchorMin = anchoredMin;
+            rectTransform.sizeDelta = sizeDelta;
+
+            instance.transform.rotation = new Quaternion();
+            instance.transform.localScale = Vector3.one;
+
+         } else {
+            instance.transform.position = new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]);
+            instance.transform.rotation = new Quaternion(savedEntity.rotation[0], savedEntity.rotation[1], savedEntity.rotation[2], savedEntity.rotation[3]);
+         }
+      }
+   }
+
+   private void LoadComponent(Component component, Dictionary<string ,object> data, bool forDependencies) {
+      if (component.name == "QuestManager") {
+         Debug.Log("Loading quest manager component");
+      }
+      var allFields = component.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
       foreach (var field in allFields) {
-         var currentFieldValue = field.GetValue(instance);
+         var currentFieldValue = field.GetValue(component);
          object result;
          if (data.TryGetValue(field.Name, out result)) {
             var savedData = GetSaveData(field.FieldType, result, forDependencies);
             if (!IsNullOrEmpty(savedData)) {
-               field.SetValue(instance, savedData);
+               if (component.name == "QuestManager") {
+                  Debug.Log("Setting field " + field.Name + " to " + savedData);
+               }
+               field.SetValue(component, savedData);
             }
          }
-         if (forDependencies && instance.GetComponent<Saveable>() != null) {
-            instance.GetComponent<Saveable>().IsLoaded = true;
+         if (forDependencies && component.GetComponent<Saveable>() != null) {
+            component.GetComponent<Saveable>().IsLoaded = true;
          }
       }
    }
