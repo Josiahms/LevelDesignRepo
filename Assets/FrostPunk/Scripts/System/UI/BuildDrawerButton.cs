@@ -11,7 +11,11 @@ public class BuildDrawerButton : MonoBehaviour {
 
    private void Awake() {
       GetComponent<Button>().onClick.AddListener(() => {
-         buildDrawer.SetActive(!buildDrawer.activeSelf);
+         if (Builder.GetInstance().GetBuilding() != null) {
+            Builder.GetInstance().ClearBuilding();
+         } else {
+            buildDrawer.SetActive(!buildDrawer.activeSelf);
+         }
       });
    }
 }

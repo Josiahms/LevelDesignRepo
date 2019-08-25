@@ -26,6 +26,14 @@ public class Builder : Singleton<Builder> {
       Selectable.Disable();
    }
 
+   public void ClearBuilding() {
+      if (buildingInstance != null) {
+         buildingInstance.Remove();
+         buildingInstance = null;
+         Selectable.Enable();
+      }
+   }
+
    private void Update() {
       var cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
       RaycastHit hitInfo;
@@ -47,9 +55,7 @@ public class Builder : Singleton<Builder> {
                   SetBuilding(buildingPrefab, hitInfo.point);
                }
             } else if (Input.GetMouseButtonUp(1)) {
-               buildingInstance.Remove();
-               buildingInstance = null;
-               Selectable.Enable();
+               ClearBuilding();
             }
          }
       }
