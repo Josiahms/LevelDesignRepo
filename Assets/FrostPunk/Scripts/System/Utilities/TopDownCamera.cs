@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+
+public enum CameraZoom { Close, Medium, Far }
 
 public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
-
    [SerializeField]
    private int screenEdgeSize = 10;
    [SerializeField]
@@ -11,8 +13,24 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
    [SerializeField]
    private Transform center;
 
-   void Update()
-   {
+   private Vector3 target;
+   private CameraZoom zoomLevel;
+
+   public void SetTarget(Vector3 target, CameraZoom zoomLevel) {
+      this.target = target;
+      this.zoomLevel = zoomLevel;
+   }
+
+   private void Update() {
+
+      if (target != null) {
+         MoveToTarget();
+      } else {
+         MoveWithMouse();
+      }
+   }
+
+   private void MoveWithMouse() {
       var mousePosition = Input.mousePosition;
       var moveAmount = cameraMoveSpeed * Time.deltaTime;
       var rotation = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
@@ -47,12 +65,38 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
       Camera.main.transform.position += rotation * deltaPosition;
    }
 
+
+   private void MoveToTarget() {
+      Vector3 destination;
+      switch (zoomLevel) {
+         case CameraZoom.Close:
+            Camera.main.orthographicSize += (15 - Camera.main.orthographicSize) / 10;
+            break;
+         case CameraZoom.Medium:
+            Camera.main.orthographicSize += (20 - Camera.main.orthographicSize) / 10;
+            break;
+         case CameraZoom.Far:
+            Camera.main.orthographicSize += (35 - Camera.main.orthographicSize) / 10;
+            break;
+         default:
+            Camera.main.orthographicSize += (35 - Camera.main.orthographicSize) / 10;
+            break;
+      }
+      destination = target - Camera.main.transform.forward * 100;
+      Camera.main.transform.position += (destination - Camera.main.transform.position) / 10;
+   }
+
    public object OnSave() {
-      return null;
+      var data = new Dictionary<string, object>();
+      data.Add("target", target == null ? null : new float[] { target.x, target.y, target.z });
+      data.Add("zoomLevel", zoomLevel);
+      return data;
    }
 
    public void OnLoad(object data) {
-      // Ignored;
+      var savedData = (Dictionary<string, object>)data;
+      target = new Vector3(((float[])savedData["target"])[0], ((float[])savedData["target"])[1], ((float[])savedData["target"])[2]);
+      zoomLevel = (CameraZoom)savedData["zoomLevel"];
    }
 
    public void OnLoadDependencies(object data) {

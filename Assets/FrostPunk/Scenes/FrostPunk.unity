@@ -3624,12 +3624,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
---- !u!224 &560894630 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5597618444993088734, guid: 84282104cf319914d935dea244c6341b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1388845721}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &589522528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4148,12 +4142,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 471828, guid: 19682540d8a014522a319b1cf788aee2,
     type: 3}
   m_PrefabInstance: {fileID: 1330039640}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &722215102 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5597618444893450791, guid: 84282104cf319914d935dea244c6341b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1388845721}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &727485301 stripped
 Transform:
@@ -5167,18 +5155,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
---- !u!114 &980096458 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1061948847, guid: d3fcd5b753783154f9f319f7a2edd385,
-    type: 3}
-  m_PrefabInstance: {fileID: 3481537227834086034}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f0b5932a8971a04284951d0158ef7ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &980860476 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 471828, guid: 19682540d8a014522a319b1cf788aee2,
@@ -5333,11 +5309,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022201156}
   m_LocalRotation: {x: 0.31598538, y: -0.3596048, z: 0.13088542, w: 0.8681629}
-  m_LocalPosition: {x: 72.5, y: 73.94, z: -44}
+  m_LocalPosition: {x: 69.1, y: 73.94, z: -47.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 40, y: -45.000004, z: 0}
 --- !u!114 &1022201160
 MonoBehaviour:
@@ -6755,6 +6731,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1192935675}
   m_Mesh: {fileID: 4300000, guid: 18f38c8bc57fcdb4b9642744fb2028be, type: 3}
+--- !u!4 &1206952108 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8772370765382533173, guid: d3fcd5b753783154f9f319f7a2edd385,
+    type: 3}
+  m_PrefabInstance: {fileID: 3481537227834086034}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1216097776
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9215,8 +9197,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517612962}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 78.7, y: 73.94, z: -37.8}
+  m_LocalRotation: {x: 0.31598538, y: -0.3596048, z: 0.13088542, w: 0.8681629}
+  m_LocalPosition: {x: 69.1, y: 73.94, z: -47.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -10288,12 +10270,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
---- !u!224 &1697379166 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5597618443817095451, guid: 84282104cf319914d935dea244c6341b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1388845721}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1697417015 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 471828, guid: 19682540d8a014522a319b1cf788aee2,
@@ -11606,13 +11582,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d08d8300fa20b574d8fb826b9b51f482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstHouse: {fileID: 980096458}
-  fastWoodPile: {fileID: 7151016149583186317}
-  woodAmount: {fileID: 722215102}
-  buildMenu: {fileID: 846210881}
-  foodAmount: {fileID: 560894630}
-  starvingAmount: {fileID: 1697379166}
-  skip: 0
+  tutorialSteps:
+  - message: Hello there!  Welcome to the camp.
+    cameraTarget: {fileID: 1206952108}
+    zoomLevel: 0
+    popupTarget: {fileID: 0}
+    quest:
+      Text: 
+      Goal: 0
+      resourceType: 0
+  - message: It's your duty to manage the camp, ensuring that we have enough resources
+      to survive each night, lest the camp fail!
+    cameraTarget: {fileID: 1206952108}
+    zoomLevel: 0
+    popupTarget: {fileID: 0}
+    quest:
+      Text: 
+      Goal: 0
+      resourceType: 0
+  - message: Lets start simple.  See that pile of wood over there?  It's got 5 wood
+      in it.  Gather all 5.
+    cameraTarget: {fileID: 7151016149583186317}
+    zoomLevel: 0
+    popupTarget: {fileID: 0}
+    quest:
+      Text: Gather 5 wood
+      Goal: 5
+      resourceType: 0
+  - message: Great work!  That's enough wood for a field.  Click on the hammer to
+      open the build menu.
+    cameraTarget: {fileID: 1206952108}
+    zoomLevel: 0
+    popupTarget: {fileID: 846210881}
+    quest:
+      Text: 
+      Goal: 0
+      resourceType: 0
 --- !u!224 &1906903924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13372,7 +13377,7 @@ PrefabInstance:
     - target: {fileID: 31014292676680973, guid: 25f9913fae61c4544b02b31aab7a3a2d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 31014292676680973, guid: 25f9913fae61c4544b02b31aab7a3a2d,
         type: 3}
@@ -13867,7 +13872,7 @@ PrefabInstance:
     - target: {fileID: 8772370765382533173, guid: d3fcd5b753783154f9f319f7a2edd385,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8772370765382533173, guid: d3fcd5b753783154f9f319f7a2edd385,
         type: 3}

@@ -1,44 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
-
-public abstract class QuestObjective {
-   public string Text { get; private set; }
-   public int Goal { get; private set; }
-   public QuestUI uiInstance { get; private set; }
-
-   private int amount;
-   public int Amount {
-      get { return amount; }
-
-      protected set {
-         amount = value;
-         if (amount >= Goal) {
-            QuestManager.GetInstance().CompleteObjective(this);
-            OnRemove();
-         }
-         if (uiInstance != null) {
-            uiInstance.UpdateUI();
-         }
-      }
-   }
-
-   public QuestObjective(string text, int goal, int amount) {
-      Text = text;
-      Goal = goal;
-      Amount = amount;
-   }
-
-   protected abstract void OnInit();
-   public void Init(QuestUI ui) {
-      uiInstance = ui;
-      OnInit();
-   }
-
-   protected abstract void OnRemove();
-}
 
 public class QuestManager : Singleton<QuestManager>, ISaveable {
 
@@ -78,6 +42,15 @@ public class QuestManager : Singleton<QuestManager>, ISaveable {
          } else if (objective.GetType() == typeof(GatherQuestObjective)) {
             savedObjective.Add("resourceType", ((GatherQuestObjective)objective).resourceType);
          }
+         if (objective.onComplete != null) {
+            var onCompleteCallback = new Dictionary<string, object>();
+            onCompleteCallback.Add("method", objective.onComplete.Method);
+            onCompleteCallback.Add("target", ((Component)objective.onComplete.Target).GetComponent<Saveable>().GetSavedIndex());
+            onCompleteCallback.Add("componentType", objective.onComplete.Target.GetType());
+            savedObjective.Add("onComplete", onCompleteCallback);
+         } else {
+            savedObjective.Add("onComplete", null);
+         }
          savedObjectives.Add(savedObjective);
       }
 
@@ -91,14 +64,28 @@ public class QuestManager : Singleton<QuestManager>, ISaveable {
       var loadedObjectives = (List<Dictionary<string, object>>)data["objectives"];
       foreach(var loadedObjective in loadedObjectives) {
          if ((Type)loadedObjective["type"] == typeof(PlaceQuestObjective)) {
-            AddObjective(new PlaceQuestObjective((string)loadedObjective["text"], (int)loadedObjective["goal"], (int)loadedObjective["amount"], (string)loadedObjective["placeableName"]));
+            var objective = new PlaceQuestObjective((string)loadedObjective["text"], (int)loadedObjective["goal"], (int)loadedObjective["amount"], (string)loadedObjective["placeableName"]);
+            objective.onComplete = (UnityAction)loadedObjective["onComplete"];
+            AddObjective(objective);
          } else if ((Type)loadedObjective["type"] == typeof(GatherQuestObjective)) {
-            AddObjective(new GatherQuestObjective((string)loadedObjective["text"], (int)loadedObjective["goal"], (int)loadedObjective["amount"], (ResourceType)loadedObjective["resourceType"]));
+            var objective = new GatherQuestObjective((string)loadedObjective["text"], (int)loadedObjective["goal"], (int)loadedObjective["amount"], (ResourceType)loadedObjective["resourceType"]);
+            AddObjective(objective);
          }
       }
    }
 
    public void OnLoadDependencies(object data) {
-      // Ignored
+      var savedData = (Dictionary<string, object>)data;
+      var loadedObjectives = (List<Dictionary<string, object>>)savedData["objectives"];
+      for (int i = 0; i < objectives.Count; i++) {
+         var onCompleteCallback = (Dictionary<string, object>)loadedObjectives[i]["onComplete"];
+         if (onCompleteCallback != null) {
+            var target = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)onCompleteCallback["target"]);
+            var targetComponent = target.GetComponent((Type)onCompleteCallback["componentType"]);
+            var callback = (MethodInfo)onCompleteCallback["method"];
+            objectives[i].onComplete = () => callback.Invoke(targetComponent, new object[] { });
+         }
+      }
+      
    }
 }

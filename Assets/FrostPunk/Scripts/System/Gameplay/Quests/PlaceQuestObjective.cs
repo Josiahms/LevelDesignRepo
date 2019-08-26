@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using System;
 
+[Serializable]
 public class PlaceQuestObjective : QuestObjective {
 
-   public string placeableName { get; private set; }
+   public string placeableName;
 
    public PlaceQuestObjective(string text, int goal, int amount, string placeableName) : base(text, goal, amount) {
       this.placeableName = placeableName;

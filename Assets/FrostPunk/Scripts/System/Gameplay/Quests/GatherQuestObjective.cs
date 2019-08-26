@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 using UnityEngine.Events;
 
+[Serializable]
 public class GatherQuestObjective : QuestObjective {
 
-   public ResourceType resourceType { get; private set; }
+   public ResourceType resourceType;
 
    private UnityAction action;
 
