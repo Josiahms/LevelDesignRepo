@@ -13,8 +13,8 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
    [SerializeField]
    private Transform center;
 
-   private Vector3 target;
-   private CameraZoom zoomLevel;
+   private Vector3? target = null;
+   private CameraZoom zoomLevel = CameraZoom.Far;
 
    public void SetTarget(Vector3 target, CameraZoom zoomLevel) {
       this.target = target;
@@ -82,20 +82,20 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
             Camera.main.orthographicSize += (35 - Camera.main.orthographicSize) / 10;
             break;
       }
-      destination = target - Camera.main.transform.forward * 100;
+      destination = target.Value - Camera.main.transform.forward * 100;
       Camera.main.transform.position += (destination - Camera.main.transform.position) / 10;
    }
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("target", target == null ? null : new float[] { target.x, target.y, target.z });
+      data.Add("target", target == null ? null : new float[] { target.Value.x, target.Value.y, target.Value.z });
       data.Add("zoomLevel", zoomLevel);
       return data;
    }
 
    public void OnLoad(object data) {
       var savedData = (Dictionary<string, object>)data;
-      target = new Vector3(((float[])savedData["target"])[0], ((float[])savedData["target"])[1], ((float[])savedData["target"])[2]);
+      target = savedData["target"] != null ? new Vector3?(new Vector3(((float[])savedData["target"])[0], ((float[])savedData["target"])[1], ((float[])savedData["target"])[2])) : null;
       zoomLevel = (CameraZoom)savedData["zoomLevel"];
    }
 
