@@ -3571,7 +3571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   quantity: -1
-  gatherPeriod: 250
+  gatherPeriod: 100
 --- !u!114 &1507087086555232977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3585,7 +3585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: 
-  ignoreSave: 0
+  savePosition: 1
 --- !u!1 &3102457366398013624
 GameObject:
   m_ObjectHideFlags: 0

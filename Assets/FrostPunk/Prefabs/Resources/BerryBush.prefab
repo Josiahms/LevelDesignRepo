@@ -2644,7 +2644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   quantity: 20
-  gatherPeriod: 245
+  gatherPeriod: 80
 --- !u!65 &1667967063186191141
 BoxCollider:
   m_ObjectHideFlags: 0

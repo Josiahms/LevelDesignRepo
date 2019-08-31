@@ -401,7 +401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   quantity: 10
-  gatherPeriod: 750
+  gatherPeriod: 250
 --- !u!114 &8037954807486316776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,4 +415,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: MetalPile
-  ignoreSave: 0
+  savePosition: 1

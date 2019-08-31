@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   quantity: -1
-  gatherPeriod: 525
+  gatherPeriod: 200
 --- !u!1 &4468144127780201947
 GameObject:
   m_ObjectHideFlags: 0
