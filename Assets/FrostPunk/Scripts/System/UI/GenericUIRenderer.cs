@@ -20,6 +20,8 @@ public class GenericUIRenderer : MonoBehaviour {
    [SerializeField]
    private Button removeWorkerButton;
    [SerializeField]
+   private Button upgradeButton;
+   [SerializeField]
    private Button deleteButton;
 
    private void Start() {
@@ -43,9 +45,11 @@ public class GenericUIRenderer : MonoBehaviour {
          descriptionText.text = selectable.GetDescription();
       }
       if (placeable != null) {
-         deleteButton.gameObject.SetActive(true);
+         deleteButton.gameObject.SetActive(placeable.Destructable);
+         upgradeButton.gameObject.SetActive(placeable.Upgradeable);
       } else {
          deleteButton.gameObject.SetActive(false);
+         upgradeButton.gameObject.SetActive(false);
       }
       if (assignable != null) {
          workerText.text = assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees();

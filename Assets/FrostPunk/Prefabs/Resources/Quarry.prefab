@@ -138,6 +138,11 @@ MonoBehaviour:
   stoneCost: 5
   metalCost: 0
   isPlaced: 0
+  destructable: 1
+  upgradeable: 0
+  woodUpgradeCost: 0
+  stoneUpgradeCost: 0
+  metalUpgradeCost: 0
 --- !u!114 &2063533155660412799
 MonoBehaviour:
   m_ObjectHideFlags: 0

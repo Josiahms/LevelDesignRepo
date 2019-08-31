@@ -217,6 +217,11 @@ MonoBehaviour:
   stoneCost: 0
   metalCost: 0
   isPlaced: 0
+  destructable: 1
+  upgradeable: 0
+  woodUpgradeCost: 0
+  stoneUpgradeCost: 0
+  metalUpgradeCost: 0
 --- !u!114 &176914379122360119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnpoint: {fileID: 3796787257776752402}
+  workers: []
 --- !u!114 &4053290546470372450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,7 +262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabPath: House
-  ignoreSave: 0
+  savePosition: 1
 --- !u!1 &7128800267595315489
 GameObject:
   m_ObjectHideFlags: 0

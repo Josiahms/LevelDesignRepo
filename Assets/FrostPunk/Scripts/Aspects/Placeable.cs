@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public interface IPlaceable {
    void OnPlace();
    void OnRemove();
+   void OnUpgrade();
 }
 
 public class PlaceableEvent : UnityEvent<Placeable> { }
@@ -30,6 +31,26 @@ public class Placeable : MonoBehaviour, ISaveable {
    [SerializeField]
    private bool isPlaced;
    public bool IsPlaced() { return isPlaced; }
+
+   [SerializeField]
+   private bool destructable = true;
+   public bool Destructable { get { return destructable; } }
+
+   [SerializeField]
+   private bool upgradeable = true;
+   public bool Upgradeable { get { return upgradeable; } }
+
+   [SerializeField]
+   private int woodUpgradeCost;
+   public int WoodUpgradeCost { get { return woodUpgradeCost; } }
+
+   [SerializeField]
+   private int stoneUpgradeCost;
+   public int StoneUpgradeCost { get { return stoneUpgradeCost; } }
+
+   [SerializeField]
+   private int metalUpgradeCost;
+   public int MetalUpgradeCost { get { return metalUpgradeCost; } }
 
    private bool isLoaded;
 
@@ -62,18 +83,36 @@ public class Placeable : MonoBehaviour, ISaveable {
       Destroy(gameObject);
    }
 
+   public bool Upgrade() {
+      if (ResourceManager.GetInstance().OffsetAll(-woodUpgradeCost, -stoneUpgradeCost, -metalUpgradeCost, 0)) {
+         foreach (var placeable in GetComponents<IPlaceable>()) {
+            placeable.OnUpgrade();
+         }
+         return true;
+      }
+      return false;
+   }
+
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("isPlaced", isPlaced);
+      data.Add("destructable", destructable);
+      data.Add("upgradeable", upgradeable);
+      data.Add("woodUpgradeCost", woodUpgradeCost);
+      data.Add("stoneUpgradeCost", stoneUpgradeCost);
+      data.Add("metalUpgradeCost", metalUpgradeCost);
+
       return data;
    }
 
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("isPlaced", out result)) {
-         isPlaced = (bool)result;
-      }
+      isPlaced = (bool)data["isPlaced"];
+      destructable = (bool)data["destructable"];
+      upgradeable = (bool)data["upgradeable"];
+      woodUpgradeCost = (int)data["woodUpgradeCost"];
+      stoneUpgradeCost = (int)data["stoneUpgradeCost"];
+      metalUpgradeCost = (int)data["metalUpgradeCost"];
       isLoaded = true;
    }
 

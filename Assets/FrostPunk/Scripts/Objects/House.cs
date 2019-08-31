@@ -17,6 +17,10 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
       }
    }
 
+   public void OnUpgrade() {
+      // Ignored
+   }
+
    public void RemoveWorker(Worker worker) {
       workers.Remove(worker);
    }

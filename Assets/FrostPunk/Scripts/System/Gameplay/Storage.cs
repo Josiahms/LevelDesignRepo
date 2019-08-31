@@ -25,6 +25,11 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
       ResourceManager.GetInstance()[type].OffsetCapacity(amount);
    }
 
+   public void OnUpgrade() {
+      ResourceManager.GetInstance()[type].OffsetCapacity(15);
+      amount += 15;
+   }
+
    public void OnRemove() {
       if (GetComponent<Placeable>().IsPlaced() && ResourceManager.GetInstance() != null) {
          ResourceManager.GetInstance()[type].OffsetCapacity(-amount);
