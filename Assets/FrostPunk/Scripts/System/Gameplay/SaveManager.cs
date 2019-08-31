@@ -107,8 +107,13 @@ public class SaveManager : Singleton<SaveManager> {
       }
       BinaryFormatter bf = new BinaryFormatter();
       FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Create);
-      bf.Serialize(fs, savedEntities);
-      fs.Close();
+      try {
+         bf.Serialize(fs, savedEntities);
+      } catch (Exception e) {
+         Debug.LogException(e);
+      } finally {
+         fs.Close();
+      }
    }
 
    private void Load() {
@@ -116,10 +121,15 @@ public class SaveManager : Singleton<SaveManager> {
          return;
       }
 
-      FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Open);
       BinaryFormatter bf = new BinaryFormatter();
-      savedEntities = (List<SavedGameObject>)bf.Deserialize(fs);
-      fs.Close();
+      FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Open);
+      try {
+         savedEntities = (List<SavedGameObject>)bf.Deserialize(fs);
+      } catch (Exception e) {
+         Debug.LogException(e);
+      } finally {
+         fs.Close();
+      }
 
       foreach (var savedEntity in savedEntities) {
          GameObject instance = null;

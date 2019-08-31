@@ -27,8 +27,4 @@ public class ResourceLoader : Singleton<ResourceLoader> {
    [SerializeField]
    private Worker workerPrefab;
    public Worker WorkerPrefab { get { return workerPrefab; } }
-
-   [SerializeField]
-   private QuestUI questUI;
-   public QuestUI QuestUI { get { return questUI; } }
 }
