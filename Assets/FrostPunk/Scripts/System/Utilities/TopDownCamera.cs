@@ -4,6 +4,10 @@ using System.Collections.Generic;
 public enum CameraZoom { Close, Medium, Far }
 
 public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
+
+   private enum Mode { Keyboard, Mouse }
+   [SerializeField]
+   private Mode mode;
    [SerializeField]
    private int screenEdgeSize = 10;
    [SerializeField]
@@ -26,8 +30,29 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
       if (target != null) {
          MoveToTarget();
       } else {
-         MoveWithMouse();
+         if (mode == Mode.Mouse) {
+            MoveWithMouse();
+         } else {
+            MoveWithKeyboard();
+         }
       }
+   }
+
+   private void MoveWithKeyboard() {
+      var moveAmount = cameraMoveSpeed * Time.deltaTime;
+      var rotation = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
+      var distance = rotation * (Camera.main.transform.position - center.transform.position);
+      var deltaPosition = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+      if (Mathf.Abs(distance.x) > radius && distance.x * deltaPosition.z < 0) {
+         deltaPosition.z = 0;
+      }
+
+      if (Mathf.Abs(distance.z) > radius && distance.z * deltaPosition.x > 0) {
+         deltaPosition.x = 0;
+      }
+
+      Camera.main.transform.position += rotation * deltaPosition * moveAmount;
    }
 
    private void MoveWithMouse() {

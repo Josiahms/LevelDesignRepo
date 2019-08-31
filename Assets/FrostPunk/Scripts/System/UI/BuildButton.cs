@@ -29,7 +29,14 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void Update() {
-      button.interactable = ResourceManager.GetInstance().CanAfford(-buildingPrefab.GetWoodCost(), -buildingPrefab.GetStoneCost(), -buildingPrefab.GetMetalCost(), 0);
+      var canAfford = ResourceManager.GetInstance().CanAfford(-buildingPrefab.GetWoodCost(), -buildingPrefab.GetStoneCost(), -buildingPrefab.GetMetalCost(), 0);
+      button.interactable = canAfford;
+      for (int i = 0; i < transform.childCount; i++) {
+         var image = transform.GetChild(i).GetComponent<Image>();
+         if (image != null) {
+            image.color = canAfford ? button.colors.normalColor : button.colors.disabledColor;
+         }
+      }
    }
 
    public void OnPointerEnter(PointerEventData eventData) {
