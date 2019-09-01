@@ -37,39 +37,46 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
          } else {
             MoveWithKeyboard();
          }
+         Zoom();
       }
-      Zoom();
    }
 
    private void Zoom() {
       if (zoomLevel == CameraZoom.Free) {
-         Camera.main.transform.position += Camera.main.transform.forward * Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomSpeed;
+         var delta = Input.GetAxis("Mouse ScrollWheel");
+         var distance = Camera.main.transform.position.y - center.position.y;
+         if (delta < 0 && distance < 30) {
+            Camera.main.transform.position += Camera.main.transform.forward * delta * Time.deltaTime * zoomSpeed;
+         } else if (delta > 0 && distance > -30) {
+            Camera.main.transform.position += Camera.main.transform.forward * delta * Time.deltaTime * zoomSpeed;
+         }
       }
    }
 
-   private void MoveWithKeyboard() {
-      var moveAmount = cameraMoveSpeed * Time.deltaTime;
+   private Vector3 ClampAndRotate(Vector3 delta) {
       var rotation = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
-      var distance = rotation * (Camera.main.transform.position - center.transform.position);
-      var deltaPosition = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+      RaycastHit hit;
+      if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2)), out hit)) {
 
-      if (Mathf.Abs(distance.x) > radius && distance.x * deltaPosition.z < 0) {
-         deltaPosition.z = 0;
+         var distance = rotation * new Vector3(hit.point.x, center.transform.position.y, hit.point.z) - center.transform.position;
+         if (Mathf.Abs(distance.x) > radius && distance.x * delta.z < 0) {
+            delta.z = 0;
+         }
+
+         if (Mathf.Abs(distance.z) > radius && distance.z * delta.x > 0) {
+            delta.x = 0;
+         }
       }
+      return rotation * delta;
+   }
 
-      if (Mathf.Abs(distance.z) > radius && distance.z * deltaPosition.x > 0) {
-         deltaPosition.x = 0;
-      }
-
-      Camera.main.transform.position += rotation * deltaPosition * moveAmount;
+   private void MoveWithKeyboard() {
+      Camera.main.transform.position += ClampAndRotate(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")))  * cameraMoveSpeed * Time.deltaTime;
    }
 
    private void MoveWithMouse() {
       var mousePosition = Input.mousePosition;
       var moveAmount = cameraMoveSpeed * Time.deltaTime;
-      var rotation = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
-      var distance = rotation * (Camera.main.transform.position - center.transform.position);
-
       var deltaPosition = Vector3.zero;
 
       if (mousePosition.x < screenEdgeSize) {
@@ -88,15 +95,7 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
          deltaPosition += new Vector3(0, 0, moveAmount);
       }
 
-      if (Mathf.Abs(distance.x) > radius && distance.x * deltaPosition.z < 0) {
-         deltaPosition.z = 0;
-      }
-
-      if (Mathf.Abs(distance.z) > radius && distance.z * deltaPosition.x > 0) {
-         deltaPosition.x = 0;
-      }
-
-      Camera.main.transform.position += rotation * deltaPosition;
+      Camera.main.transform.position += ClampAndRotate(deltaPosition);
    }
 
 
