@@ -134,9 +134,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e411f006b08574ba3ce0e25813b376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  woodCost: 10
-  stoneCost: 5
-  metalCost: 0
+  woodCost: 45
+  stoneCost: 20
+  metalCost: 10
   isPlaced: 0
   destructable: 1
   upgradeable: 0
@@ -157,4 +157,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   quantity: -1
-  gatherPeriod: 150
+  gatherPeriod: 280

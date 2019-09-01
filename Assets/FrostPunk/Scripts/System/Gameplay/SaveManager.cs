@@ -44,6 +44,7 @@ public class SaveManager : Singleton<SaveManager> {
    private List<Saveable> entitiesToSave = new List<Saveable>();
    private List<SavedGameObject> savedEntities = new List<SavedGameObject>();
    private Dictionary<int, GameObject> loadedEntities = new Dictionary<int, GameObject>();
+   private bool loadSuccess = true;
 
    private new void Awake() {
       base.Awake();
@@ -101,18 +102,22 @@ public class SaveManager : Singleton<SaveManager> {
    }
 
    public void Save() {
-      savedEntities.Clear();
-      foreach (var saveable in entitiesToSave) {
-         savedEntities.Add(new SavedGameObject(saveable));
-      }
-      BinaryFormatter bf = new BinaryFormatter();
-      FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Create);
-      try {
-         bf.Serialize(fs, savedEntities);
-      } catch (Exception e) {
-         Debug.LogException(e);
-      } finally {
-         fs.Close();
+      if (loadSuccess == true) {
+         savedEntities.Clear();
+         foreach (var saveable in entitiesToSave) {
+            savedEntities.Add(new SavedGameObject(saveable));
+         }
+         BinaryFormatter bf = new BinaryFormatter();
+         FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Create);
+         try {
+            bf.Serialize(fs, savedEntities);
+         } catch (Exception e) {
+            Debug.LogException(e);
+         } finally {
+            fs.Close();
+         }
+      } else {
+         Debug.LogWarning("Did not save because last load was unsuccessful");
       }
    }
 
@@ -121,6 +126,7 @@ public class SaveManager : Singleton<SaveManager> {
          return;
       }
 
+      loadSuccess = false;
       BinaryFormatter bf = new BinaryFormatter();
       FileStream fs = new FileStream(Application.persistentDataPath + "/game.fun", FileMode.Open);
       try {
@@ -131,49 +137,54 @@ public class SaveManager : Singleton<SaveManager> {
          fs.Close();
       }
 
-      foreach (var savedEntity in savedEntities) {
-         GameObject instance = null;
-         var position = savedEntity.position == null
-            ? Vector3.zero
-            : new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]);
-         var rotation = savedEntity.rotation == null
-            ? new Quaternion()
-            : new Quaternion(savedEntity.rotation[0], savedEntity.rotation[1], savedEntity.rotation[2], savedEntity.rotation[3]);
-         if (String.IsNullOrEmpty(savedEntity.prefabPath)) {
-            if (savedEntity.components.Any(x => x.type.GetInterfaces().Contains(typeof(ISingleton)))) {
-               var singleton = savedEntity.components.First(x => x.type.GetInterfaces().Contains(typeof(ISingleton)));
-               instance = (GameObject)singleton.type.BaseType.GetMethod("GetGameObject").Invoke(null, null);
-               if (savedEntity.position != null) {
-                  instance.transform.position = position;
-                  instance.transform.rotation = rotation;
+      try {
+         foreach (var savedEntity in savedEntities) {
+            GameObject instance = null;
+            var position = savedEntity.position == null
+               ? Vector3.zero
+               : new Vector3(savedEntity.position[0], savedEntity.position[1], savedEntity.position[2]);
+            var rotation = savedEntity.rotation == null
+               ? new Quaternion()
+               : new Quaternion(savedEntity.rotation[0], savedEntity.rotation[1], savedEntity.rotation[2], savedEntity.rotation[3]);
+            if (String.IsNullOrEmpty(savedEntity.prefabPath)) {
+               if (savedEntity.components.Any(x => x.type.GetInterfaces().Contains(typeof(ISingleton)))) {
+                  var singleton = savedEntity.components.First(x => x.type.GetInterfaces().Contains(typeof(ISingleton)));
+                  instance = (GameObject)singleton.type.BaseType.GetMethod("GetGameObject").Invoke(null, null);
+                  if (savedEntity.position != null) {
+                     instance.transform.position = position;
+                     instance.transform.rotation = rotation;
+                  }
+               } else {
+                  Debug.LogError("Saved entity is not a singleton, nor does it have a prefab to load.");
                }
             } else {
-               Debug.LogError("Saved entity is not a singleton, nor does it have a prefab to load.");
-            }
-         } else {
-            var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
-            
-            instance = Instantiate(prefab, position, rotation);
-         }
-         if (instance != null) {
-            var loadedComponents = instance.GetComponents<ISaveable>();
-            for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
-               var savedComponent = savedEntity.components[i];
-               loadedComponents[i].OnLoad(savedComponent.data);
-            }
-            loadedEntities.Add(savedEntity.index, instance);
-         }
-      }
+               var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);
 
-      foreach (var savedEntity in savedEntities) {
-         GameObject loadedInstance;
-         if (loadedEntities.TryGetValue(savedEntity.index, out loadedInstance)) {
-            var loadedComponents = loadedInstance.GetComponents<ISaveable>();
-            for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
-               var savedComponent = savedEntity.components[i];
-               loadedComponents[i].OnLoadDependencies(savedComponent.data);
+               instance = Instantiate(prefab, position, rotation);
+            }
+            if (instance != null) {
+               var loadedComponents = instance.GetComponents<ISaveable>();
+               for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
+                  var savedComponent = savedEntity.components[i];
+                  loadedComponents[i].OnLoad(savedComponent.data);
+               }
+               loadedEntities.Add(savedEntity.index, instance);
             }
          }
+
+         foreach (var savedEntity in savedEntities) {
+            GameObject loadedInstance;
+            if (loadedEntities.TryGetValue(savedEntity.index, out loadedInstance)) {
+               var loadedComponents = loadedInstance.GetComponents<ISaveable>();
+               for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
+                  var savedComponent = savedEntity.components[i];
+                  loadedComponents[i].OnLoadDependencies(savedComponent.data);
+               }
+            }
+         }
+         loadSuccess = true;
+      } catch (Exception e) {
+         Debug.LogException(e);
       }
    }
 

@@ -9,13 +9,13 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    private Text clockText;
    [SerializeField]
    private float clockMinuteRate = 10;
+   private float clockMinuteRateBackup;
 
    public float CurrentTimeOfDay { get { return currentTime % MIN_IN_DAY; } }
    public float CurrentTime { get { return currentTime; } }
    public float ClockMinuteRate { get { return clockMinuteRate; } }
    public int Day { get { return (int)currentTime / MIN_IN_DAY + 1; } }
 
-   private float clockSpeedMultiplier = 1;
    private float currentTime = 540;
    private bool isRestTime = false;
 
@@ -29,16 +29,8 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    public static readonly int MIN_END_WORK_DAY = 18 * MIN_IN_HOUR;
 
    private void Start() {
+      clockMinuteRateBackup = clockMinuteRate;
       StartCoroutine(ClockCycle());
-   }
-
-   public void AdjustGameplaySpeed(float speedMultiplier, bool affectWorkingRate = true) {
-      if (affectWorkingRate) {
-         Time.timeScale = speedMultiplier;
-      } else {
-         Time.timeScale = 1;
-      }
-      clockSpeedMultiplier = speedMultiplier;
    }
 
    private IEnumerator ClockCycle() {
@@ -67,15 +59,18 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    }
 
    private void Update() {
-      currentTime += (clockMinuteRate * clockSpeedMultiplier) * Time.deltaTime;
+      currentTime += clockMinuteRate * Time.deltaTime;
    }
 
    public void EndWorkDay() {
+      clockMinuteRateBackup = clockMinuteRate;
+      clockMinuteRate = 30;
       isRestTime = true;
       PopulationManager.GetInstance().EatMeal();
    }
 
    public void StartWorkDay() {
+      clockMinuteRate = clockMinuteRateBackup;
       isRestTime = false;
    }
 
@@ -98,7 +93,6 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("clockMinuteRate", clockMinuteRate);
-      data.Add("clockSpeedMultiplier", clockSpeedMultiplier);
       data.Add("currentTime", currentTime);
       data.Add("isRestTime", isRestTime);
       return data;
@@ -109,9 +103,6 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       object result = null;
       if (data.TryGetValue("clockMinuteRate", out result)) {
          clockMinuteRate = (float)result;
-      }
-      if (data.TryGetValue("clockSpeedMultiplier", out result)) {
-         clockSpeedMultiplier = (float)result;
       }
       if (data.TryGetValue("currentTime", out result)) {
          currentTime = (float)result;

@@ -358,7 +358,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3, y: 1, z: 3}
+  m_Size: {x: 4, y: 2, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6369710039674518690
 MonoBehaviour:
@@ -401,7 +401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   quantity: 10
-  gatherPeriod: 250
+  gatherPeriod: 280
 --- !u!114 &8037954807486316776
 MonoBehaviour:
   m_ObjectHideFlags: 0
