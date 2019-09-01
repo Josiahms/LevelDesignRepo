@@ -16,7 +16,7 @@ public class Selectable : MonoBehaviour {
 
    [SerializeField]
    private string description;
-   public string GetDescription() { return description; }
+   public string Description { get { return description; } set { description = value; } }
 
    private static bool isEnabled = true;
    private static Selectable selectedItem;

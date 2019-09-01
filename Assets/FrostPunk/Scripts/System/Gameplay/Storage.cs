@@ -19,6 +19,7 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
 
    private void Start() {
       resourceInstance = ResourceManager.GetInstance()[type];
+      GetComponent<Selectable>().Description = "Provides storage for " + amount + " " + type;
    }
 
    public void OnPlace() {
@@ -28,6 +29,7 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
    public void OnUpgrade() {
       ResourceManager.GetInstance()[type].OffsetCapacity(15);
       amount += 15;
+      GetComponent<Selectable>().Description = "Provides storage for " + amount + " " + type;
    }
 
    public void OnRemove() {
@@ -63,6 +65,6 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
    }
 
    public void OnLoadDependencies(object data) {
-      // Ignored
+      GetComponent<Selectable>().Description = "Provides storage for " + amount + " " + type;
    }
 }

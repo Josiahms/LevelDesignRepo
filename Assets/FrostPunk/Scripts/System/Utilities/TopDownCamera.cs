@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public enum CameraZoom { Close, Medium, Far }
+public enum CameraZoom { Close, Medium, Far, Free }
 
 public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
 
@@ -12,13 +12,15 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
    private int screenEdgeSize = 10;
    [SerializeField]
    private float cameraMoveSpeed = 10;
+   [SerializeField]
+   private float zoomSpeed = 35;
    [SerializeField, Range(1, 500)]
    private float radius = 50;
    [SerializeField]
    private Transform center;
 
    private Vector3? target = null;
-   private CameraZoom zoomLevel = CameraZoom.Far;
+   private CameraZoom zoomLevel = CameraZoom.Free;
 
    public void SetTarget(Vector3 target, CameraZoom zoomLevel) {
       this.target = target;
@@ -35,6 +37,13 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
          } else {
             MoveWithKeyboard();
          }
+      }
+      Zoom();
+   }
+
+   private void Zoom() {
+      if (zoomLevel == CameraZoom.Free) {
+         Camera.main.transform.position += Camera.main.transform.forward * Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomSpeed;
       }
    }
 

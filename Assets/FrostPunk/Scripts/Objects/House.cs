@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Assignable))]
 [RequireComponent(typeof(Placeable))]
 public class House : MonoBehaviour, IPlaceable, ISaveable {
 
@@ -11,8 +10,12 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
    [SerializeField]
    private List<Worker> workers = new List<Worker>();
 
+   [SerializeField]
+   private int capacity = 5;
+   public int Capacity { get { return capacity; } }
+
    public void OnPlace() {
-      for (int i = 0; i < GetComponent<Assignable>().GetMaxAssignees(); i++) {
+      for (int i = 0; i < capacity; i++) {
          workers.Add(Worker.Instantiate(this, spawnpoint.position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), spawnpoint.transform.rotation));
       }
    }

@@ -9,15 +9,14 @@ public class Worker : MonoBehaviour, ISaveable
    private float deadZone = 0.2f;
 
    private Animator animator;
-   private Assignable currentDestination;
+   private Transform currentDestination;
    private Assignable destination;
-   private House house;
 
-   public House House { get { return house;  } }
+   public House House { get; private set; }
 
    public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
       var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);
-      result.house = house;
+      result.House = house;
       PopulationManager.GetInstance().AddToWorkforce(result);
       return result;
    }
@@ -27,8 +26,8 @@ public class Worker : MonoBehaviour, ISaveable
    }
 
    private void OnDestroy() {
-      if (house != null) {
-         house.RemoveWorker(this);
+      if (House != null) {
+         House.RemoveWorker(this);
       }
       if (ResourceManager.GetInstance() != null) {
          PopulationManager.GetInstance().RemoveFromWorkforce(this);
@@ -48,9 +47,9 @@ public class Worker : MonoBehaviour, ISaveable
 
    private void Update() {
       if (DayCycleManager.GetInstance().IsRestTime()) {
-         currentDestination = house.GetComponent<Assignable>();
+         currentDestination = House.transform;
       } else {
-         currentDestination = destination;
+         currentDestination = destination == null ? null : destination.transform;
       }
 
       if (currentDestination == null) {
@@ -60,7 +59,7 @@ public class Worker : MonoBehaviour, ISaveable
       }
 
       var forward2D = new Vector2(transform.forward.x, transform.forward.z);
-      var direction = (currentDestination.transform.position - transform.position).normalized;
+      var direction = (currentDestination.position - transform.position).normalized;
       var direction2D = new Vector2(direction.x, direction.z);
       var angleBetween = Vector2.Angle(forward2D, direction2D);
       var between = Quaternion.AngleAxis(angleBetween / 2, transform.up) * transform.forward;
@@ -68,8 +67,8 @@ public class Worker : MonoBehaviour, ISaveable
       var isRightTurn = angleBetween2 < angleBetween;
 
       animator.SetFloat("Turn", Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1));
-      animator.SetFloat("Forward", Mathf.Clamp((currentDestination.transform.position - transform.position).magnitude * 10, 0, 1));
-      if ((currentDestination.transform.position - transform.position).magnitude < deadZone || angleBetween > 15) {
+      animator.SetFloat("Forward", Mathf.Clamp((currentDestination.position - transform.position).magnitude * 10, 0, 1));
+      if ((currentDestination.position - transform.position).magnitude < deadZone || angleBetween > 15) {
          animator.SetFloat("Forward", 0);
       }
 
@@ -78,7 +77,7 @@ public class Worker : MonoBehaviour, ISaveable
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("destination", destination != null ? destination.GetComponent<Saveable>().GetSavedIndex() : -1);
-      data.Add("house", house.GetComponent<Saveable>().GetSavedIndex());
+      data.Add("house", House.GetComponent<Saveable>().GetSavedIndex());
       return data;
    }
 
@@ -90,7 +89,7 @@ public class Worker : MonoBehaviour, ISaveable
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("house", out result)) {
-         house = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
+         House = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
       }
       if (data.TryGetValue("destination", out result)) {
          destination = (int)result == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Assignable>();

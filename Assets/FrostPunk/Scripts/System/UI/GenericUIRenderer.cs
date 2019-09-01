@@ -42,7 +42,7 @@ public class GenericUIRenderer : MonoBehaviour {
 
       if (selectable != null) {
          titleText.text = selectable.GetItemName();
-         descriptionText.text = selectable.GetDescription();
+         descriptionText.text = selectable.Description;
       }
       if (placeable != null) {
          deleteButton.gameObject.SetActive(placeable.Destructable);
@@ -68,7 +68,7 @@ public class GenericUIRenderer : MonoBehaviour {
          workerLabel.gameObject.SetActive(false);
       }
       if (house != null) {
-         quantityText.text = house.GetComponent<Assignable>().GetMaxAssignees().ToString();
+         quantityText.text = house.Capacity.ToString();
          quantityLabel.text = "Inhabitants";
          quantityLabel.gameObject.SetActive(true);
          quantityText.gameObject.SetActive(true);

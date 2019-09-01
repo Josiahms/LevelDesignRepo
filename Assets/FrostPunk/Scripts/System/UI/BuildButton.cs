@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,6 +12,9 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    private Placeable buildingPrefab;
    [SerializeField]
    private GameObject buildDrawer;
+   [SerializeField]
+   private List<MaskableGraphic> additionalGraphics;
+   private List<Color> originalColors;
 
    private Button button;
    private bool clickedThisFrame;
@@ -21,21 +25,22 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    private void Awake() {
       button = GetComponent<Button>();
       button.onClick.AddListener(OnClick);
+      originalColors = additionalGraphics.Select(x => x.color).ToList();
    }
 
    private void OnClick() {
       Builder.GetInstance().SetBuilding(buildingPrefab);
       buildDrawer.SetActive(false);
+      if (overlay != null) {
+         Destroy(overlay.gameObject);
+      }
    }
 
    private void Update() {
       var canAfford = ResourceManager.GetInstance().CanAfford(-buildingPrefab.GetWoodCost(), -buildingPrefab.GetStoneCost(), -buildingPrefab.GetMetalCost(), 0);
       button.interactable = canAfford;
-      for (int i = 0; i < transform.childCount; i++) {
-         var image = transform.GetChild(i).GetComponent<Image>();
-         if (image != null) {
-            image.color = canAfford ? button.colors.normalColor : button.colors.disabledColor;
-         }
+      for (int i = 0; i < additionalGraphics.Count; i++) {
+         additionalGraphics[i].color = canAfford ? originalColors[i] : button.colors.disabledColor;
       }
    }
 
