@@ -52,6 +52,10 @@ public class Placeable : MonoBehaviour, ISaveable {
    private int metalUpgradeCost;
    public int MetalUpgradeCost { get { return metalUpgradeCost; } }
 
+   [SerializeField]
+   private List<GameObject> levels;
+
+   private int level;
    private bool isLoaded;
 
    private void Start() {
@@ -88,6 +92,13 @@ public class Placeable : MonoBehaviour, ISaveable {
          foreach (var placeable in GetComponents<IPlaceable>()) {
             placeable.OnUpgrade();
          }
+
+         level++;
+         if (level < levels.Count) {
+            levels[level].SetActive(true);
+            levels[level - 1].SetActive(false);
+         }
+
          return true;
       }
       return false;
@@ -101,6 +112,7 @@ public class Placeable : MonoBehaviour, ISaveable {
       data.Add("woodUpgradeCost", woodUpgradeCost);
       data.Add("stoneUpgradeCost", stoneUpgradeCost);
       data.Add("metalUpgradeCost", metalUpgradeCost);
+      data.Add("level", level);
 
       return data;
    }
@@ -113,6 +125,11 @@ public class Placeable : MonoBehaviour, ISaveable {
       woodUpgradeCost = (int)data["woodUpgradeCost"];
       stoneUpgradeCost = (int)data["stoneUpgradeCost"];
       metalUpgradeCost = (int)data["metalUpgradeCost"];
+      level = (int)data["level"];
+      if (levels.Count > 0) {
+         levels[0].SetActive(false);
+         levels[Mathf.Min(level, levels.Count - 1)].SetActive(true);
+      }
       isLoaded = true;
    }
 
