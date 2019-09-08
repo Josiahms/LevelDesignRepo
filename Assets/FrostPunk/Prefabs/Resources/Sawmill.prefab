@@ -3562,6 +3562,7 @@ MonoBehaviour:
   woodUpgradeCost: 0
   stoneUpgradeCost: 0
   metalUpgradeCost: 0
+  levels: []
 --- !u!114 &787974436423437846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3589,7 +3590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabPath: 
+  prefabPath: Sawmill
   savePosition: 1
 --- !u!1 &3102457366398013624
 GameObject:

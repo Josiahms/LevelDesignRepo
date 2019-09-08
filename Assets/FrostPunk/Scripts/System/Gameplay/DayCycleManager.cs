@@ -49,7 +49,7 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
             EndWorkDay();
          }
 
-         if (CurrentTimeOfDay > START_OF_DAY && CurrentTimeOfDay < MIN_END_WORK_DAY) {
+         if (CurrentTimeOfDay > START_OF_DAY && CurrentTimeOfDay < MIN_END_WORK_DAY && !IsWorkDay()) {
             StartWorkDay();
          }
 
@@ -67,6 +67,15 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       clockMinuteRate = 30;
       isRestTime = true;
       PopulationManager.GetInstance().EatMeal();
+   }
+
+   public void IncreaseTimeSpeed() {
+      clockMinuteRate += 5;
+   }
+
+   public void DecreaseTimeSpeed() {
+      clockMinuteRate -= 5;
+      clockMinuteRate = Mathf.Max(clockMinuteRate, 0);
    }
 
    public void StartWorkDay() {

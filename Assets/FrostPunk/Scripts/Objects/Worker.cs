@@ -58,6 +58,25 @@ public class Worker : MonoBehaviour, ISaveable
          return;
       }
 
+      // 1 is normal speed;
+      var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
+      if (speed <= 1) {
+         AnimatedWalk(speed);
+      } else {
+         animator.SetFloat("Turn", 0);
+         animator.SetFloat("Forward", 0);
+         TeleportWalk(speed);
+      }
+
+   }
+
+   private void TeleportWalk(float speed) {
+      transform.LookAt(currentDestination);
+      var distance = currentDestination.position - transform.position;
+      transform.position += Vector3.ClampMagnitude(distance, speed * Time.deltaTime * 10);
+   }
+
+   private void AnimatedWalk(float speed) {
       var forward2D = new Vector2(transform.forward.x, transform.forward.z);
       var direction = (currentDestination.position - transform.position).normalized;
       var direction2D = new Vector2(direction.x, direction.z);
@@ -66,12 +85,12 @@ public class Worker : MonoBehaviour, ISaveable
       var angleBetween2 = Vector2.Angle(direction2D, new Vector2(between.x, between.z));
       var isRightTurn = angleBetween2 < angleBetween;
 
+      animator.speed = speed;
       animator.SetFloat("Turn", Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1));
       animator.SetFloat("Forward", Mathf.Clamp((currentDestination.position - transform.position).magnitude * 10, 0, 1));
       if ((currentDestination.position - transform.position).magnitude < deadZone || angleBetween > 15) {
          animator.SetFloat("Forward", 0);
       }
-
    }
 
    public object OnSave() {

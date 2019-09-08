@@ -46,7 +46,7 @@ public class Builder : Singleton<Builder> {
          }
 
          if (Physics.Raycast(cameraRay, out hitInfo, float.MaxValue, LayerMask.GetMask("Ground"))) {
-            buildingInstance.transform.position = hitInfo.point;
+            buildingInstance.transform.position = ToGrid(hitInfo.point);
 
             if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
                if (buildingInstance.Place()) {
@@ -60,6 +60,12 @@ public class Builder : Singleton<Builder> {
          }
       }
    }
+
+   private Vector3 ToGrid(Vector3 input) {
+      const int gridScale = 12;
+      return new Vector3((int)input.x / gridScale, 0, (int)input.z / gridScale) * gridScale + (new Vector3(1, 0, -1) * gridScale / 2);
+   }
+
 
    private bool CanBuild() {
       if (buildingInstance != null) {
