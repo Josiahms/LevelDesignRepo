@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ResourceLoader : Singleton<ResourceLoader> {
 
    [SerializeField]
-   private FilledCircle timerCirclePrefab;
-   public FilledCircle TimerCirclePreab { get { return timerCirclePrefab; } }
+   private WorkstationStatusUI timerCirclePrefab;
+   public WorkstationStatusUI TimerCirclePreab { get { return timerCirclePrefab; } }
   
    [SerializeField]
    private FloatingText floatingTextPrefab;

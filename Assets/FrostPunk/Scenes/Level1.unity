@@ -18480,6 +18480,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD
       objectReference: {fileID: 0}
+    - target: {fileID: 5597618443018937404, guid: 84282104cf319914d935dea244c6341b,
+        type: 3}
+      propertyPath: clockMinuteRate
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5597618443785189513, guid: 84282104cf319914d935dea244c6341b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -18584,11 +18589,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5597618443018937404, guid: 84282104cf319914d935dea244c6341b,
-        type: 3}
-      propertyPath: clockMinuteRate
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5597618443018937393, guid: 84282104cf319914d935dea244c6341b,
         type: 3}
@@ -18958,7 +18958,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &1408597055
 RectTransform:

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Selectable))]
 [RequireComponent(typeof(Assignable))]
@@ -17,11 +18,11 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    [Range(1, 900)]
    private int gatherPeriod = 5;
 
-   private FilledCircle timer;
+   private WorkstationStatusUI statusUI;
    private float progress;
 
    private void Awake() {
-      timer = FilledCircle.Instantiate(transform);
+      statusUI = WorkstationStatusUI.Instantiate(transform);
    }
 
    public int TakeFromPile(int amount) {
@@ -33,22 +34,36 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
          return amount;
       }
       Destroy(gameObject);
-      Destroy(timer.gameObject);
+      Destroy(statusUI.gameObject);
       return quantity;
    }
 
    private void Update() {
-      var workerCount = GetComponent<Assignable>().GetWorkersInRange();
-      if (workerCount == 0 || DayCycleManager.GetInstance().IsRestTime()) {
-         progress = 0;
-      } else if (!ResourceManager.GetInstance()[type].IsFull()) {
-         progress += Time.deltaTime * workerCount * DayCycleManager.GetInstance().ClockMinuteRate;
+      var assignable = GetComponent<Assignable>();
+
+      if (assignable.GetWorkerCount() == 0) {
+         statusUI.SetWorkerText("");
+      } else {
+         statusUI.SetWorkerText(assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees());
       }
+
+      if (ResourceManager.GetInstance()[type].IsFull()) {
+         statusUI.SetWarningActive(true);
+      } else {
+         statusUI.SetWarningActive(false);
+         progress += Time.deltaTime * assignable.GetWorkersInRange() * DayCycleManager.GetInstance().ClockMinuteRate;
+      }
+
+      if (assignable.GetWorkersInRange() == 0 || DayCycleManager.GetInstance().IsRestTime()) {
+         progress = 0;
+      }     
+
       var percentComplete = progress / gatherPeriod;
-      timer.SetFill(percentComplete);
+      statusUI.SetFill(percentComplete);
+      
       if (percentComplete > 1) {
          ResourceManager.GetInstance()[type].OffsetValue(TakeFromPile(1));
-         FloatingText.Instantiate(timer.transform, "+1 " + type.ToString());
+         FloatingText.Instantiate(statusUI.transform, "+1 " + type.ToString());
          progress = progress - gatherPeriod;
       }
    }
