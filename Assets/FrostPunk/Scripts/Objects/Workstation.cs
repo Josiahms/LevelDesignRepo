@@ -21,6 +21,8 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    private WorkstationStatusUI statusUI;
    private float progress;
 
+   public float PercentComplete { get { return progress / gatherPeriod; } }
+
    private void Awake() {
       statusUI = WorkstationStatusUI.Instantiate(transform);
    }
@@ -58,10 +60,9 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
          progress = 0;
       }     
 
-      var percentComplete = progress / gatherPeriod;
-      statusUI.SetFill(percentComplete);
+      statusUI.SetFill(PercentComplete);
       
-      if (percentComplete > 1) {
+      if (PercentComplete > 1) {
          ResourceManager.GetInstance()[type].OffsetValue(TakeFromPile(1));
          FloatingText.Instantiate(statusUI.transform, "+1 " + type.ToString());
          progress = progress - gatherPeriod;
