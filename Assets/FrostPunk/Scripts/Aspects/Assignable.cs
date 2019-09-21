@@ -10,6 +10,9 @@ public class Assignable : MonoBehaviour, ISaveable {
    private int maxAssignees = 5;
    public int GetMaxAssignees() { return maxAssignees; }
 
+   [SerializeField]
+   private List<Transform> spots;
+
    private List<Worker> workers = new List<Worker>();
 
    public void AddWorker() {
@@ -52,11 +55,19 @@ public class Assignable : MonoBehaviour, ISaveable {
    }
 
    public int GetWorkersInRange() {
-      return workers.Where(x => (x.transform.position - transform.position).magnitude < 1).Count();
+      return workers.Where(x => (x.transform.position - GetSpotForWorker(x).position).magnitude < 1).Count();
    }
 
    public int GetWorkerCount() {
       return workers.Count;
+   }
+
+   public Transform GetSpotForWorker(Worker worker) {
+      var index = workers.IndexOf(worker);
+      if (index < spots.Count) {
+         return spots[index];
+      } 
+      return transform;
    }
 
    public object OnSave() {
