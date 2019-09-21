@@ -50,7 +50,11 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       }
 
       if (ResourceManager.GetInstance()[type].IsFull()) {
-         statusUI.SetWarningActive(true);
+         if (assignable.GetWorkerCount() > 0) {
+            statusUI.SetWarningActive(true);
+         } else {
+            statusUI.SetWarningActive(false);
+         }
       } else {
          statusUI.SetWarningActive(false);
          progress += Time.deltaTime * assignable.GetWorkersInRange() * DayCycleManager.GetInstance().ClockMinuteRate;
