@@ -43,13 +43,18 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
 
    private void Zoom() {
       if (zoomLevel == CameraZoom.Free) {
-         var delta = Input.GetAxis("Mouse ScrollWheel");
-         var distance = Camera.main.transform.position.y - center.position.y;
-         if (delta < 0 && distance < 30) {
-            Camera.main.transform.position += Camera.main.transform.forward * delta * Time.deltaTime * zoomSpeed;
-         } else if (delta > 0 && distance > -30) {
-            Camera.main.transform.position += Camera.main.transform.forward * delta * Time.deltaTime * zoomSpeed;
+         var magnitude = 30;
+         var distance =   Camera.main.transform.position.y - center.position.y;
+         var distanceRemaining = magnitude - Mathf.Abs(distance);
+         var delta = Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomSpeed;
+
+         if (delta < 0 && -magnitude < distance && distanceRemaining < Mathf.Abs(delta)) {
+            delta = -distanceRemaining;
+         } else if (delta > 0 &&  magnitude > distance && distanceRemaining < Mathf.Abs(delta)) {
+            delta = distanceRemaining;
          }
+
+         Camera.main.transform.position += Camera.main.transform.forward * delta;
       }
    }
 
