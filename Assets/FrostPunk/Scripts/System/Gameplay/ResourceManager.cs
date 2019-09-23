@@ -8,6 +8,76 @@ public enum ResourceType { Wood, Stone, Metal, Food }
 
 public class GatherResourceEvent : UnityEvent<ResourceType, int> { }
 
+public class ResourceManager : Singleton<ResourceManager>, ISaveable {
+
+   [SerializeField]
+   private Text woodText;
+   [SerializeField]
+   private Text stoneText;
+   [SerializeField]
+   private Text metalText;
+   [SerializeField]
+   private Text foodText;
+
+   private Dictionary<ResourceType, Resource> resources;
+
+   private new void Awake() {
+      base.Awake();
+      resources = new Dictionary<ResourceType, Resource>();
+      resources.Add(ResourceType.Wood, new Resource(ResourceType.Wood, woodText));
+      resources.Add(ResourceType.Stone, new Resource(ResourceType.Stone, stoneText));
+      resources.Add(ResourceType.Metal, new Resource(ResourceType.Metal, metalText));
+      resources.Add(ResourceType.Food, new Resource(ResourceType.Food, foodText));
+   }
+
+   public Resource this[ResourceType i] {
+      get {
+         Resource result;
+         resources.TryGetValue(i, out result);
+         return result;
+      }
+   }
+
+   public bool CanAfford(int woodOffset, int stoneOffset, int metalOffset, int foodOffset) {
+      return resources[ResourceType.Wood].CanAfford(woodOffset) &&
+         resources[ResourceType.Stone].CanAfford(stoneOffset) &&
+         resources[ResourceType.Metal].CanAfford(metalOffset) &&
+         resources[ResourceType.Food].CanAfford(foodOffset);
+   }
+
+   public bool OffsetAll(int woodOffset, int stoneOffset, int metalOffset, int foodOffset) {
+      if (CanAfford(woodOffset, stoneOffset, metalOffset, foodOffset)) {
+         resources[ResourceType.Wood].OffsetValue(woodOffset);
+         resources[ResourceType.Stone].OffsetValue(stoneOffset);
+         resources[ResourceType.Metal].OffsetValue(metalOffset);
+         return true;
+      }
+      return false;
+   }
+
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      var savedResources = new Dictionary<ResourceType, object>();
+      foreach(var resource in resources) {
+         savedResources.Add(resource.Key, resource.Value.OnSave());
+      }
+      data.Add("resources", savedResources);
+      return data;
+   }
+
+   public void OnLoad(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      var savedResources = (Dictionary<ResourceType, object>)data["resources"];
+      foreach(var resource in savedResources) {
+         resources[resource.Key].OnLoad(resource.Value);
+      }
+   }
+
+   public void OnLoadDependencies(object savedData) {
+      // Ignored
+   }
+}
+
 public class Resource : ISaveable {
 
    public static GatherResourceEvent OnChangeEvent = new GatherResourceEvent();
@@ -85,76 +155,6 @@ public class Resource : ISaveable {
    }
 
    public void OnLoadDependencies(object data) {
-      // Ignored
-   }
-}
-
-public class ResourceManager : Singleton<ResourceManager>, ISaveable {
-
-   [SerializeField]
-   private Text woodText;
-   [SerializeField]
-   private Text stoneText;
-   [SerializeField]
-   private Text metalText;
-   [SerializeField]
-   private Text foodText;
-
-   private Dictionary<ResourceType, Resource> resources;
-
-   private new void Awake() {
-      base.Awake();
-      resources = new Dictionary<ResourceType, Resource>();
-      resources.Add(ResourceType.Wood, new Resource(ResourceType.Wood, woodText));
-      resources.Add(ResourceType.Stone, new Resource(ResourceType.Stone, stoneText));
-      resources.Add(ResourceType.Metal, new Resource(ResourceType.Metal, metalText));
-      resources.Add(ResourceType.Food, new Resource(ResourceType.Food, foodText));
-   }
-
-   public Resource this[ResourceType i] {
-      get {
-         Resource result;
-         resources.TryGetValue(i, out result);
-         return result;
-      }
-   }
-
-   public bool CanAfford(int woodOffset, int stoneOffset, int metalOffset, int foodOffset) {
-      return resources[ResourceType.Wood].CanAfford(woodOffset) &&
-         resources[ResourceType.Stone].CanAfford(stoneOffset) &&
-         resources[ResourceType.Metal].CanAfford(metalOffset) &&
-         resources[ResourceType.Food].CanAfford(foodOffset);
-   }
-
-   public bool OffsetAll(int woodOffset, int stoneOffset, int metalOffset, int foodOffset) {
-      if (CanAfford(woodOffset, stoneOffset, metalOffset, foodOffset)) {
-         resources[ResourceType.Wood].OffsetValue(woodOffset);
-         resources[ResourceType.Stone].OffsetValue(stoneOffset);
-         resources[ResourceType.Metal].OffsetValue(metalOffset);
-         return true;
-      }
-      return false;
-   }
-
-   public object OnSave() {
-      var data = new Dictionary<string, object>();
-      var savedResources = new Dictionary<ResourceType, object>();
-      foreach(var resource in resources) {
-         savedResources.Add(resource.Key, resource.Value.OnSave());
-      }
-      data.Add("resources", savedResources);
-      return data;
-   }
-
-   public void OnLoad(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      var savedResources = (Dictionary<ResourceType, object>)data["resources"];
-      foreach(var resource in savedResources) {
-         resources[resource.Key].OnLoad(resource.Value);
-      }
-   }
-
-   public void OnLoadDependencies(object savedData) {
       // Ignored
    }
 }

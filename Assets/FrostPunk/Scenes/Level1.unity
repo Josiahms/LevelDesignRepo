@@ -6617,6 +6617,16 @@ PrefabInstance:
       propertyPath: type
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: capacity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: startingAmount
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 430501f4382dd554b8d27eba453e120f, type: 3}
 --- !u!1001 &484775662
@@ -18770,6 +18780,16 @@ PrefabInstance:
       propertyPath: type
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: capacity
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: startingAmount
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 430501f4382dd554b8d27eba453e120f, type: 3}
 --- !u!4 &1398539883 stripped
@@ -19816,7 +19836,17 @@ PrefabInstance:
     - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
         type: 3}
       propertyPath: amount
-      value: 15
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: startingAmount
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: capacity
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 430501f4382dd554b8d27eba453e120f, type: 3}
@@ -22290,6 +22320,16 @@ PrefabInstance:
         type: 3}
       propertyPath: type
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: capacity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773862297116484206, guid: 430501f4382dd554b8d27eba453e120f,
+        type: 3}
+      propertyPath: startingAmount
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 430501f4382dd554b8d27eba453e120f, type: 3}
