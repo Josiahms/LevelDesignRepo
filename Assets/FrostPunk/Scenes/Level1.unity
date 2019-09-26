@@ -22163,6 +22163,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -268.401
       objectReference: {fileID: 0}
+    - target: {fileID: 31014292435655318, guid: 25f9913fae61c4544b02b31aab7a3a2d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fe9faeda88e344c428b88030c330e091, type: 2}
+    - target: {fileID: 31014293006418029, guid: 25f9913fae61c4544b02b31aab7a3a2d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fe9faeda88e344c428b88030c330e091, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25f9913fae61c4544b02b31aab7a3a2d, type: 3}
 --- !u!1001 &1632860785
@@ -29342,14 +29352,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   season: 0
   summerColor: {r: 0.42352945, g: 0.5176471, b: 0.19215688, a: 1}
-  winterColor: {r: 0.8329477, g: 0.91806215, b: 0.9245283, a: 1}
+  winterColor: {r: 0.7136436, g: 0.745283, b: 0.7357912, a: 1}
   seasonCurve:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  material: {fileID: 2100000, guid: af65c0942482e46aeb256506726ff0f7, type: 2}
+  materials:
+  - {fileID: 2100000, guid: af65c0942482e46aeb256506726ff0f7, type: 2}
+  - {fileID: 2100000, guid: fe9faeda88e344c428b88030c330e091, type: 2}
 --- !u!4 &2144372338
 Transform:
   m_ObjectHideFlags: 0

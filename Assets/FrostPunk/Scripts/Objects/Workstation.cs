@@ -21,7 +21,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    private WorkstationStatusUI statusUI;
    private float progress;
 
-   public bool canFunction;
+   public bool canFunction = true;
    public float PercentComplete { get { return progress / gatherPeriod; } }
 
    private void Awake() {

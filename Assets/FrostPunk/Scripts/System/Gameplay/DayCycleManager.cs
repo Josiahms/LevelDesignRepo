@@ -51,11 +51,6 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
 
          if (CurrentTimeOfDay > START_OF_DAY && CurrentTimeOfDay < MIN_END_WORK_DAY && !IsWorkDay()) {
             StartWorkDay();
-            if (Day / 10 % 2 == 0) {
-               SeasonManager.GetInstance().season = SeasonManager.Season.Winter;
-            } else {
-               SeasonManager.GetInstance().season = SeasonManager.Season.Summer;
-            }
          }
 
          var prevTime = (int)(currentTime / clockMinuteRate) * clockMinuteRate;

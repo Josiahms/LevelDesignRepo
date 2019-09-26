@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 [ExecuteInEditMode]
-public class SeasonManager : Singleton<SeasonManager> {
+public class SeasonManager : Singleton<SeasonManager>, ISaveable {
    public enum Season { Summer, Winter}
 
    [SerializeField]
@@ -41,6 +41,13 @@ public class SeasonManager : Singleton<SeasonManager> {
 
    private void UpdateSeason() {
       if (season != prevSeason && terrain != null) {
+
+         if (DayCycleManager.GetInstance().Day / 10 % 2 != 0) {
+            season = Season.Winter;
+         } else {
+            season = Season.Summer;
+         }
+
          if (season == Season.Summer) {
             materials.ForEach(x => x.color = summerColor);
             UpdateTerrainTexture(terrain.terrainData, 2, 0);
@@ -69,5 +76,20 @@ public class SeasonManager : Singleton<SeasonManager> {
       }
       // apply the new alpha
       terrainData.SetAlphamaps(0, 0, alphas);
+   }
+
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      data["season"] = season;
+      return data;
+   }
+
+   public void OnLoad(object data) {
+      var savedData = (Dictionary<string, object>)data;
+      season = (Season)savedData["season"];
+   }
+
+   public void OnLoadDependencies(object data) {
+      // Ignored
    }
 }
