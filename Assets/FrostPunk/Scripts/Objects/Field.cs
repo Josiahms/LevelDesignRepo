@@ -10,6 +10,7 @@ public class Field : MonoBehaviour {
 
    private void Update() {
       crops.localScale = new Vector3(crops.localScale.x, GetComponent<Workstation>().PercentComplete, crops.localScale.z);
+      GetComponent<Workstation>().canFunction = SeasonManager.GetInstance().season == SeasonManager.Season.Summer; 
    }
 
 }

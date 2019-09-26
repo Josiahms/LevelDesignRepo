@@ -21,6 +21,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    private WorkstationStatusUI statusUI;
    private float progress;
 
+   public bool canFunction;
    public float PercentComplete { get { return progress / gatherPeriod; } }
 
    private void Awake() {
@@ -49,7 +50,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
          statusUI.SetWorkerText(assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees());
       }
 
-      if (ResourceManager.GetInstance()[type].IsFull()) {
+      if (ResourceManager.GetInstance()[type].IsFull() || !canFunction) {
          if (assignable.GetWorkerCount() > 0) {
             statusUI.SetWarningActive(true);
          } else {
