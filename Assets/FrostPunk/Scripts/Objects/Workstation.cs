@@ -25,7 +25,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    public float PercentComplete { get { return progress / gatherPeriod; } }
 
    private void Awake() {
-      statusUI = WorkstationStatusUI.Instantiate(transform);
+      statusUI = WorkstationStatusUI.Instantiate(this);
    }
 
    public int TakeFromPile(int amount) {
@@ -41,31 +41,19 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       return quantity;
    }
 
+   public bool IsFunctioning() {
+      return !ResourceManager.GetInstance()[type].IsFull() && canFunction;
+   }
+
    private void Update() {
       var assignable = GetComponent<Assignable>();
-
-      if (assignable.GetWorkerCount() == 0) {
-         statusUI.SetWorkerText("");
-      } else {
-         statusUI.SetWorkerText(assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees());
-      }
-
-      if (ResourceManager.GetInstance()[type].IsFull() || !canFunction) {
-         if (assignable.GetWorkerCount() > 0) {
-            statusUI.SetWarningActive(true);
-         } else {
-            statusUI.SetWarningActive(false);
-         }
-      } else {
-         statusUI.SetWarningActive(false);
+      if (IsFunctioning()) {
          progress += Time.deltaTime * assignable.GetWorkersInRange() * DayCycleManager.GetInstance().ClockMinuteRate;
       }
 
       if (assignable.GetWorkersInRange() == 0 || DayCycleManager.GetInstance().IsRestTime()) {
          progress = 0;
-      }     
-
-      statusUI.SetFill(PercentComplete);
+      }
       
       if (PercentComplete > 1) {
          ResourceManager.GetInstance()[type].OffsetValue(TakeFromPile(1));

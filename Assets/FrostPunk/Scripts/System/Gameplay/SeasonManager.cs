@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 [ExecuteInEditMode]
 public class SeasonManager : Singleton<SeasonManager>, ISaveable {
@@ -32,6 +31,11 @@ public class SeasonManager : Singleton<SeasonManager>, ISaveable {
    }
 
    private void Update() {
+      if (DayCycleManager.GetInstance().Day > 15) {
+         season = Season.Winter;
+      } else {
+         season = Season.Summer;
+      }
       UpdateSeason();
    }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Workstation))]
 [RequireComponent(typeof(AttachUIToTarget))]
 public class WorkstationStatusUI : MonoBehaviour {
 
@@ -13,24 +14,35 @@ public class WorkstationStatusUI : MonoBehaviour {
    [SerializeField]
    private Text warning;
 
-   private AttachUIToTarget attacher;
+   private Workstation workstation;
+   private Assignable assignable;
 
-   public static WorkstationStatusUI Instantiate(Transform target) {
+   public static WorkstationStatusUI Instantiate(Workstation workstation) {
       var instance = Instantiate(ResourceLoader.GetInstance().TimerCirclePreab, MainCanvas.Get().transform);
       instance.transform.SetAsFirstSibling();
-      instance.GetComponent<AttachUIToTarget>().SetTarget(target);
+      instance.GetComponent<AttachUIToTarget>().SetTarget(workstation.transform);
+      instance.workstation = workstation;
+      instance.assignable = workstation.GetComponent<Assignable>();
       return instance;
    }
 
-   public void SetFill(float percent) {
-      circle.fillAmount= percent;
+   private void Start() {
+      Update();
    }
 
-   public void SetWorkerText(string text) {
-      workerText.text = text;
-   }
+   private void Update() {
+      circle.fillAmount = workstation.PercentComplete;
+      if (assignable.GetWorkerCount() == 0) {
+         workerText.text = "";
+      } else {
+         workerText.text = assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees();
+      }
 
-   public void SetWarningActive(bool isActive) {
-      warning.enabled = isActive;
+
+      if (!workstation.IsFunctioning() && assignable.GetWorkerCount() > 0) {
+         warning.enabled = true;
+      } else {
+         warning.enabled = false;
+      }
    }
 }

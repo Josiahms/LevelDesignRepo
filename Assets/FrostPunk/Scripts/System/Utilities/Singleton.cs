@@ -11,7 +11,9 @@ public class Singleton<T> : MonoBehaviour, ISingleton {
 
    protected void Awake() {
       if (instance != null) {
-         Destroy(gameObject);
+         if (!Application.isEditor) {
+            Destroy(gameObject);
+         }
       } else {
          instance = gameObject;
       }

@@ -11,7 +11,7 @@ public class AttachUIToTarget : MonoBehaviour {
       this.target = target;
    }
 
-   private void Update() {
+   private void LateUpdate() {
       if (target != null) {
          GetComponent<RectTransform>().anchoredPosition = Camera.main.WorldToScreenPoint(target.position);
       } else {
