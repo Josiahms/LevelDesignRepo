@@ -60,7 +60,7 @@ public class Worker : MonoBehaviour, ISaveable
 
       // 1 is normal speed;
       var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
-      if (speed <= 1) {
+      if (speed <= 2) {
          AnimatedWalk(speed);
       } else {
          animator.SetFloat("Turn", 0);
