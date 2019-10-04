@@ -12,7 +12,6 @@ public class FrameCounter : MonoBehaviour {
 
    private void Start() {
       text = GetComponent<Text>();
-      Application.targetFrameRate = -1;
    }
 
    private void Update() {

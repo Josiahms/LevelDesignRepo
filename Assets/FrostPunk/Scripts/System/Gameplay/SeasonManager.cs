@@ -27,15 +27,9 @@ public class SeasonManager : Singleton<SeasonManager>, ISaveable {
 
    private void Start() {
       terrain = FindObjectOfType<Terrain>();
-      Application.targetFrameRate = 60;
    }
 
    private void Update() {
-      if (DayCycleManager.GetInstance().Day > 15) {
-         season = Season.Winter;
-      } else {
-         season = Season.Summer;
-      }
       UpdateSeason();
    }
 
@@ -44,14 +38,16 @@ public class SeasonManager : Singleton<SeasonManager>, ISaveable {
    }
 
    private void UpdateSeason() {
-      if (season != prevSeason && terrain != null) {
 
+      if (Application.isPlaying && DayCycleManager.GetInstance() != null) {
          if (DayCycleManager.GetInstance().Day / 10 % 2 != 0) {
             season = Season.Winter;
          } else {
             season = Season.Summer;
          }
+      }
 
+      if (season != prevSeason && terrain != null) {
          if (season == Season.Summer) {
             materials.ForEach(x => x.color = summerColor);
             UpdateTerrainTexture(terrain.terrainData, 2, 0);
