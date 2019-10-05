@@ -2460,6 +2460,7 @@ GameObject:
   - component: {fileID: 2588129987468582733}
   - component: {fileID: 5007753001509996751}
   - component: {fileID: 7920802066746216132}
+  - component: {fileID: -7301704582825831048}
   m_Layer: 0
   m_Name: WatchTower
   m_TagString: Untagged
@@ -2548,6 +2549,20 @@ MonoBehaviour:
   stoneUpgradeCost: 0
   metalUpgradeCost: 0
   levels: []
+--- !u!114 &-7301704582825831048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310224928036534552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPath: Watchtower
+  savePosition: 1
 --- !u!1 &3318509342891345987
 GameObject:
   m_ObjectHideFlags: 0
