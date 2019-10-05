@@ -11,6 +11,7 @@ public interface IPlaceable {
 
 public class PlaceableEvent : UnityEvent<Placeable> { }
 
+[RequireComponent(typeof(Collider))]
 public class Placeable : MonoBehaviour, ISaveable {
 
    public static PlaceableEvent OnPlaceEvent = new PlaceableEvent();
@@ -58,12 +59,25 @@ public class Placeable : MonoBehaviour, ISaveable {
    private int level;
    private bool isLoaded;
 
+   private int blocked = 0;
+
    private void Start() {
-      if (GetComponent<Placeable>().IsPlaced() && !isLoaded) {
+      if (IsPlaced() && !isLoaded) {
          foreach (var placeable in GetComponents<IPlaceable>()) {
             placeable.OnPlace();
          }
       }
+
+      if (!IsPlaced()) {
+         var rb = gameObject.AddComponent<Rigidbody>();
+         rb.useGravity = false;
+         rb.isKinematic = false;
+         rb.constraints = RigidbodyConstraints.FreezeAll;
+      }
+   }
+
+   public bool IsBlocked() {
+      return !isPlaced && blocked > 0;
    }
 
    public bool Place() {
@@ -73,6 +87,7 @@ public class Placeable : MonoBehaviour, ISaveable {
             placeable.OnPlace();
          }
          OnPlaceEvent.Invoke(this);
+         Destroy(GetComponent<Rigidbody>());
          return true;
       }
       return false;
@@ -102,6 +117,18 @@ public class Placeable : MonoBehaviour, ISaveable {
          return true;
       }
       return false;
+   }
+
+   private void OnCollisionEnter(Collision collision) {
+      if (!isPlaced) {
+         blocked++;
+      }
+   }
+
+   private void OnCollisionExit(Collision collision) {
+      if (!isPlaced) {
+         blocked--;
+      }
    }
 
    public object OnSave() {

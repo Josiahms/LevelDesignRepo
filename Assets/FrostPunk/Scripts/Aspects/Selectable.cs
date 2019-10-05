@@ -8,6 +8,7 @@ public interface ISelectable {
    void OnDeselect();
 }
 
+[RequireComponent(typeof(Collider))]
 public class Selectable : MonoBehaviour {
 
    [SerializeField]

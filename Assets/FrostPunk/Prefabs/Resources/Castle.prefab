@@ -4021,7 +4021,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 12, y: 1, z: 12}
+  m_Size: {x: 11, y: 1, z: 11}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3546892348741040312
 GameObject:
@@ -7663,7 +7663,6 @@ GameObject:
   - component: {fileID: 1057956148716897764}
   - component: {fileID: 3030433261196225066}
   - component: {fileID: 4258704337827585706}
-  - component: {fileID: 4855292242918204590}
   m_Layer: 0
   m_Name: victorian_floor_flagstone
   m_TagString: Untagged
@@ -7732,20 +7731,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &4855292242918204590
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6520121386546583980}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: ed4d34d40c3b44b5ba1da98d54f227cd, type: 3}
 --- !u!1 &6571334378445199039
 GameObject:
   m_ObjectHideFlags: 0

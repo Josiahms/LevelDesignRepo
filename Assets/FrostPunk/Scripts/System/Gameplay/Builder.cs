@@ -57,7 +57,7 @@ public class Builder : Singleton<Builder> {
          if (Physics.Raycast(cameraRay, out hitInfo, float.MaxValue, LayerMask.GetMask("Ground"))) {
             buildingInstance.transform.position = ToGrid(hitInfo.point);
 
-            if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
+            if (CanBuild() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
                if (buildingInstance.Place()) {
                   buildingInstance.GetComponent<Selectable>().ChangeColor(Color.white);
                   buildingInstance = null;
@@ -81,8 +81,7 @@ public class Builder : Singleton<Builder> {
    private bool CanBuild() {
       if (buildingInstance != null) {
          if (ResourceManager.GetInstance().CanAfford(-buildingInstance.GetWoodCost(), -buildingInstance.GetStoneCost(), -buildingInstance.GetMetalCost(), 0)) {
-            // TODO: If the spot isn't blocked
-            return true;
+            return !buildingInstance.IsBlocked();
          }
       }
       return false;
