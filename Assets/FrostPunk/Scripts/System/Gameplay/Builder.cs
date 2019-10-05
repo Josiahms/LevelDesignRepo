@@ -39,6 +39,15 @@ public class Builder : Singleton<Builder> {
       RaycastHit hitInfo;
       if (buildingInstance != null) {
 
+         if (Input.GetKeyDown(KeyCode.R)) {
+            buildingInstance.transform.Rotate(new Vector3(0, 90, 0), Space.World);
+         }
+
+         if (Input.GetKeyDown(KeyCode.Escape)) {
+            ClearBuilding();
+            return;
+         }
+
          if (CanBuild()) {
             buildingInstance.GetComponent<Selectable>().ChangeColor(Color.green);
          } else {
@@ -56,6 +65,7 @@ public class Builder : Singleton<Builder> {
                }
             } else if (Input.GetMouseButtonUp(1)) {
                ClearBuilding();
+               return;
             }
          }
       }
@@ -63,7 +73,8 @@ public class Builder : Singleton<Builder> {
 
    private Vector3 ToGrid(Vector3 input) {
       const int gridScale = 12;
-      return new Vector3((int)input.x / gridScale, 0, (int)input.z / gridScale) * gridScale + (new Vector3(1, 0, -1) * gridScale / 2);
+      var offsetVect = new Vector3(input.x < 0 ? -1 : 1, 0, input.z < 0 ? -1 : 1) * gridScale / 2;
+      return new Vector3((int)input.x / gridScale, 0, (int)input.z / gridScale) * gridScale + offsetVect;
    }
 
 
