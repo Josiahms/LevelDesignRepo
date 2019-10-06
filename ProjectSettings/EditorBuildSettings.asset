@@ -6,12 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/FrostPunk/Scenes/Level1.unity
+    path: Assets/CityBuilder/Scenes/Level1.unity
     guid: 2eee0914abbdacb44ba1fd6f2789d1d9
   - enabled: 1
-    path: Assets/FrostPunk/Scenes/Map.unity
+    path: Assets/CityBuilder/Scenes/Map.unity
     guid: 97dd3a6e5ebec674fb954c5daee80764
   - enabled: 1
-    path: Assets/FrostPunk/Scenes/FrostPunk.unity
+    path: Assets/CityBuilder/Scenes/FrostPunk.unity
     guid: e3f90adb2aab0fc40889ceb506d7db90
   m_configObjects: {}
