@@ -19312,6 +19312,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD
       objectReference: {fileID: 0}
+    - target: {fileID: 5597618443018937404, guid: 84282104cf319914d935dea244c6341b,
+        type: 3}
+      propertyPath: clockMinuteRate
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5597618443785189513, guid: 84282104cf319914d935dea244c6341b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -19416,11 +19421,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5597618443018937404, guid: 84282104cf319914d935dea244c6341b,
-        type: 3}
-      propertyPath: clockMinuteRate
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5597618443018937393, guid: 84282104cf319914d935dea244c6341b,
         type: 3}
