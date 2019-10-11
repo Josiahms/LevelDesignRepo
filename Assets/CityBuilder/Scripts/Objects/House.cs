@@ -15,9 +15,7 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
    public int Capacity { get { return capacity; } }
 
    public void OnPlace() {
-      for (int i = 0; i < capacity; i++) {
-         workers.Add(Worker.Instantiate(this, spawnpoint.position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), spawnpoint.transform.rotation));
-      }
+      PopulationManager.GetInstance().AddHouse(this);
    }
 
    public void OnUpgrade() {
@@ -29,11 +27,7 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
    }
 
    public void OnRemove() {
-      workers.ForEach(x => {
-         if (x != null) {
-            Destroy(x.gameObject);
-         }
-      });
+      PopulationManager.GetInstance().RemoveHouse(this);
    }
 
    public object OnSave() {

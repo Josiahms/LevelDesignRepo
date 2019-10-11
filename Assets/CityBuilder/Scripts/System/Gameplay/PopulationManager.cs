@@ -86,6 +86,16 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
       idleWorkersText.text = idleWorkers.Count.ToString();
    }
 
+   public void AddHouse(House house) {
+      housingCapacity += house.Capacity;
+      populationText.text = populationSize + "/" + housingCapacity;
+   }
+
+   public void RemoveHouse(House house) {
+      housingCapacity -= house.Capacity;
+      populationText.text = populationSize + "/" + housingCapacity;
+   }
+
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("starvingPeople", starvingPeople);
