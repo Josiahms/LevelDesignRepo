@@ -40,7 +40,7 @@ public class SeasonManager : Singleton<SeasonManager>, ISaveable {
    private void UpdateSeason() {
 
       if (Application.isPlaying && DayCycleManager.GetInstance() != null) {
-         if (DayCycleManager.GetInstance().Day % 2 == 0) {
+         if (DayCycleManager.GetInstance().Day / 10 % 2 != 0) {
             season = Season.Winter;
          } else {
             season = Season.Summer;
