@@ -17,7 +17,7 @@ public class Assignable : MonoBehaviour, ISaveable {
 
    public void AddWorker() {
       if (workers.Count < maxAssignees) {
-         var worker = PopulationManager.GetInstance().PopNearestWorker(transform.position);
+         var worker = PopulationManager.GetInstance().GetNearestWorker(transform.position);
          if (worker != null) {
             workers.Add(worker);
             worker.SetDestination(this);
@@ -31,7 +31,6 @@ public class Assignable : MonoBehaviour, ISaveable {
             .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
             .OrderBy(x => x.House == null ? float.MaxValue : Vector3.Distance(x.House.transform.position, transform.position))
             .Last();
-         PopulationManager.GetInstance().PushWorker(worker);
          worker.SetDestination(null);
          workers.Remove(worker);
       }
@@ -45,7 +44,6 @@ public class Assignable : MonoBehaviour, ISaveable {
       try {
          var resourceManager = PopulationManager.GetInstance();
          foreach (var worker in workers) {
-            resourceManager.PushWorker(worker);
             worker.SetDestination(null);
          }
          workers.Clear();
