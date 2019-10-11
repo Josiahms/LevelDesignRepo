@@ -13,7 +13,7 @@ public class Worker : MonoBehaviour, ISaveable
    private Assignable assignedLocation;
    private bool createdFromSave;
 
-   public House House { get; private set; }
+   public House House { get; set; }
 
    public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
       var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);

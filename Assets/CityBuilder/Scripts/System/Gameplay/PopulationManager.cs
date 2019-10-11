@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    private int starvingPeople = 0;
-   private int housingCapacity;
 
    private List<Worker> workers = new List<Worker>();
    private List<Worker> IdleWorkers { get { return workers.Where(x => !x.IsAssigned()).ToList(); } }
+   private List<Worker> HomelessWorkers { get { return workers.Where(x => x.House == null).ToList(); } }
+
+   private List<House> houses = new List<House>();
 
    [SerializeField]
    private Text starvingPeopleText;
@@ -24,7 +26,7 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    }
 
    private void Update() {
-      populationText.text = workers.Count + "/" + housingCapacity;
+      populationText.text = workers.Count + "/" + houses.Sum(x => x.Capacity);
       idleWorkersText.text = IdleWorkers.Count.ToString();
       starvingPeopleText.text = starvingPeople.ToString();
    }
@@ -76,31 +78,42 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    }
 
    public void AddHouse(House house) {
-      housingCapacity += house.Capacity;
+      houses.Add(house);
    }
 
    public void RemoveHouse(House house) {
-      housingCapacity -= house.Capacity;
+      houses.Remove(house);
+   }
+
+   public House GetAvailableHome() {
+      var result = houses.Where(x => x.AvailableCapacity > 0).FirstOrDefault();
+      return result;
+   }
+
+   public List<Worker> GetHomelessWorkers(int amount) {
+      return HomelessWorkers.GetRange(0, Mathf.Min(amount, HomelessWorkers.Count));
    }
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("starvingPeople", starvingPeople);
       data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
-      data.Add("housingCapacity", housingCapacity);
+      data.Add("houses", houses.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
       return data;
    }
 
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       starvingPeople = (int)data["starvingPeople"];
-      housingCapacity = (int)data["housingCapacity"];
    }
 
    public void OnLoadDependencies(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       workers = ((int[])data["workers"])
          .Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>())
+         .ToList();
+      houses = ((int[])data["houses"])
+         .Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<House>())
          .ToList();
    }
 
