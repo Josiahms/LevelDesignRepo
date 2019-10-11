@@ -32,7 +32,7 @@ public class Saveable : MonoBehaviour {
       savedIndex = Interlocked.Increment(ref sharedIndex);
       var saveExists = File.Exists(Application.persistentDataPath + "/game.fun");
       if (!SceneManager.GetActiveScene().isLoaded && saveExists && GetComponent<ISingleton>() == null) {
-         Destroy(gameObject);
+         DestroyImmediate(gameObject);
       } else {
          SaveManager.GetInstance().RegisterEntity(this);
       }

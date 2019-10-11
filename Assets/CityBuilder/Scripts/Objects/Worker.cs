@@ -11,6 +11,7 @@ public class Worker : MonoBehaviour, ISaveable
    private Animator animator;
    private Transform currentDestination;
    private Assignable assignedLocation;
+   private bool createdFromSave;
 
    public House House { get; private set; }
 
@@ -23,6 +24,12 @@ public class Worker : MonoBehaviour, ISaveable
 
    private void Awake() {
       animator = GetComponent<Animator>();
+   }
+
+   private void Start() {
+      if (!createdFromSave) {
+         PopulationManager.GetInstance().AddToWorkforce(this);
+      }
    }
 
    private void OnDestroy() {
@@ -38,7 +45,7 @@ public class Worker : MonoBehaviour, ISaveable
    }
 
    public void SetDestination(Assignable destination) {
-      this.assignedLocation = destination;
+      assignedLocation = destination;
    }
 
    public bool IsAssigned() {
@@ -47,7 +54,7 @@ public class Worker : MonoBehaviour, ISaveable
 
    private void Update() {
       if (DayCycleManager.GetInstance().IsRestTime()) {
-         currentDestination = House.transform;
+         currentDestination = House == null ? null : House.transform;
       } else {
          currentDestination = assignedLocation == null ? null : assignedLocation.GetSpotForWorker(this);
       }
@@ -96,19 +103,25 @@ public class Worker : MonoBehaviour, ISaveable
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("destination", assignedLocation != null ? assignedLocation.GetComponent<Saveable>().GetSavedIndex() : -1);
-      data.Add("house", House.GetComponent<Saveable>().GetSavedIndex());
+      data.Add("house", House == null ? null : (int?)House.GetComponent<Saveable>().GetSavedIndex());
       return data;
    }
 
    public void OnLoad(object savedData) {
-      // Ignored
+      var data = (Dictionary<string, object>)savedData;
+      createdFromSave = true;
    }
 
    public void OnLoadDependencies(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("house", out result)) {
-         House = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<House>();
+         var houseIndex = (int?)result;
+         if (houseIndex.HasValue) {
+            House = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(houseIndex.Value).GetComponent<House>();
+         } else {
+            House = null;
+         }
       }
       if (data.TryGetValue("destination", out result)) {
          assignedLocation = (int)result == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Assignable>();

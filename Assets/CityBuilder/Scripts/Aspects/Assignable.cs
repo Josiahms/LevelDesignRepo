@@ -29,7 +29,7 @@ public class Assignable : MonoBehaviour, ISaveable {
       if (workers.Count > 0) {
          var worker = workers
             .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
-            .OrderBy(x => Vector3.Distance(x.House.transform.position, transform.position))
+            .OrderBy(x => x.House == null ? float.MaxValue : Vector3.Distance(x.House.transform.position, transform.position))
             .Last();
          PopulationManager.GetInstance().PushWorker(worker);
          worker.SetDestination(null);

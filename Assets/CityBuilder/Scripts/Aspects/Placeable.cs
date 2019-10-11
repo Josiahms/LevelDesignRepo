@@ -57,12 +57,12 @@ public class Placeable : MonoBehaviour, ISaveable {
    private List<GameObject> levels;
 
    private int level;
-   private bool isLoaded;
+   private bool createdFromSave;
 
    private int blocked = 0;
 
    private void Start() {
-      if (IsPlaced() && !isLoaded) {
+      if (IsPlaced() && !createdFromSave) {
          foreach (var placeable in GetComponents<IPlaceable>()) {
             placeable.OnPlace();
          }
@@ -157,7 +157,7 @@ public class Placeable : MonoBehaviour, ISaveable {
          levels[0].SetActive(false);
          levels[Mathf.Min(level, levels.Count - 1)].SetActive(true);
       }
-      isLoaded = true;
+      createdFromSave = true;
    }
 
    public void OnLoadDependencies(object savedData) {

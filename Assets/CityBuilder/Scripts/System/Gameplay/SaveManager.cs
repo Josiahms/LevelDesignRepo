@@ -121,7 +121,7 @@ public class SaveManager : Singleton<SaveManager> {
       }
    }
 
-   private void Load() {
+   private void Load() {      
       if (!File.Exists(Application.persistentDataPath + "/game.fun")) {
          return;
       }
