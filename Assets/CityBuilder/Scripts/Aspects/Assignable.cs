@@ -53,7 +53,7 @@ public class Assignable : MonoBehaviour, ISaveable {
    }
 
    public int GetWorkersInRange() {
-      return workers.Where(x => (x.transform.position - GetSpotForWorker(x).position).magnitude < 1).Count();
+      return workers.Where(x => DayCycleManager.GetInstance().IsWorkDay() && (x.transform.position - GetSpotForWorker(x).position).magnitude < 1).Count();
    }
 
    public int GetWorkerCount() {

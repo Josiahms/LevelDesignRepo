@@ -8860,7 +8860,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4095853662096090, guid: d46fbda4f04985547b45fa324d08dd7a, type: 3}
       propertyPath: m_RootOrder
-      value: 24
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 4095853662096090, guid: d46fbda4f04985547b45fa324d08dd7a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -9471,6 +9471,8 @@ MonoBehaviour:
   tutorialPopupDown: {fileID: 3943874002839966930, guid: 5653ccc64d361df49a6a2d90f0323545,
     type: 3}
   workerPrefab: {fileID: 7595047890322914520, guid: 27978ff568f08e44ca5bc24b5d3a53d3,
+    type: 3}
+  buildSite: {fileID: -5758245318579497994, guid: c2c33381d72bd384693434c3fbb700d5,
     type: 3}
 --- !u!224 &733276291
 RectTransform:
@@ -15107,7 +15109,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4095853662096090, guid: d46fbda4f04985547b45fa324d08dd7a, type: 3}
       propertyPath: m_RootOrder
-      value: 23
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 4095853662096090, guid: d46fbda4f04985547b45fa324d08dd7a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

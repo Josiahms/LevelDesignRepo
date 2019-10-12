@@ -58,10 +58,9 @@ public class Builder : Singleton<Builder> {
             buildingInstance.transform.position = ToGrid(hitInfo.point);
 
             if (CanBuild() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-               if (buildingInstance.Place()) {
-                  buildingInstance.GetComponent<Selectable>().ChangeColor(Color.white);
+               if (BuildSite.Instantiate(buildingInstance)) {
                   buildingInstance = null;
-                  SetBuilding(buildingPrefab, hitInfo.point);
+                  Selectable.Enable();
                }
             } else if (Input.GetMouseButtonUp(1)) {
                ClearBuilding();

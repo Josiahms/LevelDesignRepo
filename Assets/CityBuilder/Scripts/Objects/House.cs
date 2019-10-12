@@ -8,6 +8,8 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
    [SerializeField]
    private Transform spawnpoint;
    [SerializeField]
+   private NightActivator nightLight;
+   [SerializeField]
    private List<Worker> workers = new List<Worker>();
 
    [SerializeField]
@@ -15,12 +17,19 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
    public int Capacity { get { return capacity; }}
    public int AvailableCapacity { get { return capacity - workers.Count;  } }
 
+   private void Start() {
+      if (!GetComponent<Placeable>().IsPlaced()) {
+         nightLight.ForceOff = true;
+      }
+   }
+
    public void OnPlace() {
       PopulationManager.GetInstance().AddHouse(this);
       workers = PopulationManager.GetInstance().GetHomelessWorkers(capacity);
       foreach (var worker in workers) {
          worker.House = this;
       }
+      nightLight.ForceOff = false;
    }
 
    public void OnRemove() {

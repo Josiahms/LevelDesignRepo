@@ -126,6 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnpoint: {fileID: 1272417965}
+  nightLight: {fileID: 7627330728876522645}
   workers: []
   capacity: 5
 --- !u!114 &1061948849

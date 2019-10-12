@@ -28,4 +28,8 @@ public class ResourceLoader : Singleton<ResourceLoader> {
    [SerializeField]
    private Worker workerPrefab;
    public Worker WorkerPrefab { get { return workerPrefab; } }
+
+   [SerializeField]
+   private BuildSite buildSite;
+   public BuildSite BuildSite { get { return buildSite; } }
 }

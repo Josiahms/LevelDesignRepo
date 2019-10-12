@@ -42,7 +42,7 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
       var percentFull = (float)ResourceManager.GetInstance()[type].Amount / ResourceManager.GetInstance()[type].Capacity;
       var numEnabled = contents.Count * percentFull;
       for (int i = 0; i < contents.Count; i++) {
-         contents[i].SetActive(i < numEnabled);
+         contents[i].SetActive(i < numEnabled && GetComponent<Placeable>().IsPlaced());
       }
    }
 
