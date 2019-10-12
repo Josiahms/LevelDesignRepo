@@ -357,7 +357,7 @@ MonoBehaviour:
   stoneCost: 0
   metalCost: 0
   isPlaced: 0
-  destructable: 0
+  destructable: 1
   upgradeable: 1
   woodUpgradeCost: 30
   stoneUpgradeCost: 10
@@ -376,7 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Storage
-  description: Provides some storage for all resources
+  description: Provides storage for stone
 --- !u!114 &5773862297116484206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,7 +390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  capacity: 0
+  capacity: 25
   startingAmount: 0
   contents:
   - {fileID: 4225599924825044668}
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabPath: Storage_Wood
+  prefabPath: Storage_Stone
   savePosition: 1
 --- !u!65 &8575450302122306406
 BoxCollider:

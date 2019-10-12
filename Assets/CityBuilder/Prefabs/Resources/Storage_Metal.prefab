@@ -357,11 +357,12 @@ MonoBehaviour:
   stoneCost: 30
   metalCost: 0
   isPlaced: 0
-  destructable: 0
+  destructable: 1
   upgradeable: 1
   woodUpgradeCost: 80
   stoneUpgradeCost: 40
   metalUpgradeCost: 10
+  levels: []
 --- !u!114 &5773862297116484193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,7 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Storage
-  description: Provides some storage for all resources
+  description: Provides storage for metal
 --- !u!114 &5773862297116484206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,7 +390,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  amount: 10
+  capacity: 25
+  startingAmount: 0
   contents:
   - {fileID: 4225599924825044668}
   - {fileID: 4225599924733956729}

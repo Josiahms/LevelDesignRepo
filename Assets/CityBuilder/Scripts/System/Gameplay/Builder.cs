@@ -58,10 +58,10 @@ public class Builder : Singleton<Builder> {
             buildingInstance.transform.position = ToGrid(hitInfo.point);
 
             if (CanBuild() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-               if (BuildSite.Instantiate(buildingInstance)) {
-                  buildingInstance = null;
-                  Selectable.Enable();
-               }
+               ResourceManager.GetInstance().OffsetAll(-buildingInstance.GetWoodCost(), -buildingInstance.GetStoneCost(), -buildingInstance.GetMetalCost(), 0);
+               BuildSite.Instantiate(buildingInstance);
+               buildingInstance = null;
+               Selectable.Enable();
             } else if (Input.GetMouseButtonUp(1)) {
                ClearBuilding();
                return;

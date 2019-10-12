@@ -80,17 +80,13 @@ public class Placeable : MonoBehaviour, ISaveable {
       return !isPlaced && blocked > 0;
    }
 
-   public bool Place() {
-      if (ResourceManager.GetInstance().OffsetAll(-woodCost, -stoneCost, -metalCost, 0)) {
-         isPlaced = true;
-         foreach (var placeable in GetComponents<IPlaceable>()) {
-            placeable.OnPlace();
-         }
-         OnPlaceEvent.Invoke(this);
-         Destroy(GetComponent<Rigidbody>());
-         return true;
+   public void Place() {
+      isPlaced = true;
+      foreach (var placeable in GetComponents<IPlaceable>()) {
+         placeable.OnPlace();
       }
-      return false;
+      OnPlaceEvent.Invoke(this);
+      Destroy(GetComponent<Rigidbody>());
    }
 
    public void Remove() {

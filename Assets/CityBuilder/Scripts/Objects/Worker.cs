@@ -78,7 +78,7 @@ public class Worker : MonoBehaviour, ISaveable
    }
 
    private void TeleportWalk(float speed) {
-      transform.LookAt(currentDestination);
+      transform.LookAt(new Vector3(currentDestination.position.x, transform.position.y, currentDestination.position.z));
       var distance = currentDestination.position - transform.position;
       transform.position += Vector3.ClampMagnitude(distance, speed * Time.deltaTime * 10);
    }
