@@ -360,8 +360,8 @@ MonoBehaviour:
   isPlaced: 0
   destructable: 1
   upgradeable: 1
-  woodUpgradeCost: 30
-  stoneUpgradeCost: 10
+  woodUpgradeCost: 25
+  stoneUpgradeCost: 0
   metalUpgradeCost: 0
   levels: []
 --- !u!114 &5773862297116484193

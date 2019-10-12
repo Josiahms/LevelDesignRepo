@@ -23,7 +23,7 @@ public class BuildSite : MonoBehaviour, ISaveable {
 
 
    private void Update() {
-      var deltaPercent = Time.deltaTime * buildSpeed * GetComponent<Assignable>().GetWorkersInRange();
+      var deltaPercent = DayCycleManager.GetInstance().ClockMinuteRate / 5 * Time.deltaTime * buildSpeed * GetComponent<Assignable>().GetWorkersInRange();
       percentComplete += deltaPercent;
       pendingInstance.transform.position += new Vector3(0, (deltaPercent / 100) * DELTA_Y, 0);
       if (percentComplete >= 100) {

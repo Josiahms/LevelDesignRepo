@@ -522,6 +522,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58030188}
   m_CullTransparentMesh: 0
+--- !u!1 &60404281
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 60404282}
+  - component: {fileID: 60404283}
+  m_Layer: 0
+  m_Name: WorkerSpawnpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &60404282
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60404281}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 35.5, y: 0, z: -64.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1674502391}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &60404283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60404281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d42a6c5e50ee824585393c000ce4b5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnHour: 11
+  spawnpoint: {fileID: 60404282}
+  populationText: {fileID: 1388845722}
 --- !u!1001 &65855319
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1538,6 +1584,49 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
+--- !u!1 &130049858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 130049859}
+  - component: {fileID: 130049860}
+  m_Layer: 0
+  m_Name: DefaultGatheringPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &130049859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130049858}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 26.2, y: 0, z: -76.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1674502391}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &130049860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130049858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bd9c8877a099624e9b2e7643b0f34fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &130442658
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4796,7 +4885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf8156a9c144fe4cacb9b8812c56265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 5773862297116484192, guid: 15f120d8fe0599d4cb827c71e7b5d92a,
+  buildingPrefab: {fileID: 5773862297116484192, guid: 52db9aa84975af841b34144bd4900775,
     type: 3}
   buildDrawer: {fileID: 156431462}
   additionalGraphics:
@@ -16907,7 +16996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf8156a9c144fe4cacb9b8812c56265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 5773862297116484192, guid: 0f9f4581bf2d4d8468b38bf0a789207f,
+  buildingPrefab: {fileID: 5773862297116484192, guid: c734d94c11ca38848ae7eba4ad2b536e,
     type: 3}
   buildDrawer: {fileID: 156431462}
   additionalGraphics:
@@ -23326,6 +23415,8 @@ Transform:
   - {fileID: 1022201159}
   - {fileID: 1517612963}
   - {fileID: 1266011317}
+  - {fileID: 60404282}
+  - {fileID: 130049859}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -29664,7 +29755,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf8156a9c144fe4cacb9b8812c56265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 5773862297116484192, guid: e48b9b3f2ed9fe449a6479afbd36dba4,
+  buildingPrefab: {fileID: 5773862297116484192, guid: d5083403497f9ff45ab61d420cdac637,
     type: 3}
   buildDrawer: {fileID: 156431462}
   additionalGraphics:

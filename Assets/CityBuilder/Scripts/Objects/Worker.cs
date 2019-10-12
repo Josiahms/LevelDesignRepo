@@ -11,13 +11,14 @@ public class Worker : MonoBehaviour, ISaveable
    private Animator animator;
    private Transform currentDestination;
    private Assignable assignedLocation;
-   private bool createdFromSave;
+   private bool createdFromScene = true;
 
    public House House { get; set; }
 
    public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
       var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);
       result.House = house;
+      result.createdFromScene = false;
       PopulationManager.GetInstance().AddToWorkforce(result);
       return result;
    }
@@ -27,7 +28,7 @@ public class Worker : MonoBehaviour, ISaveable
    }
 
    private void Start() {
-      if (!createdFromSave) {
+      if (createdFromScene) {
          PopulationManager.GetInstance().AddToWorkforce(this);
       }
    }
@@ -54,7 +55,7 @@ public class Worker : MonoBehaviour, ISaveable
 
    private void Update() {
       if (DayCycleManager.GetInstance().IsRestTime()) {
-         currentDestination = House == null ? null : House.transform;
+         currentDestination = House == null ? DefaultGatheringPoint.GetInstance().transform : House.transform;
       } else {
          currentDestination = assignedLocation == null ? null : assignedLocation.GetSpotForWorker(this);
       }
@@ -109,7 +110,7 @@ public class Worker : MonoBehaviour, ISaveable
 
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
-      createdFromSave = true;
+      createdFromScene = false;
    }
 
    public void OnLoadDependencies(object savedData) {
