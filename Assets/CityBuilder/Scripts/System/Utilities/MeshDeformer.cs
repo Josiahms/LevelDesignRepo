@@ -16,6 +16,10 @@ public class MeshDeformer : MonoBehaviour {
    }
 
    private void Update() {
+      if (rootObject == null) {
+         return;
+      }
+
       var distanceVect = transform.position - rootObject.transform.position;
       if ((distanceVect - prevDistanceVect).magnitude > 0.1f) {
          DeformMeshAndContinue(rootObject);
