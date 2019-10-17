@@ -155,7 +155,7 @@ public class SaveManager : Singleton<SaveManager> {
                      instance.transform.rotation = rotation;
                   }
                } else {
-                  throw new Exception("Saved entity has no prefab and is not a singleton");
+                  throw new Exception("Saved entity " + savedEntity.prefabPath + " has no prefab and is not a singleton");
                }
             } else {
                var prefab = (GameObject)Resources.Load(savedEntity.prefabPath);

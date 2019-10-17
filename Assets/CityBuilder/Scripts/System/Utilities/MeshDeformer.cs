@@ -1,29 +1,38 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MeshDeformer : MonoBehaviour {
+public class MeshDeformer : MonoBehaviour, ISaveable {
 
    [SerializeField]
-   private Transform rootObject;
+   private List<Transform> rootObjects;
 
    private Dictionary<Transform, Vector3[]> originalVerticiesStore;
-   private Vector3 prevDistanceVect;
+   private Dictionary<Transform, Vector3> prevDistanceVectStore = new Dictionary<Transform, Vector3>();
 
    private void Start() {
       originalVerticiesStore = new Dictionary<Transform, Vector3[]>();
-      InitializeAndContinue(rootObject);
+      foreach (var rootObject in rootObjects) {
+         InitializeAndContinue(rootObject);
+      }
    }
 
    private void Update() {
-      if (rootObject == null) {
+      if (rootObjects.Count == 0) {
          return;
       }
 
-      var distanceVect = transform.position - rootObject.transform.position;
-      if ((distanceVect - prevDistanceVect).magnitude > 0.1f) {
-         DeformMeshAndContinue(rootObject);
-         prevDistanceVect = distanceVect;
+      foreach (var rootObject in rootObjects) {
+         var distanceVect = transform.position - rootObject.transform.position;
+         if (!prevDistanceVectStore.ContainsKey(rootObject)) {
+            prevDistanceVectStore.Add(rootObject, distanceVect + Vector3.one);
+         }
+
+         if ((distanceVect - prevDistanceVectStore[rootObject]).magnitude > 0.1f) {
+            DeformMeshAndContinue(rootObject, rootObject.position);
+            prevDistanceVectStore[rootObject] = distanceVect;
+         }
       }
    }
 
@@ -33,7 +42,6 @@ public class MeshDeformer : MonoBehaviour {
       } else {
          return meshFilter.sharedMesh;
       }
-
    }
 
    private void InitializeAndContinue(Transform meshTransform) {
@@ -57,7 +65,7 @@ public class MeshDeformer : MonoBehaviour {
       }
    }
 
-   private void DeformMeshAndContinue(Transform meshTransform) {
+   private void DeformMeshAndContinue(Transform meshTransform, Vector3 rootPosition) {
       if (originalVerticiesStore == null) {
          Start();
          return;
@@ -71,16 +79,16 @@ public class MeshDeformer : MonoBehaviour {
          var originalVerticies = originalVerticiesStore[meshTransform];
          var meshFilter = meshTransform.GetComponent<MeshFilter>();
          if (meshFilter != null && originalVerticies != null && GetMesh(meshFilter).vertices.Length == originalVerticies.Length) {
-            DeformMesh(originalVerticies, meshTransform, GetMesh(meshFilter));
+            DeformMesh(originalVerticies, meshTransform, rootPosition, GetMesh(meshFilter));
          }
       }
 
       for (int i = 0; i < meshTransform.childCount; i++) {
-         DeformMeshAndContinue(meshTransform.GetChild(i));
+         DeformMeshAndContinue(meshTransform.GetChild(i), rootPosition);
       }
    }
 
-   private void DeformMesh(Vector3[] originalVerticies, Transform meshTransform, Mesh mesh) {
+   private void DeformMesh(Vector3[] originalVerticies, Transform meshTransform, Vector3 rootPosition, Mesh mesh) {
       if (originalVerticies == null || mesh == null || originalVerticies.Length != mesh.vertices.Length) {
          Start();
          return;
@@ -88,15 +96,11 @@ public class MeshDeformer : MonoBehaviour {
 
       Vector3[] displacedVertices = new Vector3[mesh.vertices.Length];
       for (int i = 0; i < mesh.vertices.Length; i++) {
-         displacedVertices[i] = CircleDeform(meshTransform, originalVerticies[i], transform.position);
+         var absolutePosition = meshTransform.localToWorldMatrix.MultiplyPoint(originalVerticies[i]);
+         var relativePosition = meshTransform.worldToLocalMatrix.MultiplyPoint(GetNewPosition(absolutePosition, rootPosition, transform.position));
+         displacedVertices[i] = relativePosition;
       }
       mesh.vertices = displacedVertices;
-   }
-
-   private Vector3 CircleDeform(Transform meshTransform, Vector3 point, Vector3 deformationPoint) {
-      var absolutePoint = meshTransform.localToWorldMatrix.MultiplyPoint(point);
-      var newPoint = GetNewPosition(absolutePoint, rootObject.position, deformationPoint);
-      return meshTransform.worldToLocalMatrix.MultiplyPoint(newPoint);
    }
 
    private Vector3 GetNewPosition(Vector3 point, Vector3 meshCenter, Vector3 pivot) {
@@ -117,5 +121,20 @@ public class MeshDeformer : MonoBehaviour {
 
       var result = Quaternion.FromToRotation(Vector3.right, circleRadius) * newPosition + pivot;
       return new Vector3(result.x, originalY, result.z);
+   }
+
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      data.Add("rootObjects", rootObjects.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
+      return data;
+   }
+
+   public void OnLoad(object data) {
+      // Ignored
+   }
+
+   public void OnLoadDependencies(object data) {
+      var savedData = (Dictionary<string, object>)data;
+      rootObjects = ((int[])savedData["rootObjects"]).Select(x => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(x).GetComponent<Transform>()).ToList();
    }
 }
