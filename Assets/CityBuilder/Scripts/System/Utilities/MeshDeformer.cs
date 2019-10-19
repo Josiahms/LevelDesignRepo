@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MeshDeformer : MonoBehaviour, ISaveable {
+public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
 
    [SerializeField]
    private List<Transform> rootObjects;
 
    private Dictionary<Transform, Vector3[]> originalVerticiesStore;
-   private Dictionary<Transform, Vector3> prevDistanceVectStore = new Dictionary<Transform, Vector3>();
+   private Dictionary<Transform, float> prevLocationStore = new Dictionary<Transform, float>();
 
    private void Start() {
       originalVerticiesStore = new Dictionary<Transform, Vector3[]>();
@@ -18,29 +18,34 @@ public class MeshDeformer : MonoBehaviour, ISaveable {
       }
    }
 
+   public void AddMesh(Transform mesh) {
+      rootObjects.Add(mesh);
+      InitializeAndContinue(mesh);
+   }
+
+   public void RemoveMesh(Transform mesh) {
+      rootObjects.Remove(mesh);
+      originalVerticiesStore.Remove(mesh);
+      prevLocationStore.Remove(mesh);
+   }
+
    private void Update() {
       if (rootObjects.Count == 0) {
          return;
       }
 
       foreach (var rootObject in rootObjects) {
-         var distanceVect = transform.position - rootObject.transform.position;
-         if (!prevDistanceVectStore.ContainsKey(rootObject)) {
-            prevDistanceVectStore.Add(rootObject, distanceVect + Vector3.one);
+
+         if (!prevLocationStore.ContainsKey(rootObject)) {
+            prevLocationStore.Add(rootObject, 0);
          }
 
-         if ((distanceVect - prevDistanceVectStore[rootObject]).magnitude > 0.1f) {
+         var prevDistance = prevLocationStore[rootObject];
+         var currentDistance = (transform.position - rootObject.position).magnitude;
+         if (Mathf.Abs(currentDistance - prevDistance) > 1) {
             DeformMeshAndContinue(rootObject, rootObject.position);
-            prevDistanceVectStore[rootObject] = distanceVect;
+            prevLocationStore[rootObject] = currentDistance;
          }
-      }
-   }
-
-   private Mesh GetMesh(MeshFilter meshFilter) {
-      if (Application.isPlaying) {
-         return meshFilter.mesh;
-      } else {
-         return meshFilter.sharedMesh;
       }
    }
 
@@ -121,6 +126,14 @@ public class MeshDeformer : MonoBehaviour, ISaveable {
 
       var result = Quaternion.FromToRotation(Vector3.right, circleRadius) * newPosition + pivot;
       return new Vector3(result.x, originalY, result.z);
+   }
+
+   private Mesh GetMesh(MeshFilter meshFilter) {
+      if (Application.isPlaying) {
+         return meshFilter.mesh;
+      } else {
+         return meshFilter.sharedMesh;
+      }
    }
 
    public object OnSave() {

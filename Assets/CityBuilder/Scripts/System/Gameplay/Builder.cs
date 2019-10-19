@@ -22,12 +22,14 @@ public class Builder : Singleton<Builder> {
       }
       this.buildingPrefab = buildingPrefab;
       buildingInstance = Instantiate(buildingPrefab, position, buildingPrefab.transform.rotation);
+      MeshDeformer.GetInstance().AddMesh(buildingInstance.transform);
       Selectable.Deselect();
       Selectable.Disable();
    }
 
    public void ClearBuilding() {
       if (buildingInstance != null) {
+         MeshDeformer.GetInstance().RemoveMesh(buildingInstance.transform);
          buildingInstance.Remove();
          buildingInstance = null;
          Selectable.Enable();
@@ -56,6 +58,7 @@ public class Builder : Singleton<Builder> {
 
          if (Physics.Raycast(cameraRay, out hitInfo, float.MaxValue, LayerMask.GetMask("Ground"))) {
             buildingInstance.transform.position = ToGrid(hitInfo.point);
+            buildingInstance.transform.LookAt(MeshDeformer.GetInstance().transform);
 
             if (CanBuild() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
                ResourceManager.GetInstance().OffsetAll(-buildingInstance.GetWoodCost(), -buildingInstance.GetStoneCost(), -buildingInstance.GetMetalCost(), 0);
@@ -71,9 +74,22 @@ public class Builder : Singleton<Builder> {
    }
 
    private Vector3 ToGrid(Vector3 input) {
-      const int gridScale = 12;
-      var offsetVect = new Vector3(input.x < 0 ? -1 : 1, 0, input.z < 0 ? -1 : 1) * gridScale / 2;
-      return new Vector3((int)input.x / gridScale, 0, (int)input.z / gridScale) * gridScale + offsetVect;
+      const int GRID_SACLE = 12;
+      const int MIN_NUMBER = 8;
+
+      var center = Vector3.Scale(MeshDeformer.GetInstance().transform.position, new Vector3(1, 0, 1));
+      var distanceVect = Vector3.Scale(input, new Vector3(1, 0, 1)) - center;
+      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distanceVect.magnitude + 6) / (GRID_SACLE / 2 / Mathf.PI)), MIN_NUMBER);
+      var numBuildingsSnapped = ((numBuildingsInCircle - 8) / 8 * 8) + 8;
+      var radius = numBuildingsSnapped * GRID_SACLE / 2 / Mathf.PI;
+
+      var currentAngle = Vector3.SignedAngle(new Vector3(1, 0, 0), distanceVect, Vector3.down);
+      var angleIncrement = 360f / numBuildingsSnapped;
+      var snappedAngle = Mathf.Floor((currentAngle + angleIncrement / 2f) / angleIncrement) * angleIncrement;
+
+      var snappedAngleVect = new Vector3(Mathf.Cos(Mathf.Deg2Rad * snappedAngle), 0, Mathf.Sin(Mathf.Deg2Rad * snappedAngle));
+
+      return center + radius * snappedAngleVect;
    }
 
 
