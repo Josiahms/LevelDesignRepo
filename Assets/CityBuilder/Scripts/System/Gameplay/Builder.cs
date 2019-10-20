@@ -74,7 +74,6 @@ public class Builder : Singleton<Builder> {
 
    private Vector3 ToGrid(Vector3 input) {
       const int BUILDING_WIDTH = 12;
-      const int HALF_GRID = BUILDING_WIDTH / 2;
       const float TWO_PI = Mathf.PI * 2;
       const int MIN_NUMBER = 8;
       const int HALF_MIN_NUMBER = MIN_NUMBER / 2;
