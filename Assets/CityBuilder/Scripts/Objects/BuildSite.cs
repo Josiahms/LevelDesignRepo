@@ -18,6 +18,8 @@ public class BuildSite : MonoBehaviour, ISaveable {
       var instance = Instantiate(ResourceLoader.GetInstance().BuildSite, pendingInstance.transform.position, new Quaternion());
       pendingInstance.transform.position += new Vector3(0, -DELTA_Y, 0);
       instance.pendingInstance = pendingInstance;
+      instance.transform.LookAt(MeshDeformer.GetInstance().transform);
+      MeshDeformer.GetInstance().AddMesh(instance.transform);
       return instance;
    }
 
@@ -30,6 +32,7 @@ public class BuildSite : MonoBehaviour, ISaveable {
          pendingInstance.Place();
          Destroy(gameObject);
       }
+      transform.LookAt(MeshDeformer.GetInstance().transform);
    }
 
    public object OnSave() {

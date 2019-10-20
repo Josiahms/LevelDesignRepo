@@ -29,7 +29,6 @@ public class Builder : Singleton<Builder> {
 
    public void ClearBuilding() {
       if (buildingInstance != null) {
-         MeshDeformer.GetInstance().RemoveMesh(buildingInstance.transform);
          buildingInstance.Remove();
          buildingInstance = null;
          Selectable.Enable();

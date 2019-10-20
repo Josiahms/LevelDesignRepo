@@ -15,31 +15,29 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
       rootObjects.Add(mesh);
    }
 
-   public void RemoveMesh(Transform mesh) {
-      rootObjects.Remove(mesh);
-      prevLocationStore.Remove(mesh);
-   }
-
    private void Update() {
       if (rootObjects.Count == 0) {
          return;
       }
 
-      var numChanged = 0;
+      var deletedObjects = new List<Transform>();
       foreach (var rootObject in rootObjects) {
+         if (rootObject == null) {
+            deletedObjects.Add(rootObject);
+         } else {
+            if (!prevLocationStore.ContainsKey(rootObject)) {
+               prevLocationStore.Add(rootObject, 0);
+            }
 
-         if (!prevLocationStore.ContainsKey(rootObject)) {
-            prevLocationStore.Add(rootObject, 0);
-         }
-
-         var prevDistance = prevLocationStore[rootObject];
-         var currentDistance = (transform.position - rootObject.position).magnitude;
-         if (Mathf.Abs(currentDistance - prevDistance) > 1) {
-            numChanged++;
-            DeformMeshAndContinue(rootObject, rootObject.position);
-            prevLocationStore[rootObject] = currentDistance;
+            var prevDistance = prevLocationStore[rootObject];
+            var currentDistance = (transform.position - rootObject.position).magnitude;
+            if (Mathf.Abs(currentDistance - prevDistance) > 1) {
+               DeformMeshAndContinue(rootObject, rootObject.position);
+               prevLocationStore[rootObject] = currentDistance;
+            }
          }
       }
+      rootObjects.RemoveAll(x => deletedObjects.Contains(x));
    }
 
    private void DeformMeshAndContinue(Transform meshTransform, Vector3 rootPosition) {
