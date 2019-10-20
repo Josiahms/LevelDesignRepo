@@ -13,6 +13,8 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
    [SerializeField]
    private float cameraMoveSpeed = 10;
    [SerializeField]
+   private float zoomDistance = 30;
+   [SerializeField]
    private float zoomSpeed = 35;
    [SerializeField, Range(1, 500)]
    private float radius = 50;
@@ -43,14 +45,13 @@ public class TopDownCamera : Singleton<TopDownCamera>, ISaveable {
 
    private void Zoom() {
       if (zoomLevel == CameraZoom.Free) {
-         var magnitude = 30;
          var distance =   Camera.main.transform.position.y - center.position.y;
-         var distanceRemaining = magnitude - Mathf.Abs(distance);
+         var distanceRemaining = zoomDistance - Mathf.Abs(distance);
          var delta = Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomSpeed;
 
-         if (delta < 0 && -magnitude < distance && distanceRemaining < Mathf.Abs(delta)) {
+         if (delta < 0 && -zoomDistance < distance && distanceRemaining < Mathf.Abs(delta)) {
             delta = -distanceRemaining;
-         } else if (delta > 0 &&  magnitude > distance && distanceRemaining < Mathf.Abs(delta)) {
+         } else if (delta > 0 && zoomDistance > distance && distanceRemaining < Mathf.Abs(delta)) {
             delta = distanceRemaining;
          }
 

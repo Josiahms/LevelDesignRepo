@@ -73,14 +73,17 @@ public class Builder : Singleton<Builder> {
    }
 
    private Vector3 ToGrid(Vector3 input) {
-      const int GRID_SACLE = 12;
+      const int BUILDING_WIDTH = 12;
+      const int HALF_GRID = BUILDING_WIDTH / 2;
+      const float TWO_PI = Mathf.PI * 2;
       const int MIN_NUMBER = 8;
+      const int HALF_MIN_NUMBER = MIN_NUMBER / 2;
 
       var center = Vector3.Scale(MeshDeformer.GetInstance().transform.position, new Vector3(1, 0, 1));
       var distanceVect = Vector3.Scale(input, new Vector3(1, 0, 1)) - center;
-      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distanceVect.magnitude + 6) / (GRID_SACLE / 2 / Mathf.PI)), MIN_NUMBER);
-      var numBuildingsSnapped = ((numBuildingsInCircle - 8) / 8 * 8) + 8;
-      var radius = numBuildingsSnapped * GRID_SACLE / 2 / Mathf.PI;
+      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distanceVect.magnitude + 1.909f) / (BUILDING_WIDTH / TWO_PI)), MIN_NUMBER);
+      var numBuildingsSnapped = (numBuildingsInCircle / HALF_MIN_NUMBER * HALF_MIN_NUMBER);
+      var radius = numBuildingsSnapped * BUILDING_WIDTH / TWO_PI;
 
       var currentAngle = Vector3.SignedAngle(new Vector3(1, 0, 0), distanceVect, Vector3.down);
       var angleIncrement = 360f / numBuildingsSnapped;
