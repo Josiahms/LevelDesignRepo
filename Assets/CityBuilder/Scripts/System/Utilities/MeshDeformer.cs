@@ -8,24 +8,15 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
    [SerializeField]
    private List<Transform> rootObjects;
 
-   private Dictionary<Transform, Vector3[]> originalVerticiesStore;
    private Dictionary<Transform, float> prevLocationStore = new Dictionary<Transform, float>();
-
-   private void Start() {
-      originalVerticiesStore = new Dictionary<Transform, Vector3[]>();
-      foreach (var rootObject in rootObjects) {
-         InitializeAndContinue(rootObject);
-      }
-   }
+   private Dictionary<MeshFilter, Vector3[]> sharedMeshStore = new Dictionary<MeshFilter, Vector3[]>();
 
    public void AddMesh(Transform mesh) {
       rootObjects.Add(mesh);
-      InitializeAndContinue(mesh);
    }
 
    public void RemoveMesh(Transform mesh) {
       rootObjects.Remove(mesh);
-      originalVerticiesStore.Remove(mesh);
       prevLocationStore.Remove(mesh);
    }
 
@@ -34,6 +25,7 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
          return;
       }
 
+      var numChanged = 0;
       foreach (var rootObject in rootObjects) {
 
          if (!prevLocationStore.ContainsKey(rootObject)) {
@@ -43,49 +35,24 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
          var prevDistance = prevLocationStore[rootObject];
          var currentDistance = (transform.position - rootObject.position).magnitude;
          if (Mathf.Abs(currentDistance - prevDistance) > 1) {
+            numChanged++;
             DeformMeshAndContinue(rootObject, rootObject.position);
             prevLocationStore[rootObject] = currentDistance;
          }
       }
    }
 
-   private void InitializeAndContinue(Transform meshTransform) {
+   private void DeformMeshAndContinue(Transform meshTransform, Vector3 rootPosition) {
       if (meshTransform == null) {
          return;
       }
 
       var meshFilter = meshTransform.GetComponent<MeshFilter>();
       if (meshFilter != null) {
-         var mesh = GetMesh(meshFilter);
-         var originalVerticies = new Vector3[mesh.vertices.Length];
-         for (int i = 0; i < originalVerticies.Length; i++) {
-            originalVerticies[i] = mesh.vertices[i];
+         if (!sharedMeshStore.ContainsKey(meshFilter)) {
+            sharedMeshStore.Add(meshFilter, meshFilter.sharedMesh.vertices);
          }
-
-         originalVerticiesStore.Add(meshTransform, originalVerticies);
-      }
-
-      for (int i = 0; i < meshTransform.childCount; i++) {
-         InitializeAndContinue(meshTransform.GetChild(i));
-      }
-   }
-
-   private void DeformMeshAndContinue(Transform meshTransform, Vector3 rootPosition) {
-      if (originalVerticiesStore == null) {
-         Start();
-         return;
-      }
-
-      if (meshTransform == null) {
-         return;
-      }
-
-      if (originalVerticiesStore.ContainsKey(meshTransform)) {
-         var originalVerticies = originalVerticiesStore[meshTransform];
-         var meshFilter = meshTransform.GetComponent<MeshFilter>();
-         if (meshFilter != null && originalVerticies != null && GetMesh(meshFilter).vertices.Length == originalVerticies.Length) {
-            DeformMesh(originalVerticies, meshTransform, rootPosition, GetMesh(meshFilter));
-         }
+         meshFilter.mesh.vertices = DeformMesh(sharedMeshStore[meshFilter], meshTransform, rootPosition);
       }
 
       for (int i = 0; i < meshTransform.childCount; i++) {
@@ -93,19 +60,14 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
       }
    }
 
-   private void DeformMesh(Vector3[] originalVerticies, Transform meshTransform, Vector3 rootPosition, Mesh mesh) {
-      if (originalVerticies == null || mesh == null || originalVerticies.Length != mesh.vertices.Length) {
-         Start();
-         return;
-      }
-
-      Vector3[] displacedVertices = new Vector3[mesh.vertices.Length];
-      for (int i = 0; i < mesh.vertices.Length; i++) {
+   private Vector3[] DeformMesh(Vector3[] originalVerticies, Transform meshTransform, Vector3 rootPosition) {
+      Vector3[] displacedVertices = new Vector3[originalVerticies.Length];
+      for (int i = 0; i < originalVerticies.Length; i++) {
          var absolutePosition = meshTransform.localToWorldMatrix.MultiplyPoint(originalVerticies[i]);
          var relativePosition = meshTransform.worldToLocalMatrix.MultiplyPoint(GetNewPosition(absolutePosition, rootPosition, transform.position));
          displacedVertices[i] = relativePosition;
       }
-      mesh.vertices = displacedVertices;
+      return displacedVertices;
    }
 
    private Vector3 GetNewPosition(Vector3 point, Vector3 meshCenter, Vector3 pivot) {
@@ -126,14 +88,6 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
 
       var result = Quaternion.FromToRotation(Vector3.right, circleRadius) * newPosition + pivot;
       return new Vector3(result.x, originalY, result.z);
-   }
-
-   private Mesh GetMesh(MeshFilter meshFilter) {
-      if (Application.isPlaying) {
-         return meshFilter.mesh;
-      } else {
-         return meshFilter.sharedMesh;
-      }
    }
 
    public object OnSave() {
