@@ -3,41 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
+public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
 
-   [SerializeField]
-   private List<Transform> rootObjects;
-
-   private Dictionary<Transform, float> prevLocationStore = new Dictionary<Transform, float>();
+   private Vector3? center;
+   private float prevDistance;
    private Dictionary<MeshFilter, Vector3[]> sharedMeshStore = new Dictionary<MeshFilter, Vector3[]>();
 
-   public void AddMesh(Transform mesh) {
-      rootObjects.Add(mesh);
+   private void Start() {
+      prevDistance = float.MaxValue;
+   }
+
+   public void SetCenter(Vector3 center) {
+      this.center = center;
+      Update();
    }
 
    private void Update() {
-      if (rootObjects.Count == 0) {
+
+      if (!center.HasValue) {
          return;
       }
 
-      var deletedObjects = new List<Transform>();
-      foreach (var rootObject in rootObjects) {
-         if (rootObject == null) {
-            deletedObjects.Add(rootObject);
-         } else {
-            if (!prevLocationStore.ContainsKey(rootObject)) {
-               prevLocationStore.Add(rootObject, 0);
-            }
+      transform.position = ToGrid(transform.position);
+      transform.LookAt(center.Value);
 
-            var prevDistance = prevLocationStore[rootObject];
-            var currentDistance = (transform.position - rootObject.position).magnitude;
-            if (Mathf.Abs(currentDistance - prevDistance) > 1) {
-               DeformMeshAndContinue(rootObject, rootObject.position);
-               prevLocationStore[rootObject] = currentDistance;
-            }
-         }
+      var currentDistance = (transform.position - center.Value).magnitude;
+      if (Mathf.Abs(currentDistance - prevDistance) > 0.5f) {
+         DeformMeshAndContinue(transform, transform.position);
+         prevDistance = currentDistance;
       }
-      rootObjects.RemoveAll(x => deletedObjects.Contains(x));
    }
 
    private void DeformMeshAndContinue(Transform meshTransform, Vector3 rootPosition) {
@@ -62,7 +56,7 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
       Vector3[] displacedVertices = new Vector3[originalVerticies.Length];
       for (int i = 0; i < originalVerticies.Length; i++) {
          var absolutePosition = meshTransform.localToWorldMatrix.MultiplyPoint(originalVerticies[i]);
-         var relativePosition = meshTransform.worldToLocalMatrix.MultiplyPoint(GetNewPosition(absolutePosition, rootPosition, transform.position));
+         var relativePosition = meshTransform.worldToLocalMatrix.MultiplyPoint(GetNewPosition(absolutePosition, rootPosition, center.Value));
          displacedVertices[i] = relativePosition;
       }
       return displacedVertices;
@@ -88,18 +82,45 @@ public class MeshDeformer : Singleton<MeshDeformer>, ISaveable {
       return new Vector3(result.x, originalY, result.z);
    }
 
+   private Vector3 ToGrid(Vector3 input) {
+      const int BUILDING_WIDTH = 12;
+      const float TWO_PI = Mathf.PI * 2;
+      const int MIN_NUMBER = 8;
+      const int HALF_MIN_NUMBER = MIN_NUMBER / 2;
+
+      var center = Vector3.Scale(this.center.Value, new Vector3(1, 0, 1));
+      var distanceVect = Vector3.Scale(input, new Vector3(1, 0, 1)) - center;
+      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distanceVect.magnitude + 1.909f) / (BUILDING_WIDTH / TWO_PI)), MIN_NUMBER);
+      var numBuildingsSnapped = (numBuildingsInCircle / HALF_MIN_NUMBER * HALF_MIN_NUMBER);
+      var radius = numBuildingsSnapped * BUILDING_WIDTH / TWO_PI;
+
+      var currentAngle = Vector3.SignedAngle(new Vector3(1, 0, 0), distanceVect, Vector3.down);
+      var angleIncrement = 360f / numBuildingsSnapped;
+      var snappedAngle = Mathf.Floor((currentAngle + angleIncrement / 2f) / angleIncrement) * angleIncrement;
+
+      var snappedAngleVect = new Vector3(Mathf.Cos(Mathf.Deg2Rad * snappedAngle), 0, Mathf.Sin(Mathf.Deg2Rad * snappedAngle));
+
+      var result = center + radius * snappedAngleVect;
+
+      return new Vector3(result.x, input.y, result.z);
+   }
+
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("rootObjects", rootObjects.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
+      data.Add("center", center.HasValue ? new float[] { center.Value.x, center.Value.y, center.Value.z } : null);
       return data;
    }
 
    public void OnLoad(object data) {
-      // Ignored
+      var savedData = (Dictionary<string, object>)data;
+      var centerData = savedData["center"];
+      if (centerData != null) {
+         var centerArray = (float[])savedData["center"];
+         center = new Vector3(centerArray[0], centerArray[1], centerArray[2]);
+      }
    }
 
    public void OnLoadDependencies(object data) {
-      var savedData = (Dictionary<string, object>)data;
-      rootObjects = ((int[])savedData["rootObjects"]).Select(x => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(x).GetComponent<Transform>()).ToList();
+      // Ignored
    }
 }

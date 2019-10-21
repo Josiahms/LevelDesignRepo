@@ -29,7 +29,12 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void OnClick() {
-      Builder.GetInstance().SetBuilding(buildingPrefab);
+      var townCenter = Selectable.GetSelected().GetComponent<TownCenter>();
+      if (townCenter == null) {
+         Debug.LogWarning("A build button was clicked without a town center selected.  This action is ignored.");
+         return;
+      }
+      Builder.GetInstance().SetBuilding(buildingPrefab, townCenter);
       buildDrawer.SetActive(false);
       if (overlay != null) {
          Destroy(overlay.gameObject);

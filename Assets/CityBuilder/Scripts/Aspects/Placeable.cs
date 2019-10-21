@@ -11,6 +11,7 @@ public interface IPlaceable {
 
 public class PlaceableEvent : UnityEvent<Placeable> { }
 
+[RequireComponent(typeof(SnapToCircleGrid))]
 [RequireComponent(typeof(Collider))]
 public class Placeable : MonoBehaviour, ISaveable {
 
@@ -59,6 +60,8 @@ public class Placeable : MonoBehaviour, ISaveable {
    private int level;
    private bool createdFromSave;
 
+   public TownCenter TownCenter;
+
    private int blocked = 0;
 
    private void Start() {
@@ -74,6 +77,8 @@ public class Placeable : MonoBehaviour, ISaveable {
          rb.isKinematic = false;
          rb.constraints = RigidbodyConstraints.FreezeAll;
       }
+
+      GetComponent<SnapToCircleGrid>().SetCenter(TownCenter.transform.position);
    }
 
    public bool IsBlocked() {
@@ -116,8 +121,10 @@ public class Placeable : MonoBehaviour, ISaveable {
    }
 
    private void OnCollisionEnter(Collision collision) {
-      if (!isPlaced) {
-         blocked++;
+      if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground")) {
+         if (!isPlaced) {
+            blocked++;
+         }
       }
    }
 
@@ -136,6 +143,7 @@ public class Placeable : MonoBehaviour, ISaveable {
       data.Add("stoneUpgradeCost", stoneUpgradeCost);
       data.Add("metalUpgradeCost", metalUpgradeCost);
       data.Add("level", level);
+      data.Add("TownCenter", TownCenter.GetComponent<Saveable>().GetSavedIndex());
 
       return data;
    }
@@ -157,6 +165,7 @@ public class Placeable : MonoBehaviour, ISaveable {
    }
 
    public void OnLoadDependencies(object savedData) {
-      // Ignored
+      var data = (Dictionary<string, object>)savedData;
+      TownCenter = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)data["TownCenter"]).GetComponent<TownCenter>();
    }
 }

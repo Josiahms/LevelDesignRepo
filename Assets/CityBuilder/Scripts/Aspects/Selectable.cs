@@ -27,8 +27,6 @@ public class Selectable : MonoBehaviour {
    private Color selectedColor;
    private Outline outline;
 
-   private GameObject uiInstance;
-
    protected void Awake() {
       selectedColor = new Color(0.97f, 0.88f, 0.76f);
       highlightColor = new Color(0.98f, 0.96f, 0.76f);
@@ -54,9 +52,6 @@ public class Selectable : MonoBehaviour {
             selectable.OnDeselect();
          }
          selectedItem.ChangeColor(Color.white);
-         if (UIRenderLocation.GetInstance() != null) {
-            Destroy(UIRenderLocation.GetInstance().transform.GetChild(0).gameObject);
-         }
          selectedItem = null;
       }
    }
@@ -67,7 +62,6 @@ public class Selectable : MonoBehaviour {
       }
       selectedItem = this;
       selectedItem.ChangeColor(selectedColor);
-      Instantiate(UIRenderLocation.GetInstance().GetUIPrefab(), UIRenderLocation.GetInstance().transform);
       foreach (var selectable in GetComponents<ISelectable>()) {
          selectable.OnSelect();
       }

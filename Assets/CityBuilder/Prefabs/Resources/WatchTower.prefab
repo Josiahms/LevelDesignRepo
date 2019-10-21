@@ -2461,6 +2461,7 @@ GameObject:
   - component: {fileID: 5007753001509996751}
   - component: {fileID: 7920802066746216132}
   - component: {fileID: -7301704582825831048}
+  - component: {fileID: 5487716281953420403}
   m_Layer: 0
   m_Name: WatchTower
   m_TagString: Untagged
@@ -2549,6 +2550,7 @@ MonoBehaviour:
   stoneUpgradeCost: 0
   metalUpgradeCost: 0
   levels: []
+  TownCenter: {fileID: 0}
 --- !u!114 &-7301704582825831048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2563,6 +2565,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: Watchtower
   savePosition: 1
+--- !u!114 &5487716281953420403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310224928036534552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 497dfbf70ae64ec41b5016792fea1abe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3318509342891345987
 GameObject:
   m_ObjectHideFlags: 0
@@ -7154,7 +7168,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6602166966946001906}
   m_LocalRotation: {x: -0, y: 0.00000102818, z: -0, w: 1}
-  m_LocalPosition: {x: 0.79, y: 0, z: 0.33}
+  m_LocalPosition: {x: 0.79, y: 0.77, z: 0.33}
   m_LocalScale: {x: 0.85805, y: 1.1658853, z: 0.7983435}
   m_Children:
   - {fileID: 7109952875375358880}

@@ -9,7 +9,7 @@ public class BuildDrawerButton : MonoBehaviour {
    [SerializeField]
    private GameObject buildDrawer;
 
-   private void Awake() {
+   private void Start() {
       GetComponent<Button>().onClick.AddListener(() => {
          if (Builder.GetInstance().GetBuilding() != null) {
             Builder.GetInstance().ClearBuilding();

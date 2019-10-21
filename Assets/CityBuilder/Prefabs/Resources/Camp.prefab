@@ -83,11 +83,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8772370765382533173}
+  - component: {fileID: 5347685274680966816}
   - component: {fileID: 1061948847}
   - component: {fileID: 1061948849}
   - component: {fileID: 5199698069610381078}
   - component: {fileID: 727626455638885313}
-  - component: {fileID: 5347685274680966816}
+  - component: {fileID: 6681074308358962477}
   m_Layer: 0
   m_Name: Camp
   m_TagString: Untagged
@@ -113,6 +114,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &5347685274680966816
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331420127252144566}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9, y: 1, z: 6}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1061948847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,6 +167,7 @@ MonoBehaviour:
   levels:
   - {fileID: 4634459630158392718}
   - {fileID: 3500863952839322373}
+  TownCenter: {fileID: 0}
 --- !u!114 &5199698069610381078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,19 +196,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Camp
   description: A place for 5 workers to sleep
---- !u!65 &5347685274680966816
-BoxCollider:
+--- !u!114 &6681074308358962477
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2331420127252144566}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 9, y: 1, z: 6}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 497dfbf70ae64ec41b5016792fea1abe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3500863952839322373
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,7 +232,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3500863952839322373}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.19999999, z: -1.29}
+  m_LocalPosition: {x: 0, y: 0, z: -1.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4219364692911721914}
@@ -249,7 +263,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4634459630158392718}
   m_LocalRotation: {x: -0, y: -0.7071065, z: -0, w: 0.7071071}
-  m_LocalPosition: {x: 0.65, y: -0.20000005, z: 0.05}
+  m_LocalPosition: {x: 0.65, y: 0, z: 0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8937172799364079796}
@@ -372,7 +386,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6556013177746324231}
   m_LocalRotation: {x: -0, y: 0.38846183, z: -0, w: 0.9214648}
-  m_LocalPosition: {x: -1.05, y: -0.13068151, z: -2.62}
+  m_LocalPosition: {x: -1.05, y: 0.04, z: -2.62}
   m_LocalScale: {x: 0.7517201, y: 0.75172, z: 0.7517201}
   m_Children:
   - {fileID: 7775825306248364094}
@@ -1333,7 +1347,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4359283589267320, guid: 5240fb00498ea65418f8fd579be1b24d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.15388012
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 4359283589267320, guid: 5240fb00498ea65418f8fd579be1b24d, type: 3}
       propertyPath: m_LocalPosition.z

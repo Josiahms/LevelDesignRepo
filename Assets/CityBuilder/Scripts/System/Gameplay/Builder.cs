@@ -8,21 +8,17 @@ public class Builder : Singleton<Builder> {
 
    private Placeable buildingPrefab;
 
-   public void SetBuilding(Placeable buildingPrefab) {
-      SetBuilding(buildingPrefab, Vector3.zero);
-   }
-
    public Placeable GetBuilding() {
       return buildingInstance;
    }
 
-   public void SetBuilding(Placeable buildingPrefab, Vector3 position) {
+   public void SetBuilding(Placeable buildingPrefab, TownCenter townCenter) {
       if (buildingInstance != null) {
          buildingInstance.Remove();
       }
       this.buildingPrefab = buildingPrefab;
-      buildingInstance = Instantiate(buildingPrefab, position, buildingPrefab.transform.rotation);
-      MeshDeformer.GetInstance().AddMesh(buildingInstance.transform);
+      buildingInstance = Instantiate(buildingPrefab, Vector3.zero, buildingPrefab.transform.rotation);
+      buildingInstance.TownCenter = townCenter;
       Selectable.Deselect();
       Selectable.Disable();
    }
@@ -56,14 +52,13 @@ public class Builder : Singleton<Builder> {
          }
 
          if (Physics.Raycast(cameraRay, out hitInfo, float.MaxValue, LayerMask.GetMask("Ground"))) {
-            buildingInstance.transform.position = ToGrid(hitInfo.point);
-            buildingInstance.transform.LookAt(MeshDeformer.GetInstance().transform);
-
+            buildingInstance.transform.position = hitInfo.point;
             if (CanBuild() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-               ResourceManager.GetInstance().OffsetAll(-buildingInstance.GetWoodCost(), -buildingInstance.GetStoneCost(), -buildingInstance.GetMetalCost(), 0);
-               BuildSite.Instantiate(buildingInstance);
-               buildingInstance = null;
-               Selectable.Enable();
+               if (ResourceManager.GetInstance().OffsetAll(-buildingInstance.GetWoodCost(), -buildingInstance.GetStoneCost(), -buildingInstance.GetMetalCost(), 0)) {
+                  BuildSite.Instantiate(buildingInstance);
+                  buildingInstance = null;
+                  Selectable.Enable();
+               }
             } else if (Input.GetMouseButtonUp(1)) {
                ClearBuilding();
                return;
@@ -71,28 +66,6 @@ public class Builder : Singleton<Builder> {
          }
       }
    }
-
-   private Vector3 ToGrid(Vector3 input) {
-      const int BUILDING_WIDTH = 12;
-      const float TWO_PI = Mathf.PI * 2;
-      const int MIN_NUMBER = 8;
-      const int HALF_MIN_NUMBER = MIN_NUMBER / 2;
-
-      var center = Vector3.Scale(MeshDeformer.GetInstance().transform.position, new Vector3(1, 0, 1));
-      var distanceVect = Vector3.Scale(input, new Vector3(1, 0, 1)) - center;
-      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distanceVect.magnitude + 1.909f) / (BUILDING_WIDTH / TWO_PI)), MIN_NUMBER);
-      var numBuildingsSnapped = (numBuildingsInCircle / HALF_MIN_NUMBER * HALF_MIN_NUMBER);
-      var radius = numBuildingsSnapped * BUILDING_WIDTH / TWO_PI;
-
-      var currentAngle = Vector3.SignedAngle(new Vector3(1, 0, 0), distanceVect, Vector3.down);
-      var angleIncrement = 360f / numBuildingsSnapped;
-      var snappedAngle = Mathf.Floor((currentAngle + angleIncrement / 2f) / angleIncrement) * angleIncrement;
-
-      var snappedAngleVect = new Vector3(Mathf.Cos(Mathf.Deg2Rad * snappedAngle), 0, Mathf.Sin(Mathf.Deg2Rad * snappedAngle));
-
-      return center + radius * snappedAngleVect;
-   }
-
 
    private bool CanBuild() {
       if (buildingInstance != null) {

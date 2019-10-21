@@ -18,7 +18,7 @@ public class CloseOnBlur : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       isOver = false;
    }
 
-   private void Update() {
+   private void OnGUI() {
 
       if (!isOver && (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(2))) {
          if (target == null) {
