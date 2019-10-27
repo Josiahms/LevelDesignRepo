@@ -83,7 +83,7 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
    }
 
    private Vector3 ToGrid(Vector3 input) {
-      const int BUILDING_WIDTH = 12;
+      const float BUILDING_WIDTH = 7.5f;
       const float TWO_PI = Mathf.PI * 2;
       const int MIN_NUMBER = 8;
       const int HALF_MIN_NUMBER = MIN_NUMBER / 2;

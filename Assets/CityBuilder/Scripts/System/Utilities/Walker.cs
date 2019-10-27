@@ -5,7 +5,7 @@ using UnityEngine;
 public class Walker : MonoBehaviour {
 
    [SerializeField]
-   private float deadZone = 0.2f;
+   private float deadZone = 0.5f;
 
    private Animator animator;
    [SerializeField]

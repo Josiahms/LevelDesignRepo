@@ -3,18 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(Destructable))]
 [RequireComponent(typeof(Walker))]
 public class Enemy : MonoBehaviour {
 
    [SerializeField]
    private float damage = 5;
 
+   private Destructable destructableSelf;
    private Destructable target;
    private Coroutine attackCoroutine;
 
+   private void Start() {
+      destructableSelf = GetComponent<Destructable>();
+   }
+
    private void Update() {
       if (target == null) {
-         target = FindObjectsOfType<Destructable>().Where(x => x.enabled).FirstOrDefault();
+         target = FindObjectsOfType<Destructable>().Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
       } else {
          if (IsInRange() && attackCoroutine == null) {
             attackCoroutine = StartCoroutine(Attack());

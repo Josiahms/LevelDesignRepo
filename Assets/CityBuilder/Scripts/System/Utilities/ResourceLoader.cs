@@ -36,4 +36,8 @@ public class ResourceLoader : Singleton<ResourceLoader> {
    [SerializeField]
    private FillerBar fillerBar;
    public FillerBar FillerBar { get { return fillerBar; } }
+
+   [SerializeField]
+   private Projectile arrow;
+   public Projectile Arrow { get { return arrow; } }
 }
