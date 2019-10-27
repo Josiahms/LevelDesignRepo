@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Walker))]
 [RequireComponent(typeof(Animator))]
-public class Worker : MonoBehaviour, ISaveable
-{   
-   [SerializeField]
-   private float deadZone = 0.2f;
-
-   private Animator animator;
+public class Worker : MonoBehaviour, ISaveable {   
    private Transform currentDestination;
    private Assignable assignedLocation;
    private bool createdFromScene = true;
@@ -21,10 +17,6 @@ public class Worker : MonoBehaviour, ISaveable
       result.createdFromScene = false;
       PopulationManager.GetInstance().AddToWorkforce(result);
       return result;
-   }
-
-   private void Awake() {
-      animator = GetComponent<Animator>();
    }
 
    private void Start() {
@@ -59,46 +51,7 @@ public class Worker : MonoBehaviour, ISaveable
       } else {
          currentDestination = assignedLocation == null ? null : assignedLocation.GetSpotForWorker(this);
       }
-
-      if (currentDestination == null) {
-         animator.SetFloat("Turn", 0);
-         animator.SetFloat("Forward", 0);
-         return;
-      }
-
-      // 1 is normal speed;
-      var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
-      if (speed <= 2) {
-         AnimatedWalk(speed);
-      } else {
-         animator.SetFloat("Turn", 0);
-         animator.SetFloat("Forward", 0);
-         TeleportWalk(speed);
-      }
-
-   }
-
-   private void TeleportWalk(float speed) {
-      transform.LookAt(new Vector3(currentDestination.position.x, transform.position.y, currentDestination.position.z));
-      var distance = currentDestination.position - transform.position;
-      transform.position += Vector3.ClampMagnitude(distance, speed * Time.deltaTime * 10);
-   }
-
-   private void AnimatedWalk(float speed) {
-      var forward2D = new Vector2(transform.forward.x, transform.forward.z);
-      var direction = (currentDestination.position - transform.position).normalized;
-      var direction2D = new Vector2(direction.x, direction.z);
-      var angleBetween = Vector2.Angle(forward2D, direction2D);
-      var between = Quaternion.AngleAxis(angleBetween / 2, transform.up) * transform.forward;
-      var angleBetween2 = Vector2.Angle(direction2D, new Vector2(between.x, between.z));
-      var isRightTurn = angleBetween2 < angleBetween;
-
-      animator.speed = speed;
-      animator.SetFloat("Turn", Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1));
-      animator.SetFloat("Forward", Mathf.Clamp((currentDestination.position - transform.position).magnitude * 10, 0, 1));
-      if ((currentDestination.position - transform.position).magnitude < deadZone || angleBetween > 15) {
-         animator.SetFloat("Forward", 0);
-      }
+      GetComponent<Walker>().SetDestination(currentDestination);
    }
 
    public object OnSave() {

@@ -13,7 +13,7 @@ public class PlaceableEvent : UnityEvent<Placeable> { }
 
 [RequireComponent(typeof(SnapToCircleGrid))]
 [RequireComponent(typeof(Collider))]
-public class Placeable : MonoBehaviour, ISaveable {
+public class Placeable : MonoBehaviour, ISaveable, IDestructable {
 
    public static PlaceableEvent OnPlaceEvent = new PlaceableEvent();
    public static PlaceableEvent OnRemoveEvent = new PlaceableEvent();
@@ -91,6 +91,9 @@ public class Placeable : MonoBehaviour, ISaveable {
          placeable.OnPlace();
       }
       OnPlaceEvent.Invoke(this);
+      if (GetComponent<Destructable>() != null) {
+         GetComponent<Destructable>().enabled = true;
+      }
       Destroy(GetComponent<Rigidbody>());
    }
 
@@ -101,6 +104,10 @@ public class Placeable : MonoBehaviour, ISaveable {
          OnRemoveEvent.Invoke(this);
       }
       Destroy(gameObject);
+   }
+
+   public void OnDestruction() {
+      Remove();
    }
 
    public bool Upgrade() {

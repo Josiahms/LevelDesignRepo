@@ -25,17 +25,24 @@ public struct SavedGameObject {
          rotation = null;
       }
       prefabPath = saveableGameObject.GetPrefabPath();
-      components = saveableGameObject.gameObject.GetComponents<ISaveable>().Select(x => new SavedComponent(x)).ToArray();
+      components = saveableGameObject.gameObject.GetComponents(typeof(ISaveable)).Select(x => new SavedComponent(x)).ToArray();
    }
 }
-
+// TODO: Save enabled state
 [Serializable]
 public struct SavedComponent {
    public Type type;
    public object data;
-   public SavedComponent(ISaveable saveable) {
-      type = saveable.GetType();
-      data = saveable.OnSave();
+   public bool isEnabled;
+
+   public SavedComponent(Component component) {
+      type = component.GetType();
+      data = (component as ISaveable).OnSave();
+      if (component as Behaviour != null) {
+         isEnabled = (component as Behaviour).enabled;
+      } else {
+         isEnabled = false;
+      }
    }
 }
 
@@ -163,10 +170,13 @@ public class SaveManager : Singleton<SaveManager> {
                instance = Instantiate(prefab, position, rotation);
             }
             if (instance != null) {
-               var loadedComponents = instance.GetComponents<ISaveable>();
+               var loadedComponents = instance.GetComponents(typeof(ISaveable));
                for (int i = 0; i < savedEntity.components.Length && i < loadedComponents.Length; i++) {
                   var savedComponent = savedEntity.components[i];
-                  loadedComponents[i].OnLoad(savedComponent.data);
+                  (loadedComponents[i] as ISaveable).OnLoad(savedComponent.data);
+                  if (loadedComponents[i] as Behaviour != null) {
+                     (loadedComponents[i] as Behaviour).enabled = savedComponent.isEnabled;
+                  }
                }
                loadedEntities.Add(savedEntity.index, instance);
             }
