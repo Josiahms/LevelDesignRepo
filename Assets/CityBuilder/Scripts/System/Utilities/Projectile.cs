@@ -34,6 +34,7 @@ public class Projectile : MonoBehaviour {
    private void OnTriggerEnter(Collider collider) {
       var destructable = collider.gameObject.GetComponent<Destructable>();
       if (destructable != null) {
+         Debug.Log("Foo");
          destructable.OffsetHealth(-damage);
          Destroy(gameObject);
       }
