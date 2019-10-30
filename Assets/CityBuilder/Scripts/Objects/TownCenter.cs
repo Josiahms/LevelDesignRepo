@@ -25,9 +25,9 @@ public class TownCenter : MonoBehaviour {
 
    private IEnumerator Arrow() {
       while (true) {
-         yield return new WaitForSeconds(5);
+         yield return new WaitForSeconds(2);
          if (target != null) {
-            Projectile.Instantiate(transform.position, target.position);
+            Projectile.Instantiate(transform.position, target.position + Vector3.up, Team.Player);
          }
       }
    }

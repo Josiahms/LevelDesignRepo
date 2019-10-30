@@ -12,8 +12,8 @@ public class Destructable : MonoBehaviour, ISaveable {
    [SerializeField]
    private float maxHealth = 100;
    [SerializeField]
-   private int team;
-   public int GetTeam() { return team;  }
+   private Team team;
+   public Team GetTeam() { return team;  }
 
    private float health;
    private FillerBar healthBar;
