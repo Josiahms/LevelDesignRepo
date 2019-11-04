@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Walker))]
-[RequireComponent(typeof(Animator))]
 public class Worker : MonoBehaviour, ISaveable {   
    private Transform currentDestination;
    private Assignable assignedLocation;
