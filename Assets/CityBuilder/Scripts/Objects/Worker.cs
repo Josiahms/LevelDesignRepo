@@ -50,7 +50,7 @@ public class Worker : MonoBehaviour, ISaveable {
       } else {
          currentDestination = assignedLocation == null ? null : assignedLocation.GetSpotForWorker(this);
       }
-      GetComponent<Walker>().SetDestination(currentDestination);
+      GetComponent<Walker>().SetDestination(currentDestination == null ? null : (Vector3?)currentDestination.position);
    }
 
    public object OnSave() {

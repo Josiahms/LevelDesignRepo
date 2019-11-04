@@ -7,20 +7,20 @@ public class Projectile : MonoBehaviour {
    [SerializeField]
    private float damage = 5;
    [SerializeField]
-   private float flightTime = 0.35f;
+   private float velocity = 5;
    [SerializeField]
-   private float arc = 5;
+   private float arc = 6;
 
    private Vector3 initialPosition;
    private Vector3 target;
    private float startTime;
    private Team team;
 
-   public static Projectile Instantiate(Vector3 spawnPoint, Vector3 target, Team team) {
+   public static Projectile Instantiate(Vector3 spawnPoint, Vector3 target, Vector3 oneSecondDeltaPosition, Team team) {
       var instance = Instantiate(ResourceLoader.GetInstance().Arrow, spawnPoint, new Quaternion());
-      instance.startTime = Time.time;
+      instance.startTime = DayCycleManager.GetInstance().CurrentTime;
       instance.initialPosition = spawnPoint;
-      instance.target = target;
+      instance.target = target + oneSecondDeltaPosition * (target - spawnPoint).magnitude / instance.velocity / DayCycleManager.GetInstance().ClockMinuteRate;
       instance.team = team;
       instance.transform.LookAt(target);
       Destroy(instance.gameObject, 1.2f);
@@ -29,9 +29,9 @@ public class Projectile : MonoBehaviour {
    }
 
    private void Update() {
-      var totalTime = (target - initialPosition).magnitude / flightTime;
-      var t = Mathf.Min((Time.time - startTime) / flightTime, 1);
-      var newPosition = Vector3.Lerp(initialPosition, target, t) + Vector3.up * Mathf.Lerp(0, arc, -4 * t * (t - 1)); // y = -4x(x - 1)
+      var distance = (target - initialPosition).magnitude;
+      var t = Mathf.Min((DayCycleManager.GetInstance().CurrentTime - startTime) * velocity / distance, 1);
+      var newPosition = Vector3.Lerp(initialPosition, target, t) + Vector3.up * Mathf.Lerp(0, arc * distance / 30, -4 * t * (t - 1)); // y = -4x(x - 1)
       var delta = newPosition - transform.position;
 
       transform.position = newPosition;

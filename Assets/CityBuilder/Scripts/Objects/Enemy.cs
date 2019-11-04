@@ -21,26 +21,28 @@ public class Enemy : MonoBehaviour {
    private void Update() {
       if (target == null) {
          target = FindObjectsOfType<Destructable>().Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
+         if (target != null) {
+            RaycastHit hitInfo;
+            if (Physics.Raycast(transform.position, target.transform.position - transform.position, out hitInfo)) {
+               GetComponent<Walker>().SetDestination(hitInfo.point);
+            } else {
+               GetComponent<Walker>().SetDestination(target.transform.position);
+            }
+         } else {
+            GetComponent<Walker>().SetDestination(null);
+         }
       } else {
-         if (IsInRange() && attackCoroutine == null) {
+         if (GetComponent<Walker>().Arrived() && attackCoroutine == null) {
             attackCoroutine = StartCoroutine(Attack());
          }
-         GetComponent<Walker>().SetDestination(target.transform);
       }
    }
 
    private IEnumerator Attack() {
       yield return new WaitForSeconds(1); // TODO: Scale with game speed
-      if (IsInRange()) {
+      if (GetComponent<Walker>().Arrived()) {
          target.OffsetHealth(-damage);
       }
       attackCoroutine = null;
-   }
-
-   private bool IsInRange() {
-      if (target == null) {
-         return false;
-      }
-      return (transform.position - target.transform.position).magnitude < 2;
    }
 }

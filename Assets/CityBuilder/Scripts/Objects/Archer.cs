@@ -27,18 +27,23 @@ public class Archer : MonoBehaviour {
       } else {
          transform.LookAt(target.transform);
       }
+      anim.speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
    }
 
 
 
    private IEnumerator Arrow() {
+      var dcm = DayCycleManager.GetInstance();
       while (true) {
-         yield return new WaitForSeconds(1.033f + aimDelay);
+         var curTime = dcm.CurrentTime;
+         yield return new WaitUntil(() => dcm.CurrentTime > curTime + (1.033f + aimDelay) * 5);
          if (target != null) {
             anim.SetTrigger("Fire");
-            yield return new WaitForSeconds(0.1f);
-            Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, Team.Player);
-            yield return new WaitForSeconds(0.6f);
+            curTime = dcm.CurrentTime;
+            yield return new WaitUntil(() => dcm.CurrentTime > curTime + 0.5f);
+            Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, target.GetComponent<Walker>().OneSecondDeltaPosition, Team.Player);
+            curTime = dcm.CurrentTime;
+            yield return new WaitUntil(() => dcm.CurrentTime > curTime + 3);
          }
       }
    }
