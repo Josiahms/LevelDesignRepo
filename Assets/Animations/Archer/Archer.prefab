@@ -508,6 +508,7 @@ GameObject:
   m_Component:
   - component: {fileID: 148411821149268}
   - component: {fileID: 7965325381554528558}
+  - component: {fileID: 8296172669471941418}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
@@ -550,6 +551,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8296172669471941418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3916969639098695239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc24af1c0366430488f10e34b1ea6fe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aimDelay: 1
+  arrowSpawn: {fileID: 5006369135928960643}
 --- !u!1 &4082144780926732103
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,6 +1514,18 @@ PrefabInstance:
     - target: {fileID: 498110, guid: c223b5254ae0cec4180d5af774d0d2b3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -63.423004
+      objectReference: {fileID: 0}
+    - target: {fileID: 498110, guid: c223b5254ae0cec4180d5af774d0d2b3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 498110, guid: c223b5254ae0cec4180d5af774d0d2b3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 498110, guid: c223b5254ae0cec4180d5af774d0d2b3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c223b5254ae0cec4180d5af774d0d2b3, type: 3}

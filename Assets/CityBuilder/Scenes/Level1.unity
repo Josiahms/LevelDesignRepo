@@ -31183,12 +31183,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
---- !u!4 &1756338552 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5006369135928960643, guid: 5355ee74ca878d844898a61d55765410,
-    type: 3}
-  m_PrefabInstance: {fileID: 5006369135791857006}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1756651478 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 471828, guid: 19682540d8a014522a319b1cf788aee2,
@@ -39009,21 +39003,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5006369135928960643, guid: 5355ee74ca878d844898a61d55765410,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5006369135928960643, guid: 5355ee74ca878d844898a61d55765410,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5006369135928960643, guid: 5355ee74ca878d844898a61d55765410,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5355ee74ca878d844898a61d55765410, type: 3}
 --- !u!1001 &6941253839860017644
@@ -39214,23 +39193,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6ff0fbb183f40f4aaddb40c715f1fa9, type: 3}
---- !u!1 &8296172669471941417 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3916969639098695239, guid: 5355ee74ca878d844898a61d55765410,
-    type: 3}
-  m_PrefabInstance: {fileID: 5006369135791857006}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8296172669471941418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8296172669471941417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc24af1c0366430488f10e34b1ea6fe6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aimDelay: 1
-  arrowSpawn: {fileID: 1756338552}

@@ -35,10 +35,8 @@ public class Archer : MonoBehaviour {
       while (true) {
          yield return new WaitForSeconds(1.033f + aimDelay);
          if (target != null) {
-            Debug.Log("Fire");
             anim.SetTrigger("Fire");
             yield return new WaitForSeconds(0.1f);
-            Debug.Log("Spawn");
             Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, Team.Player);
             yield return new WaitForSeconds(0.6f);
          }
