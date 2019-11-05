@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Jobs;
+using Unity.Collections;
 
 public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
 
    private Vector3? center;
    private float prevDistance;
    private Dictionary<MeshFilter, Vector3[]> sharedMeshStore = new Dictionary<MeshFilter, Vector3[]>();
+   private List<JobHandleMesh> handles = new List<JobHandleMesh>();
 
    private void Start() {
       prevDistance = float.MaxValue;
@@ -32,6 +35,14 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
          DeformMeshAndContinue(transform, transform.position);
          prevDistance = currentDistance;
       }
+
+      foreach(var handle in handles) {
+         handle.handle.Complete();
+         handle.meshFilter.mesh.vertices = handle.job.displacedVertices.ToArray();
+         handle.job.originalVerticies.Dispose();
+         handle.job.displacedVertices.Dispose();
+      }
+      handles.Clear();
    }
 
    private void DeformMeshAndContinue(Transform meshTransform, Vector3 rootPosition) {
@@ -44,42 +55,13 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
          if (!sharedMeshStore.ContainsKey(meshFilter)) {
             sharedMeshStore.Add(meshFilter, meshFilter.sharedMesh.vertices);
          }
-         meshFilter.mesh.vertices = DeformMesh(sharedMeshStore[meshFilter], meshTransform, rootPosition);
+         var job = new DeformJob(center.Value, sharedMeshStore[meshFilter], meshTransform, rootPosition);
+         handles.Add(new JobHandleMesh(job.Schedule(), job, meshFilter));
       }
 
       for (int i = 0; i < meshTransform.childCount; i++) {
          DeformMeshAndContinue(meshTransform.GetChild(i), rootPosition);
       }
-   }
-
-   private Vector3[] DeformMesh(Vector3[] originalVerticies, Transform meshTransform, Vector3 rootPosition) {
-      Vector3[] displacedVertices = new Vector3[originalVerticies.Length];
-      for (int i = 0; i < originalVerticies.Length; i++) {
-         var absolutePosition = meshTransform.localToWorldMatrix.MultiplyPoint(originalVerticies[i]);
-         var relativePosition = meshTransform.worldToLocalMatrix.MultiplyPoint(GetNewPosition(absolutePosition, rootPosition, center.Value));
-         displacedVertices[i] = relativePosition;
-      }
-      return displacedVertices;
-   }
-
-   private Vector3 GetNewPosition(Vector3 point, Vector3 meshCenter, Vector3 pivot) {
-      var originalY = point.y;
-
-      point = Vector3.Scale(point, new Vector3(1, 0, 1));
-      meshCenter = Vector3.Scale(meshCenter, new Vector3(1, 0, 1));
-      pivot = Vector3.Scale(pivot, new Vector3(1, 0, 1));
-
-      var circleRadius = meshCenter - pivot;
-
-      var angle = Vector3.SignedAngle(circleRadius, point - pivot, Vector3.down);
-      var horizontalOffset = (point - pivot).magnitude * Mathf.Sin(Mathf.Deg2Rad * angle);
-      var radiusAtPoint = (point - pivot).magnitude * Mathf.Cos(Mathf.Deg2Rad * angle);
-
-      var arcLengthRatio = horizontalOffset / circleRadius.magnitude;
-      var newPosition = new Vector3(Mathf.Cos(arcLengthRatio), 0, Mathf.Sin(arcLengthRatio)) * radiusAtPoint;
-
-      var result = Quaternion.FromToRotation(Vector3.right, circleRadius) * newPosition + pivot;
-      return new Vector3(result.x, originalY, result.z);
    }
 
    private Vector3 ToGrid(Vector3 input) {
@@ -123,4 +105,65 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
    public void OnLoadDependencies(object data) {
       // Ignored
    }
+}
+
+public struct JobHandleMesh {
+   public JobHandle handle;
+   public DeformJob job;
+   public MeshFilter meshFilter;
+
+   public JobHandleMesh(JobHandle handle, DeformJob job, MeshFilter meshFilter) {
+      this.handle = handle;
+      this.job = job;
+      this.meshFilter = meshFilter;
+   }
+}
+
+public struct DeformJob : IJob {
+
+   public NativeArray<Vector3> displacedVertices;
+   public NativeArray<Vector3> originalVerticies;
+
+   private Vector3 center;
+   private Matrix4x4 localToWorldMatrix;
+   private Matrix4x4 worldToLocalMatrix;
+   private Vector3 rootPosition;
+
+   public DeformJob(Vector3 center, Vector3[] originalVerticies, Transform parent, Vector3 rootPosition) {
+      this.center = center;
+      this.originalVerticies = new NativeArray<Vector3>(originalVerticies, Allocator.TempJob);
+      displacedVertices = new NativeArray<Vector3>(originalVerticies.Length, Allocator.TempJob);
+      localToWorldMatrix = parent.localToWorldMatrix;
+      worldToLocalMatrix = parent.worldToLocalMatrix;
+      this.rootPosition = rootPosition;
+   }
+
+   public void Execute() {
+      for (int i = 0; i < originalVerticies.Length; i++) {
+         var absolutePosition = localToWorldMatrix.MultiplyPoint(originalVerticies[i]);
+         var relativePosition = worldToLocalMatrix.MultiplyPoint(GetNewPosition(absolutePosition, rootPosition, center));
+         displacedVertices[i] = relativePosition;
+      }
+   }
+
+   private Vector3 GetNewPosition(Vector3 point, Vector3 meshCenter, Vector3 pivot) {
+      var originalY = point.y;
+
+      point = Vector3.Scale(point, new Vector3(1, 0, 1));
+      meshCenter = Vector3.Scale(meshCenter, new Vector3(1, 0, 1));
+      pivot = Vector3.Scale(pivot, new Vector3(1, 0, 1));
+
+      var circleRadius = meshCenter - pivot;
+
+      var angle = Vector3.SignedAngle(circleRadius, point - pivot, Vector3.down);
+      var horizontalOffset = (point - pivot).magnitude * Mathf.Sin(Mathf.Deg2Rad * angle);
+      var radiusAtPoint = (point - pivot).magnitude * Mathf.Cos(Mathf.Deg2Rad * angle);
+
+      var arcLengthRatio = horizontalOffset / circleRadius.magnitude;
+      var newPosition = new Vector3(Mathf.Cos(arcLengthRatio), 0, Mathf.Sin(arcLengthRatio)) * radiusAtPoint;
+
+      var result = Quaternion.FromToRotation(Vector3.right, circleRadius) * newPosition + pivot;
+      return new Vector3(result.x, originalY, result.z);
+   }
+
 }
