@@ -15,8 +15,8 @@ public class PlaceableEvent : UnityEvent<Placeable> { }
 [RequireComponent(typeof(Collider))]
 public class Placeable : MonoBehaviour, ISaveable, IDestructable {
 
-   public static PlaceableEvent OnPlaceEvent = new PlaceableEvent();
-   public static PlaceableEvent OnRemoveEvent = new PlaceableEvent();
+   public PlaceableEvent OnPlaceEvent = new PlaceableEvent();
+   public PlaceableEvent OnRemoveEvent = new PlaceableEvent();
 
    [SerializeField]
    protected int woodCost = 0;
