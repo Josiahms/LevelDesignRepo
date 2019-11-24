@@ -30,8 +30,6 @@ public class Archer : MonoBehaviour {
       anim.speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
    }
 
-
-
    private IEnumerator Arrow() {
       var dcm = DayCycleManager.GetInstance();
       while (true) {

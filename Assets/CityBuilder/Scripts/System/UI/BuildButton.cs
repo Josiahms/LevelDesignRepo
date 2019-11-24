@@ -29,7 +29,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void OnClick() {
-      var townCenter = Selectable.GetSelected().GetComponent<TownCenter>();
+      var townCenter = FindObjectOfType<TownCenter>();
       if (townCenter == null) {
          Debug.LogWarning("A build button was clicked without a town center selected.  This action is ignored.");
          return;

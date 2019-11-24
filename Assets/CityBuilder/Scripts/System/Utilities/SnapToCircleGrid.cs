@@ -28,7 +28,7 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
       }
 
       transform.position = ToGrid(transform.position);
-      transform.LookAt(center.Value);
+      transform.LookAt(new Vector3(center.Value.x, transform.position.y, center.Value.z));
 
       var currentDistance = (transform.position - center.Value).magnitude;
       if (Mathf.Abs(currentDistance - prevDistance) > 0.5f) {

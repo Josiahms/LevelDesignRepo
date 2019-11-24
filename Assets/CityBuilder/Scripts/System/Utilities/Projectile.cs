@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour {
 
-   [SerializeField]
    private float damage = 5;
-   [SerializeField]
-   private float velocity = 5;
-   [SerializeField]
-   private float arc = 6;
+   private float velocity = 15;
+   private float arc = 3;
 
    private Vector3 initialPosition;
    private Vector3 target;

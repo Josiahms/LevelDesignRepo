@@ -23,8 +23,6 @@ public class GenericUIRenderer : MonoBehaviour {
    private Button upgradeButton;
    [SerializeField]
    private Button deleteButton;
-   [SerializeField]
-   private BuildDrawerButton buildDrawerButton;
 
    private void Start() {
       DoUpdate();
@@ -48,7 +46,6 @@ public class GenericUIRenderer : MonoBehaviour {
       var assignable = selectedItem.GetComponent<Assignable>();
       var house = selectedItem.GetComponent<House>();
       var pile = selectedItem.GetComponent<Workstation>();
-      var townCenter = selectedItem.GetComponent<TownCenter>();
 
       if (selectable != null) {
          titleText.text = selectable.GetItemName();
@@ -95,7 +92,5 @@ public class GenericUIRenderer : MonoBehaviour {
          quantityLabel.gameObject.SetActive(false);
          quantityText.gameObject.SetActive(false);
       }
-
-      buildDrawerButton.gameObject.SetActive(townCenter != null);
    }
 }

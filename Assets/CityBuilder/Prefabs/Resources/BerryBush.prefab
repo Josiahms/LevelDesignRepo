@@ -2649,7 +2649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   quantity: 20
-  gatherPeriod: 150
+  gatherPeriod: 130
   canFunction: 1
 --- !u!65 &1667967063186191141
 BoxCollider:

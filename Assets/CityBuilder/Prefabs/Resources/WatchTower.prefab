@@ -847,6 +847,36 @@ Transform:
   m_Father: {fileID: 7273138387671949873}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &776489981692634646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8814174330887882498}
+  m_Layer: 0
+  m_Name: ArcherSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8814174330887882498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 776489981692634646}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 6.83, z: -0.58}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1814210356058458956}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &788980112514605246
 GameObject:
   m_ObjectHideFlags: 0
@@ -2458,10 +2488,11 @@ GameObject:
   - component: {fileID: 409293789509725552}
   - component: {fileID: 7196230216732922171}
   - component: {fileID: 2588129987468582733}
-  - component: {fileID: 5007753001509996751}
   - component: {fileID: 7920802066746216132}
   - component: {fileID: -7301704582825831048}
   - component: {fileID: 5487716281953420403}
+  - component: {fileID: 4411827832204513356}
+  - component: {fileID: 7917514110219624832}
   m_Layer: 0
   m_Name: WatchTower
   m_TagString: Untagged
@@ -2480,7 +2511,6 @@ Transform:
   m_LocalPosition: {x: 30, y: 0, z: -18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7883005077739691164}
   - {fileID: 1814210356058458956}
   - {fileID: 4673409020476099557}
   m_Father: {fileID: 0}
@@ -2513,21 +2543,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Watch Tower
   description: A place for a worker to keep watch
---- !u!114 &5007753001509996751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3310224928036534552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxAssignees: 1
-  spots:
-  - {fileID: 7883005077739691164}
 --- !u!114 &7920802066746216132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2577,6 +2592,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497dfbf70ae64ec41b5016792fea1abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4411827832204513356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310224928036534552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxAssignees: 1
+  spots: []
+--- !u!114 &7917514110219624832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310224928036534552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b75924a9c557cdd4e85998a0750dd438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  archerPrefab: {fileID: 8296172669471941418, guid: 5355ee74ca878d844898a61d55765410,
+    type: 3}
+  archerLocation: {fileID: 8814174330887882498}
 --- !u!1 &3318509342891345987
 GameObject:
   m_ObjectHideFlags: 0
@@ -5249,36 +5293,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!1 &5274441978991938769
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7883005077739691164}
-  m_Layer: 0
-  m_Name: Spot1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7883005077739691164
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5274441978991938769}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.08, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 409293789509725552}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5378140715837862413
 GameObject:
   m_ObjectHideFlags: 0
@@ -7177,8 +7191,9 @@ Transform:
   - {fileID: 5558198831304671720}
   - {fileID: 4433582217859538081}
   - {fileID: 4433582217859538059}
+  - {fileID: 8814174330887882498}
   m_Father: {fileID: 409293789509725552}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6705125129847803283
 GameObject:
@@ -9132,7 +9147,7 @@ PrefabInstance:
     - target: {fileID: 1071597567521072715, guid: 3b17e822b931a454c835375bdde812b8,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1071597567521072715, guid: 3b17e822b931a454c835375bdde812b8,
         type: 3}
