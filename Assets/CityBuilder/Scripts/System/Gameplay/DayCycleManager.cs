@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
+
+   public UnityEvent OnStartWorkDay = new UnityEvent();
+   public UnityEvent OnEndWorkDay = new UnityEvent();
 
    [SerializeField]
    private Text clockText;
@@ -66,7 +70,8 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       clockMinuteRateBackup = clockMinuteRate;
       clockMinuteRate = 30;
       isRestTime = true;
-      PopulationManager.GetInstance().EatMeal();
+      OnEndWorkDay.Invoke();
+      Debug.Log("Foo");
    }
 
    public void IncreaseTimeSpeed() {
@@ -81,6 +86,7 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    public void StartWorkDay() {
       clockMinuteRate = clockMinuteRateBackup;
       isRestTime = false;
+      OnStartWorkDay.Invoke();
    }
 
    public bool IsWorkDay() {

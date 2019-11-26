@@ -16,12 +16,13 @@ public class Assignable : MonoBehaviour, ISaveable {
    private List<Worker> workers = new List<Worker>();
 
    public void AddWorker() {
-      if (workers.Count < maxAssignees) {
-         var worker = PopulationManager.GetInstance().GetNearestWorker(transform.position);
-         if (worker != null) {
-            workers.Add(worker);
-            worker.SetDestination(this);
-         }
+      AddWorker(PopulationManager.GetInstance().GetNearestWorker(transform.position));
+   }
+
+   public void AddWorker(Worker worker) {
+      if (worker != null && workers.Count < maxAssignees && !workers.Contains(worker)) {
+         workers.Add(worker);
+         worker.SetDestination(this);
       }
    }
 
@@ -61,6 +62,10 @@ public class Assignable : MonoBehaviour, ISaveable {
    }
 
    public Transform GetSpotForWorker(Worker worker) {
+      if (!workers.Contains(worker)) {
+         return null;
+      }
+
       var index = workers.IndexOf(worker);
       if (index < spots.Count) {
          return spots[index];

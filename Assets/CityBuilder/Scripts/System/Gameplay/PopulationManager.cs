@@ -23,6 +23,7 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    private new void Awake() {
       base.Awake();
       DontDestroyOnLoad(gameObject);
+      DayCycleManager.GetInstance().OnEndWorkDay.AddListener(() => EatMeal());
    }
 
    private void Update() {

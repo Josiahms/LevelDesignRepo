@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Walker))]
-public class Worker : MonoBehaviour, ISaveable {   
-   private Transform currentDestination;
+public class Worker : MonoBehaviour, ISaveable {
+
+   private Vector3? previousLocation;
    private Assignable assignedLocation;
    private bool createdFromScene = true;
 
@@ -19,6 +20,19 @@ public class Worker : MonoBehaviour, ISaveable {
    }
 
    private void Start() {
+      DayCycleManager.GetInstance().OnStartWorkDay.AddListener(() => {
+         if (assignedLocation != null) {
+            SetDestination(assignedLocation);
+         } else {
+            SetDestination(previousLocation.GetValueOrDefault());
+         }
+      });
+
+      DayCycleManager.GetInstance().OnEndWorkDay.AddListener(() => {
+         previousLocation = GetComponent<Walker>().GetDestination();
+         GetComponent<Walker>().SetDestination(House != null ? House.transform.position : WorkerSpawner.GetInstance().transform.position);
+      });
+
       if (createdFromScene) {
          PopulationManager.GetInstance().AddToWorkforce(this);
       }
@@ -38,19 +52,27 @@ public class Worker : MonoBehaviour, ISaveable {
 
    public void SetDestination(Assignable destination) {
       assignedLocation = destination;
+
+      if (destination != null) {
+         destination.AddWorker(this);
+         if (destination.GetSpotForWorker(this) != null) {
+            GetComponent<Walker>().SetDestination(destination.GetSpotForWorker(this).position);
+         }
+      } else {
+         GetComponent<Walker>().SetDestination(null);
+      }
+   }
+
+   public void SetDestination(Vector3 destination) {
+      if (assignedLocation != null) {
+         assignedLocation.RemoveWorker(this);
+         assignedLocation = null;
+      }
+      GetComponent<Walker>().SetDestination(destination);
    }
 
    public bool IsAssigned() {
       return assignedLocation != null;
-   }
-
-   private void Update() {
-      if (DayCycleManager.GetInstance().IsRestTime()) {
-         currentDestination = House == null ? DefaultGatheringPoint.GetInstance().transform : House.transform;
-      } else {
-         currentDestination = assignedLocation == null ? null : assignedLocation.GetSpotForWorker(this);
-      }
-      GetComponent<Walker>().SetDestination(currentDestination == null ? null : (Vector3?)currentDestination.position);
    }
 
    public object OnSave() {

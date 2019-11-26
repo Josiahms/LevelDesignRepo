@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WorkerSpawner : MonoBehaviour
+public class WorkerSpawner : Singleton<WorkerSpawner>
 {
    [SerializeField]
    [Range(1, 24)]

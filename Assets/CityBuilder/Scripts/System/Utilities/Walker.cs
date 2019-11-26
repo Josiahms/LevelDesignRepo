@@ -21,8 +21,16 @@ public class Walker : MonoBehaviour {
       return destination != null && (transform.position - destination.Value).magnitude <= deadZone;
    }
 
+   public Vector3? GetDestination() {
+      return destination;
+   }
+
    public void SetDestination(Vector3? destination) {
-      this.destination = destination;
+      if (destination.HasValue) {
+         this.destination = destination;
+      } else {
+         this.destination = transform.position;
+      }
    }
 
    private void Update() {
