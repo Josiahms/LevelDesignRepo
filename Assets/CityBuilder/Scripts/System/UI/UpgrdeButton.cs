@@ -17,7 +17,7 @@ public class UpgrdeButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
    }
 
    private void Update() {
-      var selected = SelectionManager.GetInstance().GetSelected();
+      var selected = SelectionManager.GetInstance().GetFirstSelected();
       if (selected != null) {
          var placeable = selected.GetComponent<Placeable>();
          if (placeable != null) {
@@ -27,7 +27,7 @@ public class UpgrdeButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
    }
 
    private void Upgrade() {
-      var selected = SelectionManager.GetInstance().GetSelected();
+      var selected = SelectionManager.GetInstance().GetFirstSelected();
       if (selected != null && selected.GetComponent<Placeable>() != null) {
          selected.GetComponent<Placeable>().Upgrade();
       }
@@ -39,7 +39,7 @@ public class UpgrdeButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
    private IEnumerator ShowCostOverlayDelay() {
       yield return new WaitForSeconds(0.45f);
-      var selected = SelectionManager.GetInstance().GetSelected();
+      var selected = SelectionManager.GetInstance().GetFirstSelected();
       if (selected != null) {
          var placeable = selected.GetComponent<Placeable>();
          if (placeable != null) {

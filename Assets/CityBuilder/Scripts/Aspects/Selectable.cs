@@ -33,7 +33,11 @@ public class Selectable : MonoBehaviour {
    }
 
    private void OnMouseOver() {
-      SelectionManager.GetInstance().Hover(this);
+      if (EventSystem.current.IsPointerOverGameObject()) {
+         SelectionManager.GetInstance().UnHover(this);
+      } else {
+         SelectionManager.GetInstance().Hover(this);
+      }
    }
 
    private void OnMouseExit() {
@@ -42,17 +46,17 @@ public class Selectable : MonoBehaviour {
 
    private void Update() {
       if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-         if (SelectionManager.GetInstance().GetSelected() == this) {
-            SelectionManager.GetInstance().Deselect();
-         } else if (SelectionManager.GetInstance().GetHovered() == this) {
+         if (SelectionManager.GetInstance().GetSelected().Contains(this)) {
+            SelectionManager.GetInstance().DeselectAll();
+         } else if (SelectionManager.GetInstance().GetHovered().Contains(this)) {
             SelectionManager.GetInstance().Select(this);
          }
       }
    }
 
    private void OnDestroy() {
-      if (SelectionManager.GetInstance() != null && SelectionManager.GetInstance().GetSelected() == this) {
-         SelectionManager.GetInstance().Deselect();
+      if (SelectionManager.GetInstance() != null && SelectionManager.GetInstance().GetSelected().Contains(this)) {
+         SelectionManager.GetInstance().DeselectAll();
       }
    }
 }

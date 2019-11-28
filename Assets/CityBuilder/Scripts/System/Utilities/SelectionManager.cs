@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,7 +8,7 @@ using UnityEngine.EventSystems;
 public class SelectionManager : Singleton<SelectionManager> {
 
    [SerializeField]
-   private float dragThreshold = 0.2f;
+   private float dragThreshold = 10;
    [SerializeField]
    private Color highlightColor = new Color(0.98f, 0.96f, 0.76f);
    [SerializeField]
@@ -16,8 +17,8 @@ public class SelectionManager : Singleton<SelectionManager> {
    private RectangularSelection rectangularSelection;
    private Vector3 mouseButtonDownPos;
    private bool isEnabled = true;
-   private Selectable selectedItem;
-   private Selectable hoveredItem;
+   private List<Selectable> selectedItems = new List<Selectable>();
+   private List<Selectable> hoveredItems = new List<Selectable>();
 
    private void Start() {
       rectangularSelection = GetComponent<RectangularSelection>();
@@ -29,71 +30,74 @@ public class SelectionManager : Singleton<SelectionManager> {
          return;
       }
 
-      /*if (Input.GetMouseButtonDown(0)) {
+      if (Input.GetMouseButtonDown(0)) {
          mouseButtonDownPos = Input.mousePosition;
+      }
+
+      if (Input.GetMouseButton(0)) {
          if (Vector3.Distance(Input.mousePosition, mouseButtonDownPos) > dragThreshold) {
             rectangularSelection.StartSelection(mouseButtonDownPos);
          }
       }
 
-      if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
+      if (Input.GetMouseButtonUp(0)) {
          rectangularSelection.EndSelection();
-      }*/
+      }
    }
 
    public void Select(Selectable newItem) {
-      if (selectedItem != null) {
-         Deselect();
-      }
-      selectedItem = newItem;
-      selectedItem.ChangeColor(selectedColor);
+      DeselectAll();
+      selectedItems.Add(newItem);
+      newItem.ChangeColor(selectedColor);
       foreach (var selectable in GetComponents<ISelectable>()) {
          selectable.OnSelect();
       }
    }
 
-   public void Deselect() {
-      if (selectedItem != null) {
-         foreach (var selectable in selectedItem.GetComponents<ISelectable>()) {
-            selectable.OnDeselect();
-         }
-         selectedItem.ChangeColor(Color.clear);
-         selectedItem = null;
-      }
+   public void SelectAll(List<Selectable> newItems) {
+
    }
 
-   public void Hover(Selectable newItem) {
-      if (EventSystem.current.IsPointerOverGameObject()) {
-         if (hoveredItem == newItem) {
-            hoveredItem.ChangeColor(Color.clear);
-            hoveredItem = null;
-         }
-      } else {
-         if (hoveredItem != null  && hoveredItem != selectedItem) {
-            hoveredItem.ChangeColor(Color.clear);
-         }
-         hoveredItem = newItem;
-         if (hoveredItem != selectedItem) {
-            hoveredItem.ChangeColor(highlightColor);
-         }
+   public void DeselectAll() {
+      foreach (var selectable in selectedItems.SelectMany(x => x.GetComponents<ISelectable>())) {
+         selectable.OnDeselect();
+      }
+      selectedItems.ForEach(x => x.ChangeColor(Color.clear));
+      selectedItems.Clear(); 
+   }
+
+   public void Hover(Selectable hoveredItem) {
+      if (hoveredItems.Contains(hoveredItem)) {
+         return;
+      }
+
+      hoveredItems.Add(hoveredItem);
+      if (!selectedItems.Contains(hoveredItem)) {
+         hoveredItem.ChangeColor(highlightColor);
       }
    }
 
    public void UnHover(Selectable item) {
-      if (hoveredItem == item) {
-         if (hoveredItem != selectedItem) {
-            hoveredItem.ChangeColor(Color.clear);
-         }
-         hoveredItem = null;
+      if (!hoveredItems.Contains(item)) {
+         return;
       }
+
+      if (!selectedItems.Contains(item)) {
+         item.ChangeColor(Color.clear);
+      }
+      hoveredItems.Remove(item);
    }
 
-   public Selectable GetSelected() {
-      return selectedItem;
+   public Selectable GetFirstSelected() {
+      return selectedItems.Count > 0 ? selectedItems[0] : null;
    }
 
-   public Selectable GetHovered() {
-      return hoveredItem;
+   public List<Selectable> GetSelected() {
+      return selectedItems;
+   }
+
+   public List<Selectable> GetHovered() {
+      return hoveredItems;
    }
 
    public void Enable() {

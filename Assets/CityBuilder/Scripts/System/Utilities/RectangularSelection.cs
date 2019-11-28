@@ -17,21 +17,26 @@ public class RectangularSelection : MonoBehaviour {
 
    public void StartSelection(Vector3 position) {
       selectionImage.enabled = true;
-      transform.position = position;
+      rectTransform.anchoredPosition = position;
       rectTransform.sizeDelta = new Vector2(0, 0);
    }
 
-   public void EndSelection() {
+   public Rect EndSelection() {
       selectionImage.enabled = false;
+      return rectTransform.rect;
    }
 
    public Rect GetRect() {
-      return new Rect();
+      if (!selectionImage.enabled) {
+         return new Rect();
+      }
+      return rectTransform.rect;
    }
 
    private void Update() {
-      var mouseDelta = Input.mousePosition - transform.position;
-      rectTransform.sizeDelta = new Vector2(mouseDelta.x, mouseDelta.z);
+      var mouseDelta =Input.mousePosition - rectTransform.anchoredPosition3D;
+      rectTransform.sizeDelta = new Vector2(Mathf.Abs(mouseDelta.x), Mathf.Abs(mouseDelta.y));
+      rectTransform.localScale = new Vector2(Mathf.Sign(mouseDelta.x), Mathf.Sign(mouseDelta.y));
    }
 
 }

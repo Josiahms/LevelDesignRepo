@@ -6,7 +6,7 @@ public class WorkerInput : MonoBehaviour {
 
    private void Update() {
       if (Input.GetMouseButtonDown(1)) {
-         var selected = SelectionManager.GetInstance().GetSelected();
+         var selected = SelectionManager.GetInstance().GetFirstSelected();
          var selectedWorker = selected != null ? selected.GetComponent<Worker>() : null;
          if (selectedWorker != null) {
             RaycastHit hitInfo;

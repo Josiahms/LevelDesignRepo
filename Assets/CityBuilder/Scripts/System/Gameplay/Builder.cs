@@ -19,7 +19,7 @@ public class Builder : Singleton<Builder> {
       this.buildingPrefab = buildingPrefab;
       buildingInstance = Instantiate(buildingPrefab, Vector3.zero, buildingPrefab.transform.rotation);
       buildingInstance.TownCenter = townCenter;
-      SelectionManager.GetInstance().Deselect();
+      SelectionManager.GetInstance().DeselectAll();
       SelectionManager.GetInstance().Disable();
    }
 
