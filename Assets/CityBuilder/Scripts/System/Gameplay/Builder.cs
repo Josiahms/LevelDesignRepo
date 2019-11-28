@@ -19,15 +19,15 @@ public class Builder : Singleton<Builder> {
       this.buildingPrefab = buildingPrefab;
       buildingInstance = Instantiate(buildingPrefab, Vector3.zero, buildingPrefab.transform.rotation);
       buildingInstance.TownCenter = townCenter;
-      Selectable.Deselect();
-      Selectable.Disable();
+      SelectionManager.GetInstance().Deselect();
+      SelectionManager.GetInstance().Disable();
    }
 
    public void ClearBuilding() {
       if (buildingInstance != null) {
          buildingInstance.Remove();
          buildingInstance = null;
-         Selectable.Enable();
+         SelectionManager.GetInstance().Enable();
       }
    }
 
@@ -57,7 +57,7 @@ public class Builder : Singleton<Builder> {
                if (ResourceManager.GetInstance().OffsetAll(-buildingInstance.GetWoodCost(), -buildingInstance.GetStoneCost(), -buildingInstance.GetMetalCost(), 0)) {
                   BuildSite.Instantiate(buildingInstance);
                   buildingInstance = null;
-                  Selectable.Enable();
+                  SelectionManager.GetInstance().Enable();
                }
             } else if (Input.GetMouseButtonUp(1)) {
                ClearBuilding();

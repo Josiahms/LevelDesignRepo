@@ -14,7 +14,7 @@ public class DeleteButton : MonoBehaviour {
    }
 
    private void Delete() {
-      var selected = Selectable.GetSelected();
+      var selected = SelectionManager.GetInstance().GetSelected();
       if (selected != null) {
          selected.GetComponent<Placeable>().Remove();
       }

@@ -19,52 +19,13 @@ public class Selectable : MonoBehaviour {
    private string description;
    public string Description { get { return description; } set { description = value; } }
 
-   private static bool isEnabled = true;
-   private static Selectable selectedItem;
-   private static Selectable hoveredItem;
-
-   private Color highlightColor;
-   private Color selectedColor;
    private Outline outline;
 
    protected void Awake() {
-      selectedColor = new Color(0.97f, 0.88f, 0.76f);
-      highlightColor = new Color(0.98f, 0.96f, 0.76f);
       outline = gameObject.AddComponent<Outline>();
       outline.OutlineMode = Outline.Mode.OutlineVisible;
-   }
-
-   public static Selectable GetSelected() {
-      return selectedItem;
-   }
-
-   public static void Enable() {
-      isEnabled = true;
-   }
-
-   public static void Disable() {
-      isEnabled = false;
-   }
-
-   public static void Deselect() {
-      if (selectedItem != null) {
-         foreach (var selectable in selectedItem.GetComponents<ISelectable>()) {
-            selectable.OnDeselect();
-         }
-         selectedItem.ChangeColor(Color.white);
-         selectedItem = null;
-      }
-   }
-
-   public void Select() {
-      if (selectedItem != null) {
-         Deselect();
-      }
-      selectedItem = this;
-      selectedItem.ChangeColor(selectedColor);
-      foreach (var selectable in GetComponents<ISelectable>()) {
-         selectable.OnSelect();
-      }
+      outline.OutlineWidth = 5;
+      outline.OutlineColor = Color.clear;
    }
 
    public void ChangeColor(Color color) {
@@ -72,47 +33,26 @@ public class Selectable : MonoBehaviour {
    }
 
    private void OnMouseOver() {
-      if (EventSystem.current.IsPointerOverGameObject()) {
-         if (hoveredItem == this) {
-            hoveredItem = null;
-         }
-      } else {
-         hoveredItem = this;
-      }
+      SelectionManager.GetInstance().Hover(this);
    }
 
    private void OnMouseExit() {
-      if (hoveredItem == this) {
-         hoveredItem = null;
-      }
+      SelectionManager.GetInstance().UnHover(this);
    }
 
    private void Update() {
-
-      if (!isEnabled) {
-         return;
-      }
-
-      if (selectedItem == this) {
-         ChangeColor(selectedColor);
-      } else if (hoveredItem == this) {
-         ChangeColor(highlightColor);
-      } else {
-         ChangeColor(Color.clear);
-      }
-
       if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-         if (hoveredItem == this) {
-            Select();
-         } else if (selectedItem == this) {
-            Deselect();
+         if (SelectionManager.GetInstance().GetSelected() == this) {
+            SelectionManager.GetInstance().Deselect();
+         } else if (SelectionManager.GetInstance().GetHovered() == this) {
+            SelectionManager.GetInstance().Select(this);
          }
       }
    }
 
    private void OnDestroy() {
-      if (selectedItem == this) {
-         Deselect();
+      if (SelectionManager.GetInstance() != null && SelectionManager.GetInstance().GetSelected() == this) {
+         SelectionManager.GetInstance().Deselect();
       }
    }
 }

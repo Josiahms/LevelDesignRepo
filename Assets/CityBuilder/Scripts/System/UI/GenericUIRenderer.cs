@@ -33,7 +33,7 @@ public class GenericUIRenderer : MonoBehaviour {
    }
 
    private void DoUpdate() {
-      var selectedItem = Selectable.GetSelected();
+      var selectedItem = SelectionManager.GetInstance().GetSelected();
       if (selectedItem == null) {
          transform.GetChild(0).gameObject.SetActive(false);
          return;

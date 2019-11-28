@@ -136,8 +136,10 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    }
 
    private void OnCollisionExit(Collision collision) {
-      if (!isPlaced) {
-         blocked--;
+      if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground")) {
+         if (!isPlaced) {
+            blocked--;
+         }
       }
    }
 

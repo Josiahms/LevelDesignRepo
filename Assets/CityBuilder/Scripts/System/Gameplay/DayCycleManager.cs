@@ -71,7 +71,6 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       clockMinuteRate = 30;
       isRestTime = true;
       OnEndWorkDay.Invoke();
-      Debug.Log("Foo");
    }
 
    public void IncreaseTimeSpeed() {
