@@ -30,32 +30,32 @@ public class SelectionManager : Singleton<SelectionManager> {
          return;
       }
 
-      if (Input.GetMouseButtonDown(0)) {
-         mouseButtonDownPos = Input.mousePosition;
-      }
+      if (!EventSystem.current.IsPointerOverGameObject()) {
 
-      if (Input.GetMouseButton(0)) {
-         if (Vector3.Distance(Input.mousePosition, mouseButtonDownPos) > dragThreshold) {
+         if (Input.GetMouseButtonDown(0)) {
+            mouseButtonDownPos = Input.mousePosition;
+         }
+
+         if (Input.GetMouseButton(0) && Vector3.Distance(Input.mousePosition, mouseButtonDownPos) > dragThreshold && !rectangularSelection.IsSelectionStarted()) {
             rectangularSelection.StartSelection(mouseButtonDownPos);
          }
       }
 
       if (Input.GetMouseButtonUp(0)) {
+         if (!EventSystem.current.IsPointerOverGameObject()) {
+            DeselectAll();
+            SelectAll(hoveredItems);
+         }
          rectangularSelection.EndSelection();
       }
    }
 
-   public void Select(Selectable newItem) {
-      DeselectAll();
-      selectedItems.Add(newItem);
-      newItem.ChangeColor(selectedColor);
-      foreach (var selectable in GetComponents<ISelectable>()) {
+   public void SelectAll(List<Selectable> newItems) {
+      selectedItems.AddRange(newItems);
+      newItems.ForEach(x => x.ChangeColor(selectedColor));
+      foreach (var selectable in newItems.SelectMany(x => x.GetComponents<ISelectable>())) {
          selectable.OnSelect();
       }
-   }
-
-   public void SelectAll(List<Selectable> newItems) {
-
    }
 
    public void DeselectAll() {
@@ -64,6 +64,14 @@ public class SelectionManager : Singleton<SelectionManager> {
       }
       selectedItems.ForEach(x => x.ChangeColor(Color.clear));
       selectedItems.Clear(); 
+   }
+
+   public void Deselect(Selectable item) {
+      foreach (var x in item.GetComponents<ISelectable>()) {
+         x.OnDeselect();
+      }
+      selectedItems.Remove(item);
+      item.ChangeColor(Color.clear);
    }
 
    public void Hover(Selectable hoveredItem) {
@@ -86,6 +94,10 @@ public class SelectionManager : Singleton<SelectionManager> {
          item.ChangeColor(Color.clear);
       }
       hoveredItems.Remove(item);
+   }
+
+   public Rect? GetSelectionRect() {
+      return rectangularSelection.GetRect();
    }
 
    public Selectable GetFirstSelected() {

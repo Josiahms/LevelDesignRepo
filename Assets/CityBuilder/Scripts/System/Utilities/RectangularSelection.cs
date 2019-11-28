@@ -26,11 +26,20 @@ public class RectangularSelection : MonoBehaviour {
       return rectTransform.rect;
    }
 
-   public Rect GetRect() {
+   public bool IsSelectionStarted() {
+      return selectionImage.enabled;
+   }
+
+   public Rect? GetRect() {
       if (!selectionImage.enabled) {
-         return new Rect();
+         return null;
       }
-      return rectTransform.rect;
+
+      return new Rect(
+         rectTransform.anchoredPosition.x, 
+         rectTransform.anchoredPosition.y, 
+         rectTransform.localScale.x * rectTransform.sizeDelta.x, 
+         rectTransform.localScale.y * rectTransform.sizeDelta.y);
    }
 
    private void Update() {

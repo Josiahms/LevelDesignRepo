@@ -34604,7 +34604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08bbe762969f4c645b6bbbe9b3d4ab3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragThreshold: 0.2
+  dragThreshold: 15
   highlightColor: {r: 1, g: 0.91071427, b: 0, a: 1}
   selectedColor: {r: 1, g: 0, b: 0.17502451, a: 1}
 --- !u!114 &1940939748
@@ -34633,7 +34633,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.37794995, b: 1, a: 0.30980393}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

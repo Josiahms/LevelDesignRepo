@@ -19,6 +19,7 @@ public class Selectable : MonoBehaviour {
    private string description;
    public string Description { get { return description; } set { description = value; } }
 
+   private bool isMouseOver;
    private Outline outline;
 
    protected void Awake() {
@@ -34,29 +35,39 @@ public class Selectable : MonoBehaviour {
 
    private void OnMouseOver() {
       if (EventSystem.current.IsPointerOverGameObject()) {
-         SelectionManager.GetInstance().UnHover(this);
+         isMouseOver = false;
       } else {
-         SelectionManager.GetInstance().Hover(this);
+         isMouseOver = true;
       }
    }
 
    private void OnMouseExit() {
-      SelectionManager.GetInstance().UnHover(this);
+      isMouseOver = false;
    }
 
    private void Update() {
-      if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-         if (SelectionManager.GetInstance().GetSelected().Contains(this)) {
-            SelectionManager.GetInstance().DeselectAll();
-         } else if (SelectionManager.GetInstance().GetHovered().Contains(this)) {
-            SelectionManager.GetInstance().Select(this);
-         }
+      var selectionBox = SelectionManager.GetInstance().GetSelectionRect();
+      var isSelectionBoxOver = selectionBox.HasValue && selectionBox.Value.Contains((Vector2)Camera.main.WorldToScreenPoint(transform.position), true);
+
+      if (!selectionBox.HasValue && isMouseOver || isSelectionBoxOver) {
+         SelectionManager.GetInstance().Hover(this);
+      } else {
+         SelectionManager.GetInstance().UnHover(this);
       }
    }
 
    private void OnDestroy() {
-      if (SelectionManager.GetInstance() != null && SelectionManager.GetInstance().GetSelected().Contains(this)) {
-         SelectionManager.GetInstance().DeselectAll();
+      var selectionManager = SelectionManager.GetInstance();
+      if (selectionManager != null) {
+         if (selectionManager.GetSelected().Contains(this)) {
+            selectionManager.Deselect(this);
+         }
+
+         if (selectionManager.GetHovered().Contains(this)) {
+            selectionManager.UnHover(this);
+         }
       }
+
+
    }
 }
