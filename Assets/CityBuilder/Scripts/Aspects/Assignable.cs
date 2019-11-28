@@ -19,11 +19,17 @@ public class Assignable : MonoBehaviour, ISaveable {
       AddWorker(PopulationManager.GetInstance().GetNearestWorker(transform.position));
    }
 
-   public void AddWorker(Worker worker) {
-      if (worker != null && workers.Count < maxAssignees && !workers.Contains(worker)) {
+   public bool AddWorker(Worker worker) {
+      if (worker == null || workers.Count >= maxAssignees) {
+         return false;
+      }
+
+      if (!workers.Contains(worker)) {
          workers.Add(worker);
          worker.SetDestination(this);
       }
+
+      return true;
    }
 
    public void RemoveWorker() {

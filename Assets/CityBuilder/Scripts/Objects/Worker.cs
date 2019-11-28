@@ -50,17 +50,25 @@ public class Worker : MonoBehaviour, ISaveable {
       }
    }
 
-   public void SetDestination(Assignable destination) {
-      assignedLocation = destination;
-
-      if (destination != null) {
-         destination.AddWorker(this);
-         if (destination.GetSpotForWorker(this) != null) {
-            GetComponent<Walker>().SetDestination(destination.GetSpotForWorker(this).position);
-         }
-      } else {
-         GetComponent<Walker>().SetDestination(null);
+   public bool SetDestination(Assignable assignment) {
+      if (assignment == null) {
+         return false;
       }
+
+      if (assignedLocation == assignment) {
+         return true;
+      }
+
+      if (assignment.AddWorker(this)) {
+         assignedLocation = assignment;
+         if (assignment.GetSpotForWorker(this) != null) {
+            GetComponent<Walker>().SetDestination(assignment.GetSpotForWorker(this).position);
+         } else {
+            GetComponent<Walker>().SetDestination(assignment.transform.position);
+         }
+         return true;
+      }
+      return false;
    }
 
    public void SetDestination(Vector3 destination) {

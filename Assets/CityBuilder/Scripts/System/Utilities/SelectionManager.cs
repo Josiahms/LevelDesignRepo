@@ -42,7 +42,7 @@ public class SelectionManager : Singleton<SelectionManager> {
       }
 
       if (Input.GetMouseButtonUp(0)) {
-         if (!EventSystem.current.IsPointerOverGameObject()) {
+         if (rectangularSelection.IsSelectionStarted() || !EventSystem.current.IsPointerOverGameObject()) {
             DeselectAll();
             SelectAll(hoveredItems);
          }
