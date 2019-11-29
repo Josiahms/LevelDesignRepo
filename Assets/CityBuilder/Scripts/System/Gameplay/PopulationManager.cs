@@ -65,7 +65,6 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
       }
       var worker = IdleWorkers
             .OrderBy(x => Vector3.Distance(x.transform.position, destination))
-            .OrderBy(x => x.House == null ? float.MaxValue : Vector3.Distance(x.House.transform.position, destination))
             .First();
       return worker;
    }

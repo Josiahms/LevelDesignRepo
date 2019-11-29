@@ -775,7 +775,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  quantity: 100
+  quantity: 600
   gatherPeriod: 200
   canFunction: 1
 --- !u!114 &4649487445740951624
