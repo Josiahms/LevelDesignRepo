@@ -21,11 +21,7 @@ public class Worker : MonoBehaviour, ISaveable {
 
    private void Start() {
       DayCycleManager.GetInstance().OnStartWorkDay.AddListener(() => {
-         if (assignedLocation != null) {
-            SetDestination(assignedLocation);
-         } else {
-            SetDestination(previousLocation.GetValueOrDefault());
-         }
+         GetComponent<Walker>().SetDestination(previousLocation.GetValueOrDefault());
       });
 
       DayCycleManager.GetInstance().OnEndWorkDay.AddListener(() => {
@@ -51,21 +47,9 @@ public class Worker : MonoBehaviour, ISaveable {
    }
 
    public bool SetDestination(Assignable assignment) {
-      if (assignment == null) {
-         return false;
-      }
-
-      if (assignedLocation == assignment) {
-         return true;
-      }
-
-      if (assignment.AddWorker(this)) {
+      if (assignment == null || assignment.AddWorker(this)) {
          assignedLocation = assignment;
-         if (assignment.GetSpotForWorker(this) != null) {
-            GetComponent<Walker>().SetDestination(assignment.GetSpotForWorker(this).position);
-         } else {
-            GetComponent<Walker>().SetDestination(assignment.transform.position);
-         }
+         SetWalkerDestination(assignment == null ? null : (Vector3?)assignment.GetSpotForWorker(this).position);
          return true;
       }
       return false;
@@ -76,16 +60,25 @@ public class Worker : MonoBehaviour, ISaveable {
          assignedLocation.RemoveWorker(this);
          assignedLocation = null;
       }
-      GetComponent<Walker>().SetDestination(destination);
+      SetWalkerDestination(destination);
    }
 
    public bool IsAssigned() {
       return assignedLocation != null;
    }
 
+   private void SetWalkerDestination(Vector3? destination) {
+      if (DayCycleManager.GetInstance().IsRestTime()) {
+         previousLocation = destination;
+      } else {
+         GetComponent<Walker>().SetDestination(destination);
+      }
+   }
+
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("destination", assignedLocation != null ? assignedLocation.GetComponent<Saveable>().GetSavedIndex() : -1);
+      data.Add("assignedLocation", assignedLocation != null ? assignedLocation.GetComponent<Saveable>().GetSavedIndex() : -1);
+      data.Add("previousLocation", previousLocation.HasValue ? new float[] { previousLocation.Value.x, previousLocation.Value.y, previousLocation.Value.z } : null);
       data.Add("house", House == null ? null : (int?)House.GetComponent<Saveable>().GetSavedIndex());
       return data;
    }
@@ -93,21 +86,16 @@ public class Worker : MonoBehaviour, ISaveable {
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       createdFromScene = false;
+      var prevLoc = (float[])data["previousLocation"];
+      if (prevLoc != null) {
+         previousLocation = new Vector3(prevLoc[0], prevLoc[1], prevLoc[2]);
+      }
    }
 
    public void OnLoadDependencies(object savedData) {
       var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("house", out result)) {
-         var houseIndex = (int?)result;
-         if (houseIndex.HasValue) {
-            House = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(houseIndex.Value).GetComponent<House>();
-         } else {
-            House = null;
-         }
-      }
-      if (data.TryGetValue("destination", out result)) {
-         assignedLocation = (int)result == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Assignable>();
-      }
+      var houseIndex = (int?)data["house"];
+      House = houseIndex.HasValue ? SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(houseIndex.Value).GetComponent<House>() : null;
+      assignedLocation = (int)data["assignedLocation"] == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)data["assignedLocation"]).GetComponent<Assignable>();
    }
 }

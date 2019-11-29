@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Walker : MonoBehaviour {
+public class Walker : MonoBehaviour, ISaveable {
 
    [SerializeField]
    private float deadZone = 0.5f;
 
    private Animator animator;
-   [SerializeField]
    private Vector3? destination;
    public Vector3 OneSecondDeltaPosition { get; private set; }
 
@@ -81,5 +80,23 @@ public class Walker : MonoBehaviour {
          prevPosition = transform.position;
          yield return new WaitForSeconds(0.25f);
       }
+   }
+
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      data.Add("destination", destination.HasValue ? new float[] { destination.Value.x, destination.Value.y, destination.Value.z } : null);
+      return data;
+   }
+
+   public void OnLoad(object data) {
+      var savedData = (Dictionary<string, object>)data;
+      var dest = (float[])savedData["destination"];
+      if (dest != null) {
+         destination = new Vector3(dest[0], dest[1], dest[2]);
+      }
+   }
+
+   public void OnLoadDependencies(object data) {
+      // Not used
    }
 }

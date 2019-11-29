@@ -56,7 +56,9 @@ public class Builder : Singleton<Builder> {
             if (CanBuild() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
                if (ResourceManager.GetInstance().OffsetAll(-buildingInstance.GetWoodCost(), -buildingInstance.GetStoneCost(), -buildingInstance.GetMetalCost(), 0)) {
                   BuildSite.Instantiate(buildingInstance);
+                  buildingInstance.GetComponent<Selectable>().ChangeColor(Color.clear);
                   buildingInstance = null;
+                  SelectionManager.GetInstance().DeselectAll();
                   SelectionManager.GetInstance().Enable();
                }
             } else if (Input.GetMouseButtonUp(1)) {

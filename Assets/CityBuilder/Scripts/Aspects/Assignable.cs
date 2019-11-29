@@ -19,12 +19,15 @@ public class Assignable : MonoBehaviour, ISaveable {
       AddWorker(PopulationManager.GetInstance().GetNearestWorker(transform.position));
    }
 
+   // Returns true if the worker was added, or is already assigned to this location
    public bool AddWorker(Worker worker) {
-      if (worker == null || workers.Count >= maxAssignees) {
-         return false;
-      }
 
       if (!workers.Contains(worker)) {
+
+         if (worker == null || workers.Count >= maxAssignees) {
+            return false;
+         }
+
          workers.Add(worker);
          worker.SetDestination(this);
       }
@@ -60,7 +63,7 @@ public class Assignable : MonoBehaviour, ISaveable {
    }
 
    public int GetWorkersInRange() {
-      return workers.Where(x => DayCycleManager.GetInstance().IsWorkDay() && (x.transform.position - GetSpotForWorker(x).position).magnitude < 1).Count();
+      return workers.Where(x => DayCycleManager.GetInstance().IsWorkDay() && (x.transform.position - transform.position).magnitude < 4).Count();
    }
 
    public int GetWorkerCount() {
@@ -69,7 +72,7 @@ public class Assignable : MonoBehaviour, ISaveable {
 
    public Transform GetSpotForWorker(Worker worker) {
       if (!workers.Contains(worker)) {
-         return null;
+         return transform;
       }
 
       var index = workers.IndexOf(worker);
