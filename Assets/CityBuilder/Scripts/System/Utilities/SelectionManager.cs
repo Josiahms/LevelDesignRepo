@@ -51,6 +51,10 @@ public class SelectionManager : Singleton<SelectionManager> {
    }
 
    public void SelectAll(List<Selectable> newItems) {
+      if (!isEnabled) {
+         return;
+      }
+
       selectedItems.AddRange(newItems);
       newItems.ForEach(x => x.ChangeColor(selectedColor));
       foreach (var selectable in newItems.SelectMany(x => x.GetComponents<ISelectable>())) {
@@ -75,6 +79,10 @@ public class SelectionManager : Singleton<SelectionManager> {
    }
 
    public void Hover(Selectable hoveredItem) {
+      if (!isEnabled) {
+         return;
+      }
+
       if (hoveredItems.Contains(hoveredItem)) {
          return;
       }
