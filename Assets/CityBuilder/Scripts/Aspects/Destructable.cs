@@ -15,21 +15,21 @@ public class Destructable : MonoBehaviour, ISaveable {
    private Team team;
    public Team GetTeam() { return team;  }
 
-   private float health;
+   public float Health { get; private set; }
    private FillerBar healthBar;
 
    public void Start() {
-      health = maxHealth;
-      healthBar = FillerBar.Instantiate(transform, health, maxHealth, Color.green, Color.red, Color.black);
+      Health = maxHealth;
+      healthBar = FillerBar.Instantiate(transform, Health, maxHealth, Color.green, Color.red, Color.black);
    }
 
    public void OffsetHealth(float amount) {
-      health += amount;
-      health = Mathf.Clamp(health, 0, maxHealth);
+      Health += amount;
+      Health = Mathf.Clamp(Health, 0, maxHealth);
 
-      healthBar.SetPercent(health, maxHealth);
+      healthBar.SetPercent(Health, maxHealth);
 
-      if (health == 0) {
+      if (Health == 0) {
          foreach (var destructable in GetComponents<IDestructable>()) {
             destructable.OnDestruction();
          }
@@ -39,14 +39,14 @@ public class Destructable : MonoBehaviour, ISaveable {
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("health", health);
+      data.Add("health", Health);
       data.Add("maxHealth", maxHealth);
       return data;
    }
 
    public void OnLoad(object data) {
       var savedData = (Dictionary<string, object>)data;
-      health = (float)savedData["health"];
+      Health = (float)savedData["health"];
       maxHealth = (float)savedData["maxHealth"];
    }
 

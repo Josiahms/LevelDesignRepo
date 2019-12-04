@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(AttachUIToTarget))]
 public class FillerBar : MonoBehaviour {
    [SerializeField]
    private Image topImage;
@@ -14,13 +13,19 @@ public class FillerBar : MonoBehaviour {
    private Text text;
 
    public static FillerBar Instantiate(Transform target, float curVal, float maxVal, Color topColor, Color bottomColor, Color textColor) {
-      var instance = Instantiate(ResourceLoader.GetInstance().FillerBar, MainCanvas.Get().transform);
-      instance.GetComponent<AttachUIToTarget>().SetTarget(target);
+      var instance = Instantiate(ResourceLoader.GetInstance().FillerBar, target);
       instance.SetPercent(curVal, maxVal);
       instance.topImage.color = topColor;
       instance.bottomImage.color = bottomColor;
       instance.text.color = textColor;
       return instance;
+   }
+
+   private void Update() {
+      var camTrans = Camera.main.transform;
+      var cameraNormal = camTrans.forward.normalized;
+
+      bottomImage.transform.LookAt(bottomImage.transform.position + cameraNormal);
    }
 
    public void SetPercent(float curVal, float maxVal) {

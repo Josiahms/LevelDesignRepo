@@ -382,6 +382,7 @@ GameObject:
   - component: {fileID: 5773862297116484206}
   - component: {fileID: 3719973528102078428}
   - component: {fileID: 3748232846587640147}
+  - component: {fileID: 5933809278613419385}
   m_Layer: 0
   m_Name: Storage_Food
   m_TagString: Untagged
@@ -501,6 +502,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497dfbf70ae64ec41b5016792fea1abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5933809278613419385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5773862297116484207}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcfbd8d447e142a43973f6f6b422aba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  team: 0
 --- !u!1 &5773955641957660107
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,15 +1399,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c673fae664b13b44c859f10b25c1cbec, type: 3}
---- !u!1 &4225599924140296537 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1482795473614480, guid: c673fae664b13b44c859f10b25c1cbec,
-    type: 3}
-  m_PrefabInstance: {fileID: 4224688875256577993}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4228929479829109421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4838756617176420, guid: c673fae664b13b44c859f10b25c1cbec,
+    type: 3}
+  m_PrefabInstance: {fileID: 4224688875256577993}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4225599924140296537 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1482795473614480, guid: c673fae664b13b44c859f10b25c1cbec,
     type: 3}
   m_PrefabInstance: {fileID: 4224688875256577993}
   m_PrefabAsset: {fileID: 0}

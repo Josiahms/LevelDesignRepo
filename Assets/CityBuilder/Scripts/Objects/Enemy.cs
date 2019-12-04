@@ -14,6 +14,10 @@ public class Enemy : MonoBehaviour {
    private Destructable target;
    private Coroutine attackCoroutine;
 
+   public static Enemy Instantiate(Vector3 position) {
+      return Instantiate(ResourceLoader.GetInstance().Enemy, position, new Quaternion());
+   }
+
    private void Start() {
       destructableSelf = GetComponent<Destructable>();
    }
@@ -35,6 +39,12 @@ public class Enemy : MonoBehaviour {
          if (GetComponent<Walker>().Arrived() && attackCoroutine == null) {
             attackCoroutine = StartCoroutine(Attack());
          }
+      }
+   }
+
+   private void OnDestroy() {
+      if (destructableSelf.Health <= 0) {
+         EnemySpawner.GetInstance().RemoveEnemy();
       }
    }
 

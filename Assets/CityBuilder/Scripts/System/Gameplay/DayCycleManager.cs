@@ -22,6 +22,7 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
 
    private float currentTime = 540;
    private bool isRestTime = false;
+   private bool isUnderAttack = false;
 
    public static readonly int MIN_IN_DAY = 1440;
    public static readonly int MIN_IN_HOUR = 60;
@@ -88,6 +89,25 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       OnStartWorkDay.Invoke();
    }
 
+   public void StartAttack() {
+      if (isRestTime || isUnderAttack) {
+         // Night attacks and simultaneous attacks are not supported
+         return;
+      }
+
+      isUnderAttack = true;
+      clockMinuteRateBackup = clockMinuteRate;
+      clockMinuteRate = 5;
+   }
+
+   public void EndAttack() {
+      if (!isUnderAttack) {
+         return;
+      }
+      isUnderAttack = false;
+      clockMinuteRate = clockMinuteRateBackup;
+   }
+
    public bool IsWorkDay() {
       return !isRestTime;
    }
@@ -109,21 +129,16 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
       data.Add("clockMinuteRate", clockMinuteRate);
       data.Add("currentTime", currentTime);
       data.Add("isRestTime", isRestTime);
+      data.Add("isUnderAttack", isUnderAttack);
       return data;
    }
 
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
-      object result = null;
-      if (data.TryGetValue("clockMinuteRate", out result)) {
-         clockMinuteRate = (float)result;
-      }
-      if (data.TryGetValue("currentTime", out result)) {
-         currentTime = (float)result;
-      }
-      if (data.TryGetValue("isRestTime", out result)) {
-         isRestTime = (bool)result;
-      }
+      clockMinuteRate = (float)data["clockMinuteRate"];
+      currentTime = (float)data["currentTime"];
+      isRestTime = (bool)data["isRestTime"];
+      isUnderAttack = (bool)data["isUnderAttack"];
    }
 
    public void OnLoadDependencies(object savedData) {
