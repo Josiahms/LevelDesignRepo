@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e411f006b08574ba3ce0e25813b376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  woodCost: 10
+  woodCost: 0
   stoneCost: 0
   metalCost: 0
   isPlaced: 0
@@ -122,7 +122,6 @@ MonoBehaviour:
   stoneUpgradeCost: 0
   metalUpgradeCost: 0
   levels: []
-  TownCenter: {fileID: 0}
 --- !u!114 &5446170530972631383
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -60,8 +60,6 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    private int level;
    private bool createdFromSave;
 
-   public TownCenter TownCenter;
-
    private int blocked = 0;
 
    private void Start() {
@@ -77,8 +75,6 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
          rb.isKinematic = false;
          rb.constraints = RigidbodyConstraints.FreezeAll;
       }
-
-      GetComponent<SnapToCircleGrid>().SetCenter(TownCenter.transform.position);
    }
 
    public bool IsBlocked() {
@@ -152,7 +148,6 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
       data.Add("stoneUpgradeCost", stoneUpgradeCost);
       data.Add("metalUpgradeCost", metalUpgradeCost);
       data.Add("level", level);
-      data.Add("TownCenter", TownCenter.GetComponent<Saveable>().GetSavedIndex());
 
       return data;
    }
@@ -174,7 +169,6 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    }
 
    public void OnLoadDependencies(object savedData) {
-      var data = (Dictionary<string, object>)savedData;
-      TownCenter = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)data["TownCenter"]).GetComponent<TownCenter>();
+      // Ignored
    }
 }

@@ -11,12 +11,22 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
    private float prevDistance;
    private Dictionary<MeshFilter, Vector3[]> sharedMeshStore = new Dictionary<MeshFilter, Vector3[]>();
    private List<JobHandleMesh> handles = new List<JobHandleMesh>();
+   private int minNumber;
 
    private void Start() {
       prevDistance = float.MaxValue;
    }
 
-   public void SetCenter(Vector3 center) {
+   public int GetMinNumber() {
+      return minNumber;
+   }
+
+   public Vector3? GetCenter() {
+      return center;
+   }
+
+   public void SetCenter(Vector3? center, int minNumber) {
+      this.minNumber = minNumber;
       this.center = center;
       Update();
    }
@@ -65,18 +75,19 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
    }
 
    private Vector3 ToGrid(Vector3 input) {
+      const float INPUT_OFFSET = 1.7f;  // Aprox half the distance between radii to offset grid snapping
       const float BUILDING_WIDTH = 7.5f;
       const float TWO_PI = Mathf.PI * 2;
-      const int MIN_NUMBER = 8;
-      const int HALF_MIN_NUMBER = MIN_NUMBER / 2;
+      const int BUILDINGS_PER_CIRCLE = 4;
 
       var center = Vector3.Scale(this.center.Value, new Vector3(1, 0, 1));
-      var distanceVect = Vector3.Scale(input, new Vector3(1, 0, 1)) - center;
-      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distanceVect.magnitude + 1.909f) / (BUILDING_WIDTH / TWO_PI)), MIN_NUMBER);
-      var numBuildingsSnapped = (numBuildingsInCircle / HALF_MIN_NUMBER * HALF_MIN_NUMBER);
+      var distance = Vector3.Scale(input, new Vector3(1, 0, 1)) - center;
+      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distance.magnitude + INPUT_OFFSET) / (BUILDING_WIDTH / TWO_PI)), minNumber);
+      var numBuildingsSnapped = (numBuildingsInCircle / BUILDINGS_PER_CIRCLE * BUILDINGS_PER_CIRCLE);
+      Debug.Log(numBuildingsInCircle + ", " + numBuildingsSnapped);
       var radius = numBuildingsSnapped * BUILDING_WIDTH / TWO_PI;
 
-      var currentAngle = Vector3.SignedAngle(new Vector3(1, 0, 0), distanceVect, Vector3.down);
+      var currentAngle = Vector3.SignedAngle(new Vector3(1, 0, 0), distance, Vector3.down);
       var angleIncrement = 360f / numBuildingsSnapped;
       var snappedAngle = Mathf.Floor((currentAngle + angleIncrement / 2f) / angleIncrement) * angleIncrement;
 
@@ -90,6 +101,7 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("center", center.HasValue ? new float[] { center.Value.x, center.Value.y, center.Value.z } : null);
+      data.Add("minNumber", minNumber);
       return data;
    }
 
@@ -100,6 +112,7 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
          var centerArray = (float[])savedData["center"];
          center = new Vector3(centerArray[0], centerArray[1], centerArray[2]);
       }
+      minNumber = (int)savedData["minNumber"];
    }
 
    public void OnLoadDependencies(object data) {

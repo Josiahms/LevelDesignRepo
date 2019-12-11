@@ -18,7 +18,7 @@ public class BuildSite : MonoBehaviour, ISaveable {
    public static BuildSite Instantiate(Placeable pendingInstance) {
       var instance = Instantiate(ResourceLoader.GetInstance().BuildSite, pendingInstance.transform.position, new Quaternion());
       pendingInstance.transform.position += new Vector3(0, -DELTA_Y, 0);
-      instance.GetComponent<SnapToCircleGrid>().SetCenter(pendingInstance.TownCenter.transform.position);
+      instance.GetComponent<SnapToCircleGrid>().SetCenter(pendingInstance.GetComponent<SnapToCircleGrid>().GetCenter(), pendingInstance.GetComponent<SnapToCircleGrid>().GetMinNumber());
       instance.pendingInstance = pendingInstance;
       return instance;
    }

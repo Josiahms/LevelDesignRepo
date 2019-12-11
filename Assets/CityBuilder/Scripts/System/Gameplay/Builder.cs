@@ -18,7 +18,12 @@ public class Builder : Singleton<Builder> {
       }
       this.buildingPrefab = buildingPrefab;
       buildingInstance = Instantiate(buildingPrefab, Vector3.zero, buildingPrefab.transform.rotation);
-      buildingInstance.TownCenter = townCenter;
+      if (buildingPrefab.name == "Field") {
+         buildingInstance.GetComponent<SnapToCircleGrid>().SetCenter(new Vector3(-11, 0, 2), 4);
+      } else {
+         buildingInstance.GetComponent<SnapToCircleGrid>().SetCenter(townCenter.transform.position, 8);
+      }
+
       SelectionManager.GetInstance().DeselectAll();
       SelectionManager.GetInstance().Disable();
    }
