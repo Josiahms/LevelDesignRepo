@@ -39,6 +39,7 @@ public class Projectile : MonoBehaviour {
       var destructable = other.GetComponent<Destructable>();
       if (destructable != null && destructable.GetTeam() != team) {
          destructable.OffsetHealth(-damage);
+         Destroy(gameObject);
       }
    }
 }
