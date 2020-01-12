@@ -12,16 +12,15 @@ public class Builder : Singleton<Builder> {
       return buildingInstance;
    }
 
-   public void SetBuilding(Placeable buildingPrefab, TownCenter townCenter) {
+   public void SetBuilding(Placeable buildingPrefab, GridCenter center) {
       if (buildingInstance != null) {
          buildingInstance.Remove();
       }
       this.buildingPrefab = buildingPrefab;
       buildingInstance = Instantiate(buildingPrefab, Vector3.zero, buildingPrefab.transform.rotation);
-      if (buildingPrefab.name == "Field") {
-         buildingInstance.GetComponent<SnapToCircleGrid>().SetCenter(new Vector3(-11, 0, 2), 4);
-      } else {
-         buildingInstance.GetComponent<SnapToCircleGrid>().SetCenter(townCenter.transform.position, 8);
+      var grid = buildingInstance.GetComponent<SnapToCircleGrid>();
+      if (grid != null && center != null) {
+         grid.SetCenter(center.MinNumber, center.transform.position);
       }
 
       SelectionManager.GetInstance().DeselectAll();

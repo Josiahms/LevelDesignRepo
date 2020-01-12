@@ -29,12 +29,8 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void OnClick() {
-      var townCenter = FindObjectOfType<TownCenter>();
-      if (townCenter == null) {
-         Debug.LogWarning("A build button was clicked without a town center selected.  This action is ignored.");
-         return;
-      }
-      Builder.GetInstance().SetBuilding(buildingPrefab, townCenter);
+      var gridCenter = SelectionManager.GetInstance().GetFirstSelected().GetComponent<GridCenter>();
+      Builder.GetInstance().SetBuilding(buildingPrefab, gridCenter);
       buildDrawer.SetActive(false);
       if (overlay != null) {
          Destroy(overlay.gameObject);

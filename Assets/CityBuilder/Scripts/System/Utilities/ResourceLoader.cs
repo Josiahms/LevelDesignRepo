@@ -34,6 +34,10 @@ public class ResourceLoader : Singleton<ResourceLoader> {
    public BuildSite BuildSite { get { return buildSite; } }
 
    [SerializeField]
+   private BuildSite circularBuildSite;
+   public BuildSite CircularBuildSite { get { return circularBuildSite; } }
+
+   [SerializeField]
    private FillerBar fillerBar;
    public FillerBar FillerBar { get { return fillerBar; } }
 

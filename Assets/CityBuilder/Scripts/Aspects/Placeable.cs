@@ -11,7 +11,6 @@ public interface IPlaceable {
 
 public class PlaceableEvent : UnityEvent<Placeable> { }
 
-[RequireComponent(typeof(SnapToCircleGrid))]
 [RequireComponent(typeof(Collider))]
 public class Placeable : MonoBehaviour, ISaveable, IDestructable {
 

@@ -25,7 +25,7 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
       return center;
    }
 
-   public void SetCenter(Vector3? center, int minNumber) {
+   public void SetCenter(int minNumber, Vector3? center) {
       this.minNumber = minNumber;
       this.center = center;
       Update();
@@ -78,24 +78,29 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
       const float INPUT_OFFSET = 1.7f;  // Aprox half the distance between radii to offset grid snapping
       const float BUILDING_WIDTH = 7.5f;
       const float TWO_PI = Mathf.PI * 2;
-      const int BUILDINGS_PER_CIRCLE = 4;
+      const int LCD_BUILDINGS = 4; // There are 4, 8, 12... buildings in each circle.  4 is the LCD.
 
       var center = Vector3.Scale(this.center.Value, new Vector3(1, 0, 1));
       var distance = Vector3.Scale(input, new Vector3(1, 0, 1)) - center;
-      var numBuildingsInCircle = (int)Mathf.Max(Mathf.Ceil((distance.magnitude + INPUT_OFFSET) / (BUILDING_WIDTH / TWO_PI)), minNumber);
-      var numBuildingsSnapped = (numBuildingsInCircle / BUILDINGS_PER_CIRCLE * BUILDINGS_PER_CIRCLE);
-      Debug.Log(numBuildingsInCircle + ", " + numBuildingsSnapped);
-      var radius = numBuildingsSnapped * BUILDING_WIDTH / TWO_PI;
+      var radiusAtMouse = distance.magnitude + INPUT_OFFSET;
 
+      // Circumference = 2 * PI * r
+      // Circumference / BuildingWidth = # of buildings that can fit at that radius (not necessarily a whole number)
+      var numBuildingsAtRadius = TWO_PI * radiusAtMouse / BUILDING_WIDTH;
+      var numBuildingsSnapped = SnapFloat(numBuildingsAtRadius, minNumber, LCD_BUILDINGS);
+      var radius = numBuildingsSnapped * BUILDING_WIDTH / TWO_PI;
       var currentAngle = Vector3.SignedAngle(new Vector3(1, 0, 0), distance, Vector3.down);
       var angleIncrement = 360f / numBuildingsSnapped;
       var snappedAngle = Mathf.Floor((currentAngle + angleIncrement / 2f) / angleIncrement) * angleIncrement;
-
       var snappedAngleVect = new Vector3(Mathf.Cos(Mathf.Deg2Rad * snappedAngle), 0, Mathf.Sin(Mathf.Deg2Rad * snappedAngle));
-
       var result = center + radius * snappedAngleVect;
 
       return new Vector3(result.x, input.y, result.z);
+   }
+
+   private int SnapFloat(float num, int min, int lowestCommonDenominator) {
+      var intValue = (int)Mathf.Ceil(num) / lowestCommonDenominator * lowestCommonDenominator;
+      return Mathf.Max(min, intValue);
    }
 
    public object OnSave() {

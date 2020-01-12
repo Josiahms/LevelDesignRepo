@@ -16,9 +16,15 @@ public class BuildSite : MonoBehaviour, ISaveable {
    private float percentComplete;
 
    public static BuildSite Instantiate(Placeable pendingInstance) {
-      var instance = Instantiate(ResourceLoader.GetInstance().BuildSite, pendingInstance.transform.position, new Quaternion());
+      var otherGrid = pendingInstance.GetComponent<SnapToCircleGrid>();
+      var prefab = otherGrid != null ? ResourceLoader.GetInstance().BuildSite : ResourceLoader.GetInstance().CircularBuildSite;
+      var instance = Instantiate(prefab, pendingInstance.transform.position, new Quaternion()); ;
+
+      if (otherGrid != null) {
+         instance.GetComponent<SnapToCircleGrid>().SetCenter(otherGrid.GetMinNumber(), otherGrid.GetCenter());
+      }
+
       pendingInstance.transform.position += new Vector3(0, -DELTA_Y, 0);
-      instance.GetComponent<SnapToCircleGrid>().SetCenter(pendingInstance.GetComponent<SnapToCircleGrid>().GetCenter(), pendingInstance.GetComponent<SnapToCircleGrid>().GetMinNumber());
       instance.pendingInstance = pendingInstance;
       return instance;
    }
