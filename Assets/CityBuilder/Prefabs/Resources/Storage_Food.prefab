@@ -380,9 +380,9 @@ GameObject:
   - component: {fileID: 5773862297116484192}
   - component: {fileID: 5773862297116484193}
   - component: {fileID: 5773862297116484206}
-  - component: {fileID: 3719973528102078428}
   - component: {fileID: 3748232846587640147}
   - component: {fileID: 5933809278613419385}
+  - component: {fileID: 3719973528102078428}
   m_Layer: 0
   m_Name: Storage_Food
   m_TagString: Untagged
@@ -441,7 +441,6 @@ MonoBehaviour:
   stoneUpgradeCost: 0
   metalUpgradeCost: 0
   levels: []
-  TownCenter: {fileID: 0}
 --- !u!114 &5773862297116484193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,20 +475,6 @@ MonoBehaviour:
   - {fileID: 4225599924733956729}
   - {fileID: 4225599924140296537}
   - {fileID: 4225599923889635054}
---- !u!114 &3719973528102078428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5773862297116484207}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabPath: Storage_Food
-  savePosition: 1
 --- !u!114 &3748232846587640147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -516,6 +501,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   team: 0
+--- !u!114 &3719973528102078428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5773862297116484207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPath: Storage_Food
+  savePosition: 1
 --- !u!1 &5773955641957660107
 GameObject:
   m_ObjectHideFlags: 0

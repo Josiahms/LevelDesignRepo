@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Placeable))]
-public class House : MonoBehaviour, IPlaceable, ISaveable {
+public class Housing : MonoBehaviour, IPlaceable, ISaveable {
 
    [SerializeField]
-   private Transform spawnpoint;
-   [SerializeField]
    private NightActivator nightLight;
-   [SerializeField]
+   
    private List<Worker> workers = new List<Worker>();
 
    [SerializeField]
@@ -18,7 +16,7 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
    public int AvailableCapacity { get { return capacity - workers.Count;  } }
 
    private void Start() {
-      if (!GetComponent<Placeable>().IsPlaced()) {
+      if (!GetComponent<Placeable>().IsPlaced() && nightLight != null) {
          nightLight.ForceOff = true;
       }
    }
@@ -29,7 +27,9 @@ public class House : MonoBehaviour, IPlaceable, ISaveable {
       foreach (var worker in workers) {
          worker.House = this;
       }
-      nightLight.ForceOff = false;
+      if (nightLight != null) {
+         nightLight.ForceOff = false;
+      }
    }
 
    public void OnRemove() {

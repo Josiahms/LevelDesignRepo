@@ -86,10 +86,10 @@ GameObject:
   - component: {fileID: 5347685274680966816}
   - component: {fileID: 1061948847}
   - component: {fileID: 1061948849}
-  - component: {fileID: 5199698069610381078}
   - component: {fileID: 727626455638885313}
   - component: {fileID: 6681074308358962477}
   - component: {fileID: 689732569230183754}
+  - component: {fileID: 5199698069610381078}
   m_Layer: 0
   m_Name: Camp
   m_TagString: Untagged
@@ -140,9 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f0b5932a8971a04284951d0158ef7ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnpoint: {fileID: 1272417965}
   nightLight: {fileID: 7627330728876522645}
-  workers: []
   capacity: 2
 --- !u!114 &1061948849
 MonoBehaviour:
@@ -168,21 +166,6 @@ MonoBehaviour:
   levels:
   - {fileID: 4634459630158392718}
   - {fileID: 3500863952839322373}
-  TownCenter: {fileID: 0}
---- !u!114 &5199698069610381078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2331420127252144566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabPath: Camp
-  savePosition: 1
 --- !u!114 &727626455638885313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,6 +206,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   team: 0
+--- !u!114 &5199698069610381078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331420127252144566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPath: Camp
+  savePosition: 1
 --- !u!1 &3500863952839322373
 GameObject:
   m_ObjectHideFlags: 0

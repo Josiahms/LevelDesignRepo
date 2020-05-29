@@ -952,6 +952,7 @@ GameObject:
   - component: {fileID: -5758245318579497994}
   - component: {fileID: -4434974959940523167}
   - component: {fileID: 6010326956682200651}
+  - component: {fileID: 860558758590541804}
   m_Layer: 9
   m_Name: BuildSite
   m_TagString: Untagged
@@ -1062,6 +1063,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497dfbf70ae64ec41b5016792fea1abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &860558758590541804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6713262067721420521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e411f006b08574ba3ce0e25813b376, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  woodCost: 0
+  stoneCost: 0
+  metalCost: 0
+  isPlaced: 0
+  destructable: 1
+  upgradeable: 0
+  woodUpgradeCost: 0
+  stoneUpgradeCost: 0
+  metalUpgradeCost: 0
+  levels: []
 --- !u!1 &6748909274899243113
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,9 +9,9 @@ public class Worker : MonoBehaviour, ISaveable {
    private Assignable assignedLocation;
    private bool createdFromScene = true;
 
-   public House House { get; set; }
+   public Housing House { get; set; }
 
-   public static Worker Instantiate(House house, Vector3 position, Quaternion rotation) {
+   public static Worker Instantiate(Housing house, Vector3 position, Quaternion rotation) {
       var result = Instantiate(ResourceLoader.GetInstance().WorkerPrefab, position + Vector3.Scale(Random.insideUnitSphere, new Vector3(3f, 0, 3f)), rotation);
       result.House = house;
       result.createdFromScene = false;
@@ -48,6 +48,9 @@ public class Worker : MonoBehaviour, ISaveable {
 
    public bool SetDestination(Assignable assignment) {
       if (assignment == null || assignment.AddWorker(this)) {
+         if (assignedLocation != null && assignedLocation != assignment) {
+            assignedLocation.RemoveWorker(this);
+         }
          assignedLocation = assignment;
          SetWalkerDestination(assignment == null ? null : (Vector3?)assignment.GetSpotForWorker(this).position);
          return true;
@@ -95,7 +98,7 @@ public class Worker : MonoBehaviour, ISaveable {
    public void OnLoadDependencies(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       var houseIndex = (int?)data["house"];
-      House = houseIndex.HasValue ? SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(houseIndex.Value).GetComponent<House>() : null;
+      House = houseIndex.HasValue ? SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(houseIndex.Value).GetComponent<Housing>() : null;
       assignedLocation = (int)data["assignedLocation"] == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)data["assignedLocation"]).GetComponent<Assignable>();
    }
 }

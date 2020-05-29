@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
 public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
    [SerializeField]
@@ -23,14 +22,13 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    private Coroutine showOverlayRoutine;
 
    private void Awake() {
-      button = GetComponent<Button>();
+      button = transform.GetChild(0).GetComponent<Button>();
       button.onClick.AddListener(OnClick);
       originalColors = additionalGraphics.Select(x => x.color).ToList();
    }
 
    private void OnClick() {
-      var gridCenter = SelectionManager.GetInstance().GetFirstSelected().GetComponent<GridCenter>();
-      Builder.GetInstance().SetBuilding(buildingPrefab, gridCenter);
+      Placer.GetInstance().SetPlaceable(buildingPrefab);
       buildDrawer.SetActive(false);
       if (overlay != null) {
          Destroy(overlay.gameObject);
@@ -43,6 +41,11 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       for (int i = 0; i < additionalGraphics.Count; i++) {
          additionalGraphics[i].color = canAfford ? originalColors[i] : button.colors.disabledColor;
       }
+      
+   }
+
+   private void OnEnable() {
+      button.gameObject.SetActive(SelectionManager.GetInstance().GetFirstSelected().GetComponent<BuildingOptions>().GetBuildingOptions().Contains(buildingPrefab));
    }
 
    public void OnPointerEnter(PointerEventData eventData) {

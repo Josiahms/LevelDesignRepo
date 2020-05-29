@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabPath: GridSpaces/CircularBuildSite
+  prefabPath: GridSpaces/CircleBuildSite
   savePosition: 1
 --- !u!114 &6010326956682200651
 MonoBehaviour:

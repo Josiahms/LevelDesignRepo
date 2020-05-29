@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridCenter : MonoBehaviour {
+public class CentralNode : MonoBehaviour {
 
    [SerializeField]
    private int minNumber;
    public int MinNumber { get { return minNumber; } }
+
+   private List<Placeable> children;
+
 }

@@ -41,7 +41,8 @@ public class Walker : MonoBehaviour, ISaveable {
 
       // 1 is normal speed;
       var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
-      if (speed <= 2) {
+      var inDeadZone = (destination.Value - transform.position).magnitude < deadZone;
+      if (speed <= 2 && !inDeadZone) {
          AnimatedWalk(speed);
       } else {
          animator.SetFloat("Turn", 0);
@@ -68,7 +69,7 @@ public class Walker : MonoBehaviour, ISaveable {
       animator.speed = speed;
       animator.SetFloat("Turn", Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1));
       animator.SetFloat("Forward", Mathf.Clamp((destination.Value - transform.position).magnitude * 10, 0, 1));
-      if ((destination.Value - transform.position).magnitude < deadZone || angleBetween > 15) {
+      if (angleBetween > 15) {
          animator.SetFloat("Forward", 0);
       }
    }

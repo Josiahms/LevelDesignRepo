@@ -11,8 +11,8 @@ public class BuildDrawerButton : MonoBehaviour {
 
    private void Start() {
       GetComponent<Button>().onClick.AddListener(() => {
-         if (Builder.GetInstance().GetBuilding() != null) {
-            Builder.GetInstance().ClearBuilding();
+         if (Placer.GetInstance().GetPlaceable() != null) {
+            Placer.GetInstance().ClearPlaceable();
          } else {
             buildDrawer.SetActive(!buildDrawer.activeSelf);
          }

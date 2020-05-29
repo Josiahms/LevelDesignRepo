@@ -846,8 +846,9 @@ GameObject:
   - component: {fileID: 1216607919}
   - component: {fileID: 7595047890322914520}
   - component: {fileID: 7102243008783066922}
-  - component: {fileID: 381767954520279207}
   - component: {fileID: 4780387309193124067}
+  - component: {fileID: 381767954520279207}
+  - component: {fileID: 3013195078251403899}
   m_Layer: 0
   m_Name: Worker
   m_TagString: Untagged
@@ -944,21 +945,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31211aa72d775a24991644b8594a53b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deadZone: 0.6
---- !u!114 &381767954520279207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216607914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabPath: Worker
-  savePosition: 1
+  deadZone: 1
 --- !u!114 &4780387309193124067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -973,6 +960,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Jim
   description: A good worker
+--- !u!114 &381767954520279207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216607914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79371513547ec024988bd002b8c624e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPath: Worker
+  savePosition: 1
+--- !u!114 &3013195078251403899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216607914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39687c3f24979e84a896e9f7ff1288d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildings:
+  - {fileID: 1577162212262662633, guid: b33b599878d675846bbf680499838897, type: 3}
+  - {fileID: 7922553681670554387, guid: 16ff672e2dd3ff44ba4f8f19208e94e2, type: 3}
 --- !u!1 &1271770409
 GameObject:
   m_ObjectHideFlags: 0

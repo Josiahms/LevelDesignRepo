@@ -46,9 +46,10 @@ public class GenericUIRenderer : MonoBehaviour {
       var selectable = selectedItem.GetComponent<Selectable>();
       var placeable = selectedItem.GetComponent<Placeable>();
       var assignable = selectedItem.GetComponent<Assignable>();
-      var house = selectedItem.GetComponent<House>();
+      var house = selectedItem.GetComponent<Housing>();
       var pile = selectedItem.GetComponent<Workstation>();
-      var gridCenter = selectedItem.GetComponent<GridCenter>();
+      var gridCenter = selectedItem.GetComponent<CentralNode>();
+      var buildingOptions = selectable.GetComponent<BuildingOptions>();
 
       if (selectable != null) {
          titleText.text = selectable.GetItemName();
@@ -95,7 +96,7 @@ public class GenericUIRenderer : MonoBehaviour {
          quantityLabel.gameObject.SetActive(false);
          quantityText.gameObject.SetActive(false);
       }
-      if (gridCenter != null) {
+      if (buildingOptions != null) {
          buildButton.gameObject.SetActive(true);
       } else {
          buildButton.gameObject.SetActive(false);

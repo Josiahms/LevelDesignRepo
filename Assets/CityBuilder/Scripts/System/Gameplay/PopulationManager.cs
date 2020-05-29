@@ -11,7 +11,7 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    private List<Worker> IdleWorkers { get { return workers.Where(x => !x.IsAssigned()).ToList(); } }
    private List<Worker> HomelessWorkers { get { return workers.Where(x => x.House == null).ToList(); } }
 
-   private List<House> houses = new List<House>();
+   private List<Housing> houses = new List<Housing>();
 
    [SerializeField]
    private Text starvingPeopleText;
@@ -77,15 +77,15 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
       workers.Remove(worker);
    }
 
-   public void AddHouse(House house) {
+   public void AddHouse(Housing house) {
       houses.Add(house);
    }
 
-   public void RemoveHouse(House house) {
+   public void RemoveHouse(Housing house) {
       houses.Remove(house);
    }
 
-   public House GetAvailableHome() {
+   public Housing GetAvailableHome() {
       var result = houses.Where(x => x.AvailableCapacity > 0).FirstOrDefault();
       return result;
    }
@@ -113,7 +113,7 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
          .Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>())
          .ToList();
       houses = ((int[])data["houses"])
-         .Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<House>())
+         .Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Housing>())
          .ToList();
    }
 

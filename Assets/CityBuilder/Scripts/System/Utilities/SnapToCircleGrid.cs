@@ -7,6 +7,9 @@ using Unity.Collections;
 
 public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
 
+   [SerializeField]
+   private Transform startingCenter;
+
    private Vector3? center;
    private float prevDistance;
    private Dictionary<MeshFilter, Vector3[]> sharedMeshStore = new Dictionary<MeshFilter, Vector3[]>();
@@ -15,6 +18,9 @@ public class SnapToCircleGrid : MonoBehaviour, ISaveable  {
 
    private void Start() {
       prevDistance = float.MaxValue;
+      if (startingCenter != null) {
+         center = startingCenter.position;
+      }
    }
 
    public int GetMinNumber() {
