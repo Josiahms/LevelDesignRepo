@@ -78,12 +78,14 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
 
       if (!IsPlaced()) {
          var rb = gameObject.GetComponent<Rigidbody>();
-         if (rb == null) {
+         // TODO: Not having an RB breaks collision detection when placing the object.  Maybe this should be moved to a separate collision detection object
+         // rather than added directly to this game object
+         /*if (rb == null) {
             gameObject.AddComponent<Rigidbody>();
          }
          rb.useGravity = false;
          rb.isKinematic = false;
-         rb.constraints = RigidbodyConstraints.FreezeAll;
+         rb.constraints = RigidbodyConstraints.FreezeAll;*/
       }
    }
 
@@ -100,9 +102,10 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
       if (GetComponent<Destructable>() != null) {
          GetComponent<Destructable>().enabled = true;
       }
-      if (GetComponent<Rigidbody>() != null) {
+      // TODO: Do I need to remove this?
+      /*if (GetComponent<Rigidbody>() != null) {
          Destroy(GetComponent<Rigidbody>());
-      }
+      }*/
    }
 
    public void Remove() {

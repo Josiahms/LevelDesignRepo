@@ -97,7 +97,7 @@ public class Walker : MonoBehaviour, ISaveable {
       }
    }
 
-   public void OnLoadDependencies(object data) {
+   public void OnLoadDependencies(object savedData) {
       // Not used
    }
 }

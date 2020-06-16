@@ -23,18 +23,28 @@ public class Attacker : MonoBehaviour {
    }
 
    private void Update() {
-      target = FindObjectsOfType<Destructable>()
-         .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
-         .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
-      if (target == null) {
-         GetComponent<Walker>().SetDestination(null);
-         return;
+      // No need to switch targets if we are already very close to the existing target
+      if (target == null || (target.transform.position - transform.position).magnitude > 3) {
+         target = FindObjectsOfType<Destructable>()
+            .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
+            .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
+         if (target == null) {
+            GetComponent<Walker>().SetDestination(null);
+            return;
+         }
       }
 
       RaycastHit hitInfo;
-      if (Physics.Raycast(transform.position, target.transform.position - transform.position, out hitInfo)) {
+      if (Physics.Raycast(transform.position + Vector3.up * 0.5f, target.transform.position - transform.position, out hitInfo)) {
          if (hitInfo.collider.gameObject == target.gameObject) {
-            GetComponent<Walker>().SetDestination(hitInfo.point - (target.transform.position - transform.position).normalized * 0.25f);
+            var destination = hitInfo.point - Vector3.up * 0.5f - (target.transform.position - transform.position).normalized * (GetComponent<CapsuleCollider>().radius);
+            if ((transform.position - destination).magnitude < 0.2f) {
+               // Close enough
+               GetComponent<Walker>().SetDestination(null);
+               transform.LookAt(target.transform);
+            } else {
+               GetComponent<Walker>().SetDestination(destination);
+            }
          } else {
             // Somethings in the way, but we'll just walk through it.
             GetComponent<Walker>().SetDestination(target.transform.position);
