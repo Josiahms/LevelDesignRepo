@@ -23,14 +23,12 @@ public class Attacker : MonoBehaviour {
    }
 
    private void Update() {
+      target = FindObjectsOfType<Destructable>()
+         .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
+         .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
       if (target == null) {
-         target = FindObjectsOfType<Destructable>()
-            .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
-            .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
-         if (target == null) {
-            GetComponent<Walker>().SetDestination(null);
-            return;
-         }
+         GetComponent<Walker>().SetDestination(null);
+         return;
       }
 
       RaycastHit hitInfo;

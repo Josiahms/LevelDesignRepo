@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -20,7 +21,8 @@ public class Archer : MonoBehaviour {
 
    private void Update() {
       if (target == null) {
-         var enemy = FindObjectOfType<Attacker>();
+         // TODO: The archer should know it's team, the concept of teams needs to be refactored.
+         var enemy = FindObjectsOfType<Attacker>().Where(x => x.GetComponent<Destructable>().GetTeam() != transform.parent.GetComponent<Destructable>().GetTeam()).FirstOrDefault();
          if (enemy != null) {
             target = enemy;
          }
