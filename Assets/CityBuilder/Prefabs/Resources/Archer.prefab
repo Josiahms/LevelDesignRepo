@@ -529,6 +529,7 @@ Transform:
   m_Children:
   - {fileID: 6634257404971994355}
   - {fileID: 8738288055293678388}
+  - {fileID: 4260164782714380595}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -563,8 +564,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc24af1c0366430488f10e34b1ea6fe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimDelay: 1
-  arrowSpawn: {fileID: 5006369135928960643}
+  aimDelay: 1.5
+  arrowSpawn: {fileID: 4260164782714380595}
 --- !u!1 &4082144780926732103
 GameObject:
   m_ObjectHideFlags: 0
@@ -1335,6 +1336,36 @@ Transform:
   - {fileID: 5186928553069511506}
   m_Father: {fileID: 761917145503646745}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6977817344647143712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4260164782714380595}
+  m_Layer: 0
+  m_Name: ArrowSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4260164782714380595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6977817344647143712}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.097, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 148411821149268}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7135192730591546686
 GameObject:

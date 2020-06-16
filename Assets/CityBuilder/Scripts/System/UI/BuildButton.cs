@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
    [SerializeField]
-   private Placeable buildingPrefab;
+   private Placeable placeablePrefab;
    [SerializeField]
    private GameObject buildDrawer;
    [SerializeField]
@@ -28,7 +28,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void OnClick() {
-      Placer.GetInstance().SetPlaceable(buildingPrefab);
+      Placer.GetInstance().SetPlaceable(placeablePrefab);
       buildDrawer.SetActive(false);
       if (overlay != null) {
          Destroy(overlay.gameObject);
@@ -36,7 +36,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void Update() {
-      var canAfford = ResourceManager.GetInstance().CanAfford(-buildingPrefab.GetWoodCost(), -buildingPrefab.GetStoneCost(), -buildingPrefab.GetMetalCost(), 0);
+      var canAfford = ResourceManager.GetInstance().CanAfford(-placeablePrefab.GetWoodCost(), -placeablePrefab.GetStoneCost(), -placeablePrefab.GetMetalCost(), -placeablePrefab.GetFoodCost());
       button.interactable = canAfford;
       for (int i = 0; i < additionalGraphics.Count; i++) {
          additionalGraphics[i].color = canAfford ? originalColors[i] : button.colors.disabledColor;
@@ -45,7 +45,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void OnEnable() {
-      button.gameObject.SetActive(SelectionManager.GetInstance().GetFirstSelected().GetComponent<BuildingOptions>().GetBuildingOptions().Contains(buildingPrefab));
+      button.gameObject.SetActive(SelectionManager.GetInstance().GetFirstSelected().GetComponent<BuildingOptions>().GetBuildingOptions().Contains(placeablePrefab));
    }
 
    public void OnPointerEnter(PointerEventData eventData) {
@@ -54,7 +54,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    private IEnumerator ShowCostOverlayDelay() {
       yield return new WaitForSeconds(0.45f);
-      overlay = BuildingCostOverlay.Instantiate(transform, buildingPrefab.GetWoodCost(), buildingPrefab.GetStoneCost(), buildingPrefab.GetMetalCost());
+      overlay = BuildingCostOverlay.Instantiate(transform, placeablePrefab.GetWoodCost(), placeablePrefab.GetStoneCost(), placeablePrefab.GetMetalCost(), placeablePrefab.GetFoodCost());
    }
 
    public void OnPointerExit(PointerEventData eventData) {

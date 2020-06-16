@@ -8,11 +8,15 @@ using UnityEngine.UI;
 public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
 
    [SerializeField]
+   private bool destroyWhenEmpty = true;
+
+   [SerializeField]
    private ResourceType type;
 
    [SerializeField]
    private int quantity;
    public int GetQuantity() { return quantity; }
+   public void SetQuantity(int newQuantity) { quantity = newQuantity; }
 
    [SerializeField]
    [Range(1, 900)]
@@ -29,6 +33,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    }
 
    public int TakeFromPile(int amount) {
+      // Infinite Resources!
       if (quantity == -1) {
          return amount;
       }
@@ -36,13 +41,20 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
          quantity -= amount;
          return amount;
       }
-      Destroy(gameObject);
-      Destroy(statusUI.gameObject);
-      return quantity;
+
+      if (destroyWhenEmpty) {
+         Destroy(gameObject);
+         Destroy(statusUI.gameObject);
+      }
+
+      amount = quantity;
+      quantity = 0;
+
+      return amount;
    }
 
    public bool IsFunctioning() {
-      return !ResourceManager.GetInstance()[type].IsFull() && canFunction;
+      return !ResourceManager.GetInstance()[type].IsFull() && quantity != 0 && canFunction;
    }
 
    private void Update() {

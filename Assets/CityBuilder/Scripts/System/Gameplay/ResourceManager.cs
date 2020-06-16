@@ -50,6 +50,7 @@ public class ResourceManager : Singleton<ResourceManager>, ISaveable {
          resources[ResourceType.Wood].OffsetValue(woodOffset);
          resources[ResourceType.Stone].OffsetValue(stoneOffset);
          resources[ResourceType.Metal].OffsetValue(metalOffset);
+         resources[ResourceType.Food].OffsetValue(foodOffset);
          return true;
       }
       return false;

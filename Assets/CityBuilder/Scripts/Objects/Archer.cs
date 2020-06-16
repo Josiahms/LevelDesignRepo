@@ -11,7 +11,7 @@ public class Archer : MonoBehaviour {
    private Transform arrowSpawn;
 
    private Animator anim;
-   private Enemy target;
+   private Attacker target;
 
    private void Start() {
       anim = GetComponent<Animator>();
@@ -20,7 +20,7 @@ public class Archer : MonoBehaviour {
 
    private void Update() {
       if (target == null) {
-         var enemy = FindObjectOfType<Enemy>();
+         var enemy = FindObjectOfType<Attacker>();
          if (enemy != null) {
             target = enemy;
          }
@@ -31,10 +31,10 @@ public class Archer : MonoBehaviour {
    }
 
    private IEnumerator Arrow() {
-      var dcm = DayCycleManager.GetInstance();
       while (true) {
+         var dcm = DayCycleManager.GetInstance();
          var curTime = dcm.CurrentTime;
-         yield return new WaitUntil(() => dcm.CurrentTime > curTime + (1.033f + aimDelay) * 5);
+         yield return new WaitUntil(() => dcm.CurrentTime > curTime + (1.033f + aimDelay));
          if (target != null) {
             anim.SetTrigger("Fire");
             curTime = dcm.CurrentTime;

@@ -16,7 +16,7 @@ public class DayCycleManager : Singleton<DayCycleManager>, ISaveable {
    private float clockMinuteRateBackup;
 
    public float CurrentTimeOfDay { get { return currentTime % MIN_IN_DAY; } }
-   public float CurrentTime { get { return currentTime; } }
+   public float CurrentTime { get { return Time.time * clockMinuteRate; } }
    public float ClockMinuteRate { get { return clockMinuteRate; } }
    public int Day { get { return (int)currentTime / MIN_IN_DAY + 1; } }
 

@@ -56,7 +56,7 @@ public class GenericUIRenderer : MonoBehaviour {
          descriptionText.text = selectable.Description;
       }
       if (placeable != null) {
-         deleteButton.gameObject.SetActive(placeable.Destructable);
+         deleteButton.gameObject.SetActive(placeable.Deleteable);
          upgradeButton.gameObject.SetActive(placeable.Upgradeable);
       } else {
          deleteButton.gameObject.SetActive(false);

@@ -58,11 +58,15 @@ public class Placer : Singleton<Placer> {
          if (Physics.Raycast(cameraRay, out hitInfo, float.MaxValue, LayerMask.GetMask("Ground"))) {
             placeableInstance.transform.position = hitInfo.point;
             if (CanPlace() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-               if (ResourceManager.GetInstance().OffsetAll(-placeableInstance.GetWoodCost(), -placeableInstance.GetStoneCost(), -placeableInstance.GetMetalCost(), 0)) {
-                  var buildSite = BuildSite.Instantiate(placeableInstance).GetComponent<Assignable>();
-                  foreach (var worker in selectionManager.GetSelected().Where(s => s.GetComponent<Worker>() != null).Select(s => s.GetComponent<Worker>()).OrderBy(s => s.IsAssigned())) {
-                     if (!buildSite.AddWorker(worker)) {
-                        break;
+               if (ResourceManager.GetInstance().OffsetAll(-placeableInstance.GetWoodCost(), -placeableInstance.GetStoneCost(), -placeableInstance.GetMetalCost(), -placeableInstance.GetFoodCost())) {
+                  if (placeableInstance.GetInstantBuild()) {
+                     placeableInstance.Place();
+                  } else {
+                     var buildSite = BuildSite.Instantiate(placeableInstance).GetComponent<Assignable>();
+                     foreach (var worker in selectionManager.GetSelected().Where(s => s.GetComponent<Worker>() != null).Select(s => s.GetComponent<Worker>()).OrderBy(s => s.IsAssigned())) {
+                        if (!buildSite.AddWorker(worker)) {
+                           break;
+                        }
                      }
                   }
                   placeableInstance.GetComponent<Selectable>().ChangeColor(Color.clear);

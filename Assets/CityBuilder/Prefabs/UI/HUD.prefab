@@ -93,8 +93,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e41b3271f30dead4682fe198ddeae175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnStartWorkDay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnEndWorkDay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   clockText: {fileID: 5597618443018937407}
-  clockMinuteRate: 10
+  clockMinuteRate: 5
 --- !u!114 &5597618443018937393
 MonoBehaviour:
   m_ObjectHideFlags: 0

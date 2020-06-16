@@ -29,7 +29,7 @@ public class EnemySpawner : Singleton<EnemySpawner>, ISaveable {
    private void SpawnEnemies(int num) {
       for (int i = 0; i < num; i++) {
          var randomOffset = Random.insideUnitCircle * spawnSize;
-         Enemy.Instantiate(transform.position + new Vector3(randomOffset.x, 0, randomOffset.y));
+         Attacker.Instantiate(transform.position + new Vector3(randomOffset.x, 0, randomOffset.y));
          numEnemies++;
       }
    }

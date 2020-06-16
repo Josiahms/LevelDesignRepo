@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 7616729001944295439}
   - component: {fileID: 1487801628449454907}
   - component: {fileID: 2468907324017303724}
+  - component: {fileID: 7176522542381197513}
+  - component: {fileID: 5453101972320513469}
+  - component: {fileID: 5393052452285845221}
   m_Layer: 0
   m_Name: Field
   m_TagString: Untagged
@@ -99,6 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497dfbf70ae64ec41b5016792fea1abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingCenter: {fileID: 0}
 --- !u!114 &2468907324017303724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,6 +117,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: Field
   savePosition: 1
+--- !u!114 &7176522542381197513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937574290897952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxAssignees: 5
+  spots: []
+--- !u!114 &5453101972320513469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937574290897952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5507e85bd0dd45488b8c5b7a9241c57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyWhenEmpty: 0
+  type: 3
+  quantity: 0
+  gatherPeriod: 20
+  canFunction: 1
+--- !u!114 &5393052452285845221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937574290897952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8e44c4cd8357f941afd20a719287025, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  secondsToFullyGrow: 360
+  cropGrowth: 0
+  fullyGrown: 0
+  crops: {fileID: 1807787444438474564}
 --- !u!1 &707272066430934836
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,10 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    public PlaceableEvent OnRemoveEvent = new PlaceableEvent();
 
    [SerializeField]
+   protected int foodCost = 0;
+   public int GetFoodCost() { return foodCost; }
+
+   [SerializeField]
    protected int woodCost = 0;
    public int GetWoodCost() { return woodCost; }
 
@@ -34,8 +38,12 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    public bool IsPlaced() { return isPlaced; }
 
    [SerializeField]
-   private bool destructable = true;
-   public bool Destructable { get { return destructable; } }
+   private bool instantBuild;
+   public bool GetInstantBuild() { return instantBuild; }
+
+   [SerializeField]
+   private bool deleteable = true;
+   public bool Deleteable { get { return deleteable;  } }
 
    [SerializeField]
    private bool upgradeable = true;
@@ -69,7 +77,10 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
       }
 
       if (!IsPlaced()) {
-         var rb = gameObject.AddComponent<Rigidbody>();
+         var rb = gameObject.GetComponent<Rigidbody>();
+         if (rb == null) {
+            gameObject.AddComponent<Rigidbody>();
+         }
          rb.useGravity = false;
          rb.isKinematic = false;
          rb.constraints = RigidbodyConstraints.FreezeAll;
@@ -89,12 +100,14 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
       if (GetComponent<Destructable>() != null) {
          GetComponent<Destructable>().enabled = true;
       }
-      Destroy(GetComponent<Rigidbody>());
+      if (GetComponent<Rigidbody>() != null) {
+         Destroy(GetComponent<Rigidbody>());
+      }
    }
 
    public void Remove() {
       if (isPlaced) {
-         ResourceManager.GetInstance().OffsetAll(woodCost, stoneCost, metalCost, 0);
+         ResourceManager.GetInstance().OffsetAll(woodCost, stoneCost, metalCost, foodCost);
          GetComponents<IPlaceable>().ToList().ForEach(x => x.OnRemove());
          OnRemoveEvent.Invoke(this);
       }
@@ -141,7 +154,6 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("isPlaced", isPlaced);
-      data.Add("destructable", destructable);
       data.Add("upgradeable", upgradeable);
       data.Add("woodUpgradeCost", woodUpgradeCost);
       data.Add("stoneUpgradeCost", stoneUpgradeCost);
@@ -154,7 +166,6 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       isPlaced = (bool)data["isPlaced"];
-      destructable = (bool)data["destructable"];
       upgradeable = (bool)data["upgradeable"];
       woodUpgradeCost = (int)data["woodUpgradeCost"];
       stoneUpgradeCost = (int)data["stoneUpgradeCost"];
