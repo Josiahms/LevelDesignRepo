@@ -6,9 +6,12 @@ public class Walker : MonoBehaviour, ISaveable {
 
    [SerializeField]
    private float deadZone = 0.5f;
+   [SerializeField]
+   private bool debug;
 
    private Animator animator;
    private Vector3? destination;
+   private float? offset;
    public Vector3 OneSecondDeltaPosition { get; private set; }
 
    private void Awake() {
@@ -17,19 +20,20 @@ public class Walker : MonoBehaviour, ISaveable {
    }
 
    public bool Arrived() {
-      return destination != null && (transform.position - destination.Value).magnitude <= deadZone;
+      return destination != null && (transform.position - destination.Value).magnitude <= offset;
    }
 
    public Vector3? GetDestination() {
       return destination;
    }
 
-   public void SetDestination(Vector3? destination) {
+   public void SetDestination(Vector3? destination, float? offset = null) {
       if (destination.HasValue) {
          this.destination = destination;
       } else {
          this.destination = transform.position;
       }
+      this.offset = offset;
    }
 
    private void Update() {
@@ -39,16 +43,21 @@ public class Walker : MonoBehaviour, ISaveable {
          return;
       }
 
+      if (debug) {
+         Debug.DrawLine(destination.Value, destination.Value + Vector3.up);
+      }
+
       // 1 is normal speed;
       var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
       var inDeadZone = (destination.Value - transform.position).magnitude < deadZone;
-      if (speed <= 2 && !inDeadZone) {
-         AnimatedWalk(speed);
+      AnimatedWalk(speed);
+      /*if (speed <= 2 && !inDeadZone) {
+         
       } else {
          animator.SetFloat("Turn", 0);
          animator.SetFloat("Forward", 0);
-         TeleportWalk(speed);
-      }
+         //TeleportWalk(speed);
+      }*/
    }
 
    private void TeleportWalk(float speed) {
@@ -59,19 +68,27 @@ public class Walker : MonoBehaviour, ISaveable {
 
    private void AnimatedWalk(float speed) {
       var forward2D = new Vector2(transform.forward.x, transform.forward.z);
-      var direction = (destination.Value - transform.position).normalized;
-      var direction2D = new Vector2(direction.x, direction.z);
+      var right2D = new Vector2(transform.right.x, transform.right.z);
+      var direction = destination.Value - transform.position;
+      var direction2D = new Vector2(direction.x, direction.z).normalized;
       var angleBetween = Vector2.Angle(forward2D, direction2D);
-      var between = Quaternion.AngleAxis(angleBetween / 2, transform.up) * transform.forward;
-      var angleBetween2 = Vector2.Angle(direction2D, new Vector2(between.x, between.z));
-      var isRightTurn = angleBetween2 < angleBetween;
+      var angleBetween2 = Vector2.Angle(right2D, direction2D);
+      var isRightTurn = angleBetween2 < 90;
+
+      var turn = Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1);
+      var forward = Mathf.Clamp((destination.Value - transform.position).magnitude - offset.GetValueOrDefault(0) + 0.1f, 0, 1);
+
+      if (angleBetween > 15) {
+         forward = 0;
+      }
+
+      if (debug) {
+         Debug.Log(forward + ", " + turn);
+      }
 
       animator.speed = speed;
-      animator.SetFloat("Turn", Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1));
-      animator.SetFloat("Forward", Mathf.Clamp((destination.Value - transform.position).magnitude * 10, 0, 1));
-      if (angleBetween > 15) {
-         animator.SetFloat("Forward", 0);
-      }
+      animator.SetFloat("Turn", turn);
+      animator.SetFloat("Forward", forward);
    }
 
    private IEnumerator DeltaMonitor() {

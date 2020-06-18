@@ -6,7 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(Destructable))]
 [RequireComponent(typeof(Walker))]
 public class Attacker : MonoBehaviour {
-
+   [SerializeField]
+   private float range = 2;
+   [SerializeField]
+   private float minRange = 1.3f;
    [SerializeField]
    private float damage = 5;
 
@@ -14,6 +17,7 @@ public class Attacker : MonoBehaviour {
    private Destructable target;
    private Coroutine attackCoroutine;
 
+   // TODO: This spawns an attacker, not an enemy.  Change this to be generic and move enemy logic out.
    public static Attacker Instantiate(Vector3 position) {
       return Instantiate(ResourceLoader.GetInstance().Enemy, position, new Quaternion());
    }
@@ -24,33 +28,26 @@ public class Attacker : MonoBehaviour {
 
    private void Update() {
       // No need to switch targets if we are already very close to the existing target
-      if (target == null || (target.transform.position - transform.position).magnitude > 3) {
+      if ((target == null || (target.transform.position - transform.position).magnitude > 3)) {
          target = FindObjectsOfType<Destructable>()
             .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
             .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
-         if (target == null) {
-            GetComponent<Walker>().SetDestination(null);
-            return;
-         }
       }
 
-      RaycastHit hitInfo;
-      if (Physics.Raycast(transform.position + Vector3.up * 0.5f, target.transform.position - transform.position, out hitInfo)) {
-         if (hitInfo.collider.gameObject == target.gameObject) {
-            var destination = hitInfo.point - Vector3.up * 0.5f - (target.transform.position - transform.position).normalized * (GetComponent<CapsuleCollider>().radius);
-            if ((transform.position - destination).magnitude < 0.2f) {
-               // Close enough
-               GetComponent<Walker>().SetDestination(null);
-               transform.LookAt(target.transform);
-            } else {
-               GetComponent<Walker>().SetDestination(destination);
-            }
-         } else {
-            // Somethings in the way, but we'll just walk through it.
-            GetComponent<Walker>().SetDestination(target.transform.position);
-         }
+      if (target == null) {
+         GetComponent<Walker>().SetDestination(null);
+         return;
+      }
+
+      var results = Physics.RaycastAll(transform.position + Vector3.up * 0.5f, target.transform.position - transform.position);
+      var targetPoints = results.Where(x => x.transform.gameObject == target.gameObject);
+      if (targetPoints.Count() > 0) {
+            var basePoint = targetPoints.First().point - Vector3.up * 0.5f;
+            var distance = basePoint - transform.position;
+            var destination = basePoint - Vector3.ClampMagnitude(distance, range);
+            GetComponent<Walker>().SetDestination(target.transform.position, (basePoint - target.transform.position).magnitude + range);
       } else {
-         GetComponent<Walker>().SetDestination(target.transform.position);
+         GetComponent<Walker>().SetDestination(target.transform.position, range);
       }
 
       if (GetComponent<Walker>().Arrived() && attackCoroutine == null) {

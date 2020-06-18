@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2628732190534810729}
   - component: {fileID: 2628732190534810730}
-  - component: {fileID: 2628732190534810728}
+  - component: {fileID: 7054514108448041746}
   m_Layer: 0
   m_Name: Cave
   m_TagString: Untagged
@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2628732190534810731}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 29.75, y: 0.44979954, z: 28.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: Arena/Cave
   savePosition: 1
---- !u!114 &2628732190534810728
+--- !u!114 &7054514108448041746
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -66,11 +66,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2628732190534810731}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 442d09e4350470441ae4f16c29aecaec, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ea5c2e06c839f34fa1a5d8d9f90a00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnSize: 3
-  waves: []
+  initialNumEnemies: 3
+  difficultyMultiplier: 0.25
+  initialWaveDelay: 2
+  minWaveDelay: 1
+  waveShorteningRate: 0.05
+  currentWave: 1
+  timeSinceLastWave: 0
 --- !u!1001 &2628732189130609907
 PrefabInstance:
   m_ObjectHideFlags: 0

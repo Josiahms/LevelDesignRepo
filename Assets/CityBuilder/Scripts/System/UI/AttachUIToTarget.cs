@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AttachUIToTarget : MonoBehaviour {
 
+   // UI must be anchored to lower left
+
    [SerializeField]
    private Transform target;
 
