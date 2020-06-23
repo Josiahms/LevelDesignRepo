@@ -947,6 +947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deadZone: 1
+  debug: 0
 --- !u!114 &4780387309193124067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -988,8 +989,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildings:
-  - {fileID: 1577162212262662633, guid: b33b599878d675846bbf680499838897, type: 3}
-  - {fileID: 7922553681670554387, guid: 16ff672e2dd3ff44ba4f8f19208e94e2, type: 3}
+  - {fileID: 1479631013080102443, guid: 667c3e16d9d9aa04d89612406a3aa68b, type: 3}
+  - {fileID: 5777692128466069237, guid: 2fd6a9d59e013a241a130952ab08b8f0, type: 3}
 --- !u!114 &3250402766118064212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1002,7 +1003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e411f006b08574ba3ce0e25813b376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foodCost: 5
+  foodCost: 9
   woodCost: 0
   stoneCost: 0
   metalCost: 0

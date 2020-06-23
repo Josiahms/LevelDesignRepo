@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Placeable))]
-public class WatchTower : MonoBehaviour {
+public class WatchTower : MonoBehaviour, IUpgradeable {
 
    [SerializeField]
    private Archer archerPrefab;
-   [SerializeField]
-   private Transform archerLocation;
 
    private void Start() {
       var placeable = GetComponent<Placeable>();
       if (placeable.IsPlaced()) {
-         Instantiate(archerPrefab, archerLocation);
+         Instantiate(archerPrefab, GetComponentInChildren<ArcherSpawn>().transform);
       } else {
-         GetComponent<Placeable>().OnPlaceEvent.AddListener((x) => Instantiate(archerPrefab, archerLocation));
+         GetComponent<Placeable>().OnPlaceEvent.AddListener((x) => Instantiate(archerPrefab, GetComponentInChildren<ArcherSpawn>().transform));
       }
+   }
+
+   public void OnUpgrade() {
+      GetComponentInChildren<Archer>().transform.SetParent(GetComponent<Upgradeable>().GetNextUpgrade().GetComponentInChildren<ArcherSpawn>().transform, false);
+      GetComponentInChildren<FillerBar>().transform.SetParent(GetComponent<Upgradeable>().GetNextUpgrade().GetComponentInChildren<HealthBarSpawn>().transform, false);
+      GetComponent<Destructable>().OffsetMaxHealth(50);
+      GetComponent<Destructable>().OffsetHealth(50);
    }
 
 }

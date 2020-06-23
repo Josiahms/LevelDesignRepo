@@ -6,7 +6,6 @@ using UnityEngine.Events;
 public interface IPlaceable {
    void OnPlace();
    void OnRemove();
-   void OnUpgrade();
 }
 
 public class PlaceableEvent : UnityEvent<Placeable> { }
@@ -45,26 +44,6 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    private bool deleteable = true;
    public bool Deleteable { get { return deleteable;  } }
 
-   [SerializeField]
-   private bool upgradeable = true;
-   public bool Upgradeable { get { return upgradeable; } }
-
-   [SerializeField]
-   private int woodUpgradeCost;
-   public int WoodUpgradeCost { get { return woodUpgradeCost; } }
-
-   [SerializeField]
-   private int stoneUpgradeCost;
-   public int StoneUpgradeCost { get { return stoneUpgradeCost; } }
-
-   [SerializeField]
-   private int metalUpgradeCost;
-   public int MetalUpgradeCost { get { return metalUpgradeCost; } }
-
-   [SerializeField]
-   private List<GameObject> levels;
-
-   private int level;
    private bool createdFromSave;
 
    private int blocked = 0;
@@ -102,7 +81,7 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
       if (GetComponent<Destructable>() != null) {
          GetComponent<Destructable>().enabled = true;
       }
-      // TODO: Do I need to remove this?
+      // TODO: 
       /*if (GetComponent<Rigidbody>() != null) {
          Destroy(GetComponent<Rigidbody>());
       }*/
@@ -118,24 +97,11 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    }
 
    public void OnDestruction() {
-      Remove();
-   }
-
-   public bool Upgrade() {
-      if (ResourceManager.GetInstance().OffsetAll(-woodUpgradeCost, -stoneUpgradeCost, -metalUpgradeCost, 0)) {
-         foreach (var placeable in GetComponents<IPlaceable>()) {
-            placeable.OnUpgrade();
-         }
-
-         level++;
-         if (level < levels.Count) {
-            levels[level].SetActive(true);
-            levels[level - 1].SetActive(false);
-         }
-
-         return true;
+      if (isPlaced) {
+         GetComponents<IPlaceable>().ToList().ForEach(x => x.OnRemove());
+         OnRemoveEvent.Invoke(this);
       }
-      return false;
+      Destroy(gameObject);
    }
 
    private void OnCollisionEnter(Collision collision) {
@@ -157,27 +123,12 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("isPlaced", isPlaced);
-      data.Add("upgradeable", upgradeable);
-      data.Add("woodUpgradeCost", woodUpgradeCost);
-      data.Add("stoneUpgradeCost", stoneUpgradeCost);
-      data.Add("metalUpgradeCost", metalUpgradeCost);
-      data.Add("level", level);
-
       return data;
    }
 
    public void OnLoad(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       isPlaced = (bool)data["isPlaced"];
-      upgradeable = (bool)data["upgradeable"];
-      woodUpgradeCost = (int)data["woodUpgradeCost"];
-      stoneUpgradeCost = (int)data["stoneUpgradeCost"];
-      metalUpgradeCost = (int)data["metalUpgradeCost"];
-      level = (int)data["level"];
-      if (levels.Count > 0) {
-         levels[0].SetActive(false);
-         levels[Mathf.Min(level, levels.Count - 1)].SetActive(true);
-      }
       createdFromSave = true;
    }
 

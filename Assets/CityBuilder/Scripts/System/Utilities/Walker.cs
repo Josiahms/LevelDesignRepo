@@ -20,7 +20,7 @@ public class Walker : MonoBehaviour, ISaveable {
    }
 
    public bool Arrived() {
-      return destination != null && (transform.position - destination.Value).magnitude <= offset;
+      return destination != null && (transform.position - destination.Value).magnitude <= (offset + 0.1f);
    }
 
    public Vector3? GetDestination() {
@@ -45,6 +45,12 @@ public class Walker : MonoBehaviour, ISaveable {
 
       if (debug) {
          Debug.DrawLine(destination.Value, destination.Value + Vector3.up);
+         if (offset.HasValue) {
+            Debug.DrawLine(
+               destination.Value - (destination.Value - transform.position).normalized * offset.Value, 
+               destination.Value - (destination.Value - transform.position).normalized * offset.Value + Vector3.up,
+               Color.green);
+         }
       }
 
       // 1 is normal speed;
@@ -76,7 +82,7 @@ public class Walker : MonoBehaviour, ISaveable {
       var isRightTurn = angleBetween2 < 90;
 
       var turn = Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1);
-      var forward = Mathf.Clamp((destination.Value - transform.position).magnitude - offset.GetValueOrDefault(0) + 0.1f, 0, 1);
+      var forward = (destination.Value - transform.position).magnitude - offset.GetValueOrDefault(0) > 0.1f ? 1 : 0;
 
       if (angleBetween > 15) {
          forward = 0;

@@ -774,6 +774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5507e85bd0dd45488b8c5b7a9241c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destroyWhenEmpty: 1
   type: 1
   quantity: 600
   gatherPeriod: 200
@@ -840,10 +841,6 @@ PrefabInstance:
     - target: {fileID: 4943765590059028, guid: e7489574cca6d4645a7019414b8288e8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.20250036
-      objectReference: {fileID: 0}
-    - target: {fileID: 4943765590059028, guid: e7489574cca6d4645a7019414b8288e8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.03000002
       objectReference: {fileID: 0}
     - target: {fileID: 4943765590059028, guid: e7489574cca6d4645a7019414b8288e8, type: 3}
       propertyPath: m_LocalPosition.z

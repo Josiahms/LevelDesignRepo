@@ -6,8 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Saveable))]
 [RequireComponent(typeof(Selectable))]
 [RequireComponent(typeof(Placeable))]
-public class Storage : MonoBehaviour, IPlaceable, ISaveable
-{
+public class Storage : MonoBehaviour, IPlaceable, ISaveable {
    [SerializeField]
    private ResourceType type;
    [SerializeField]
@@ -24,12 +23,6 @@ public class Storage : MonoBehaviour, IPlaceable, ISaveable
    public void OnPlace() {
       ResourceManager.GetInstance()[type].OffsetCapacity(capacity);
       ResourceManager.GetInstance()[type].OffsetValue(startingAmount);
-   }
-
-   public void OnUpgrade() {
-      ResourceManager.GetInstance()[type].OffsetCapacity(15);
-      capacity += 15;
-      GetComponent<Selectable>().Description = "Provides storage for " + capacity + " " + type;
    }
 
    public void OnRemove() {

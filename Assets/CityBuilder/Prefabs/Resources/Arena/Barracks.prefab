@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Barracks
-  description: Train Troops
+  description: Trains soliders
 --- !u!114 &1285411487422093784
 MonoBehaviour:
   m_ObjectHideFlags: 0

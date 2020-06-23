@@ -13,13 +13,14 @@ public class Projectile : MonoBehaviour {
    private float startTime;
    private Team team;
 
-   public static Projectile Instantiate(Vector3 spawnPoint, Vector3 target, Vector3 oneSecondDeltaPosition, Team team) {
+   public static Projectile Instantiate(Vector3 spawnPoint, Vector3 target, Vector3 oneSecondDeltaPosition, Team team, float damage) {
       var instance = Instantiate(ResourceLoader.GetInstance().Arrow, spawnPoint, new Quaternion());
       instance.startTime = DayCycleManager.GetInstance().CurrentTime;
       instance.initialPosition = spawnPoint;
       instance.target = target + oneSecondDeltaPosition * (target - spawnPoint).magnitude / instance.velocity / DayCycleManager.GetInstance().ClockMinuteRate;
       instance.team = team;
       instance.transform.LookAt(target);
+      instance.damage = damage;
       Destroy(instance.gameObject, 1.2f);
 
       return instance;

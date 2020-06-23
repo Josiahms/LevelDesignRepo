@@ -18,10 +18,13 @@ public class ContinuousWaveSpawner : MonoBehaviour, ISaveable {
    [SerializeField, Range(0, 0.5f)]
    private float waveShorteningRate = 0.05f;
 
-   [SerializeField]
    private int currentWave = 1;
-   [SerializeField]
    private float timeSinceLastWave;
+   private Text clockText;
+
+   private void Start() {
+      clockText = MainCanvas.Get().transform.GetChild(MainCanvas.Get().transform.childCount - 1).GetComponent<Text>();
+   }
 
    private int GetNumEnemiesToSpawn() {
       // 0 - difficulty stays the same, 1 - difficulty doubles each wave
@@ -40,6 +43,14 @@ public class ContinuousWaveSpawner : MonoBehaviour, ISaveable {
          timeSinceLastWave = 0;
          currentWave++;
       }
+
+      var timeTillNextWave = GetMinutesBetweenCurrentWave() * 60 - timeSinceLastWave;
+      var minutesMod60 = (int)timeTillNextWave / 60 % 60;
+      var minutesText = minutesMod60 < 10 ? "0" + minutesMod60 : minutesMod60.ToString();
+      var secondsMod60 = (int)timeTillNextWave % 60;
+      var secondsText = secondsMod60 < 10 ? "0" + secondsMod60 : secondsMod60.ToString();
+
+      clockText.text = minutesText + ":" + secondsText;
    }
 
    private void SpawnEnemies(int numEnemies) {

@@ -564,8 +564,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc24af1c0366430488f10e34b1ea6fe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimDelay: 1.5
+  aimDelay: 2.5
   arrowSpawn: {fileID: 4260164782714380595}
+  damage: 2
+  range: 40
 --- !u!1 &4082144780926732103
 GameObject:
   m_ObjectHideFlags: 0

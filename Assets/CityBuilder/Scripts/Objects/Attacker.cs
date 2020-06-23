@@ -7,6 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(Walker))]
 public class Attacker : MonoBehaviour {
    [SerializeField]
+   private float targettingRange = 50;
+   [SerializeField]
    private float range = 2;
    [SerializeField]
    private float minRange = 1.3f;
@@ -31,7 +33,9 @@ public class Attacker : MonoBehaviour {
       if ((target == null || (target.transform.position - transform.position).magnitude > 3)) {
          target = FindObjectsOfType<Destructable>()
             .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
-            .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam()).FirstOrDefault();
+            .Where(x => targettingRange < 0 || Vector3.Magnitude(x.transform.position - transform.position) <= targettingRange)
+            .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam())
+            .FirstOrDefault();
       }
 
       if (target == null) {
@@ -56,7 +60,7 @@ public class Attacker : MonoBehaviour {
    }
 
    private void OnDestroy() {
-      if (destructableSelf.Health <= 0) {
+      if (destructableSelf.Health <= 0 && EnemySpawner.GetInstance() != null) {
          EnemySpawner.GetInstance().RemoveEnemy();
       }
    }

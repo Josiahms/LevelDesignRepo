@@ -54,11 +54,7 @@ public class Housing : MonoBehaviour, IPlaceable, ISaveable {
       data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
       return data;
    }
-
-   public void OnUpgrade() {
-      // Ignored
-   }
-
+   
    public void OnLoad(object saveData) {
       // Ignored
    }

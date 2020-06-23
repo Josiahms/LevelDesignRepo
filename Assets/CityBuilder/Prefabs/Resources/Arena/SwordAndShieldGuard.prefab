@@ -999,7 +999,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 1.5
   minRange: 1.3
-  damage: 5
+  damage: 8
 --- !u!114 &1480840001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1012,7 +1012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcfbd8d447e142a43973f6f6b422aba0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
+  maxHealth: 125
   team: 0
 --- !u!114 &7208321593679506459
 MonoBehaviour:
@@ -1026,7 +1026,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e411f006b08574ba3ce0e25813b376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foodCost: 5
+  foodCost: 12
   woodCost: 0
   stoneCost: 0
   metalCost: 0

@@ -45,6 +45,7 @@ public class GenericUIRenderer : MonoBehaviour {
 
       var selectable = selectedItem.GetComponent<Selectable>();
       var placeable = selectedItem.GetComponent<Placeable>();
+      var upgradeable = selectedItem.GetComponent<Upgradeable>();
       var assignable = selectedItem.GetComponent<Assignable>();
       var house = selectedItem.GetComponent<Housing>();
       var pile = selectedItem.GetComponent<Workstation>();
@@ -57,9 +58,12 @@ public class GenericUIRenderer : MonoBehaviour {
       }
       if (placeable != null) {
          deleteButton.gameObject.SetActive(placeable.Deleteable);
-         upgradeButton.gameObject.SetActive(placeable.Upgradeable);
       } else {
          deleteButton.gameObject.SetActive(false);
+      }
+      if (upgradeable != null && upgradeable.GetNextUpgrade() != null) {
+         upgradeButton.gameObject.SetActive(true);
+      } else {
          upgradeButton.gameObject.SetActive(false);
       }
       if (assignable != null) {

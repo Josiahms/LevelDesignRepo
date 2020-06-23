@@ -10,6 +10,10 @@ public class Archer : MonoBehaviour {
    private float aimDelay = 1;
    [SerializeField]
    private Transform arrowSpawn;
+   [SerializeField]
+   private float damage = 5;
+   [SerializeField]
+   private float range = 15;
 
    private Animator anim;
    private Attacker target;
@@ -22,7 +26,11 @@ public class Archer : MonoBehaviour {
    private void Update() {
       if (target == null) {
          // TODO: The archer should know it's team, the concept of teams needs to be refactored.
-         var enemy = FindObjectsOfType<Attacker>().Where(x => x.GetComponent<Destructable>().GetTeam() != transform.parent.GetComponent<Destructable>().GetTeam()).FirstOrDefault();
+         var enemy = FindObjectsOfType<Attacker>()
+            // TODO: refactor transform.parent.parent to something more reliable
+            .Where(x => x.GetComponent<Destructable>().GetTeam() != GetComponentInParent<Destructable>().GetTeam())
+            .Where(x => (x.transform.position - transform.position).magnitude < range)
+            .FirstOrDefault();
          if (enemy != null) {
             target = enemy;
          }
@@ -36,13 +44,17 @@ public class Archer : MonoBehaviour {
       while (true) {
          var dcm = DayCycleManager.GetInstance();
          var curTime = dcm.CurrentTime;
+         Debug.Log(target);
          yield return new WaitUntil(() => dcm.CurrentTime > curTime + (1.033f + aimDelay));
+         Debug.Log(target);
          if (target != null) {
             anim.SetTrigger("Fire");
             curTime = dcm.CurrentTime;
             yield return new WaitUntil(() => dcm.CurrentTime > curTime + 0.5f);
-            Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, target.GetComponent<Walker>().OneSecondDeltaPosition, Team.Player);
-            curTime = dcm.CurrentTime;
+            if (target != null) {
+               Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, target.GetComponent<Walker>().OneSecondDeltaPosition, Team.Player, damage);
+               curTime = dcm.CurrentTime;
+            }
             yield return new WaitUntil(() => dcm.CurrentTime > curTime + 3);
          }
       }
