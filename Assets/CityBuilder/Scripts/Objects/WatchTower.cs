@@ -19,7 +19,6 @@ public class WatchTower : MonoBehaviour, IUpgradeable {
 
    public void OnUpgrade() {
       GetComponentInChildren<Archer>().transform.SetParent(GetComponent<Upgradeable>().GetNextUpgrade().GetComponentInChildren<ArcherSpawn>().transform, false);
-      GetComponentInChildren<FillerBar>().transform.SetParent(GetComponent<Upgradeable>().GetNextUpgrade().GetComponentInChildren<HealthBarSpawn>().transform, false);
       GetComponent<Destructable>().OffsetMaxHealth(50);
       GetComponent<Destructable>().OffsetHealth(50);
    }

@@ -10,29 +10,22 @@ public interface IDestructable {
 public class Destructable : MonoBehaviour, ISaveable {
 
    [SerializeField]
-   private Transform healthSpawnLocation;
-   [SerializeField]
    private float maxHealth = 100;
+   public float MaxHealth { get { return maxHealth; }}
+
    [SerializeField]
    private Team team;
    public Team GetTeam() { return team;  }
 
    public float Health { get; private set; }
-   private FillerBar healthBar;
 
    private void Awake() {
       Health = maxHealth;
    }
 
-   public void Start() {
-      healthBar = FillerBar.Instantiate(healthSpawnLocation == null ? transform : healthSpawnLocation, Health, maxHealth, Color.green, Color.red, Color.black);
-   }
-
    public void OffsetMaxHealth(float amount) {
       maxHealth += amount;
       Health = Mathf.Clamp(Health, 0, maxHealth);
-
-      healthBar.SetPercent(Health, maxHealth);
 
       if (Health == 0) {
          foreach (var destructable in GetComponents<IDestructable>()) {
@@ -45,8 +38,6 @@ public class Destructable : MonoBehaviour, ISaveable {
    public void OffsetHealth(float amount) {
       Health += amount;
       Health = Mathf.Clamp(Health, 0, maxHealth);
-
-      healthBar.SetPercent(Health, maxHealth);
 
       if (Health == 0) {
          foreach (var destructable in GetComponents<IDestructable>()) {
