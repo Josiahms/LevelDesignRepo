@@ -5,8 +5,6 @@ using UnityEngine;
 public class Walker : MonoBehaviour, ISaveable {
 
    [SerializeField]
-   private float deadZone = 0.5f;
-   [SerializeField]
    private bool debug;
 
    private Animator animator;
@@ -52,17 +50,9 @@ public class Walker : MonoBehaviour, ISaveable {
             Color.green);
       }
 
-      // 1 is normal speed;
+      // 5 is normal speed;
       var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
-      var inDeadZone = (destination.Value - transform.position).magnitude < deadZone;
       AnimatedWalk(speed);
-      /*if (speed <= 2 && !inDeadZone) {
-         
-      } else {
-         animator.SetFloat("Turn", 0);
-         animator.SetFloat("Forward", 0);
-         //TeleportWalk(speed);
-      }*/
    }
 
    private void TeleportWalk(float speed) {
