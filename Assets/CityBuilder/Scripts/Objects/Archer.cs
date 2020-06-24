@@ -44,9 +44,7 @@ public class Archer : MonoBehaviour {
       while (true) {
          var dcm = DayCycleManager.GetInstance();
          var curTime = dcm.CurrentTime;
-         Debug.Log(target);
          yield return new WaitUntil(() => dcm.CurrentTime > curTime + (1.033f + aimDelay));
-         Debug.Log(target);
          if (target != null) {
             anim.SetTrigger("Fire");
             curTime = dcm.CurrentTime;

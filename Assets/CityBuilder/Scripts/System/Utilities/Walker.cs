@@ -11,7 +11,7 @@ public class Walker : MonoBehaviour, ISaveable {
 
    private Animator animator;
    private Vector3? destination;
-   private float? offset;
+   private float offset = 0.25f;
    public Vector3 OneSecondDeltaPosition { get; private set; }
 
    private void Awake() {
@@ -27,7 +27,7 @@ public class Walker : MonoBehaviour, ISaveable {
       return destination;
    }
 
-   public void SetDestination(Vector3? destination, float? offset = null) {
+   public void SetDestination(Vector3? destination, float offset = 0.25f) {
       if (destination.HasValue) {
          this.destination = destination;
       } else {
@@ -44,13 +44,12 @@ public class Walker : MonoBehaviour, ISaveable {
       }
 
       if (debug) {
+         Debug.Log(destination.Value);
          Debug.DrawLine(destination.Value, destination.Value + Vector3.up);
-         if (offset.HasValue) {
-            Debug.DrawLine(
-               destination.Value - (destination.Value - transform.position).normalized * offset.Value, 
-               destination.Value - (destination.Value - transform.position).normalized * offset.Value + Vector3.up,
-               Color.green);
-         }
+         Debug.DrawLine(
+            destination.Value - (destination.Value - transform.position).normalized * offset, 
+            destination.Value - (destination.Value - transform.position).normalized * offset + Vector3.up,
+            Color.green);
       }
 
       // 1 is normal speed;
@@ -76,16 +75,20 @@ public class Walker : MonoBehaviour, ISaveable {
       var forward2D = new Vector2(transform.forward.x, transform.forward.z);
       var right2D = new Vector2(transform.right.x, transform.right.z);
       var direction = destination.Value - transform.position;
-      var direction2D = new Vector2(direction.x, direction.z).normalized;
+      var direction2D = new Vector2(direction.x, direction.z);
       var angleBetween = Vector2.Angle(forward2D, direction2D);
       var angleBetween2 = Vector2.Angle(right2D, direction2D);
       var isRightTurn = angleBetween2 < 90;
 
       var turn = Mathf.Clamp(angleBetween / 15, 0, 1) * (isRightTurn ? 1 : -1);
-      var forward = (destination.Value - transform.position).magnitude - offset.GetValueOrDefault(0) > 0.1f ? 1 : 0;
+      var forward = (destination.Value - transform.position).magnitude - offset > 0.1f ? 1 : 0;
 
       if (angleBetween > 15) {
          forward = 0;
+      }
+
+      if (angleBetween < 5) {
+         turn = 0;
       }
 
       if (debug) {
@@ -109,6 +112,7 @@ public class Walker : MonoBehaviour, ISaveable {
    public object OnSave() {
       var data = new Dictionary<string, object>();
       data.Add("destination", destination.HasValue ? new float[] { destination.Value.x, destination.Value.y, destination.Value.z } : null);
+      data.Add("offset", offset);
       return data;
    }
 
@@ -118,6 +122,7 @@ public class Walker : MonoBehaviour, ISaveable {
       if (dest != null) {
          destination = new Vector3(dest[0], dest[1], dest[2]);
       }
+      offset = (float)savedData["offset"];
    }
 
    public void OnLoadDependencies(object savedData) {

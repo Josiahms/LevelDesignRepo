@@ -74,7 +74,7 @@ public class Worker : MonoBehaviour, ISaveable {
       if (DayCycleManager.GetInstance().IsRestTime()) {
          previousLocation = destination;
       } else {
-         GetComponent<Walker>().SetDestination(destination);
+         GetComponent<Walker>().SetDestination(destination, 0.7f);
       }
    }
 
