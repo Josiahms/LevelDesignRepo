@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Assignable))]
 [RequireComponent(typeof(Walker))]
 public class Worker : MonoBehaviour, ISaveable {
 
    private Vector3? previousLocation;
-   private Assignable assignedLocation;
    private bool createdFromScene = true;
 
    public Housing House { get; set; }
@@ -34,6 +34,14 @@ public class Worker : MonoBehaviour, ISaveable {
       }
    }
 
+   private void Update() {
+      // TODO: Is there a better way to listen to assignment changes, or is this fine?
+      var assignment = GetComponent<Assignee>().target;
+      if (assignment != null) {
+         SetWalkerDestination((Vector3?)assignment.GetSpotForAssignee(GetComponent<Assignee>()).position);
+      }
+   }
+
    private void OnDestroy() {
       if (House != null) {
          House.RemoveWorker(this);
@@ -41,33 +49,18 @@ public class Worker : MonoBehaviour, ISaveable {
       if (ResourceManager.GetInstance() != null) {
          PopulationManager.GetInstance().RemoveFromWorkforce(this);
       }
-      if (assignedLocation != null) {
-         assignedLocation.RemoveWorker(this);
-      }
-   }
-
-   public bool SetDestination(Assignable assignment) {
-      if (assignment == null || assignment.AddWorker(this)) {
-         if (assignedLocation != null && assignedLocation != assignment) {
-            assignedLocation.RemoveWorker(this);
-         }
-         assignedLocation = assignment;
-         SetWalkerDestination(assignment == null ? null : (Vector3?)assignment.GetSpotForWorker(this).position);
-         return true;
-      }
-      return false;
    }
 
    public void SetDestination(Vector3 destination) {
-      if (assignedLocation != null) {
-         assignedLocation.RemoveWorker(this);
-         assignedLocation = null;
+      if (GetComponent<Assignee>().target != null) {
+         GetComponent<Assignee>().target.RemoveAssignee(GetComponent<Assignee>());
+         GetComponent<Assignee>().target = null;
       }
       SetWalkerDestination(destination);
    }
 
    public bool IsAssigned() {
-      return assignedLocation != null;
+      return GetComponent<Assignee>().target != null;
    }
 
    private void SetWalkerDestination(Vector3? destination) {
@@ -80,7 +73,6 @@ public class Worker : MonoBehaviour, ISaveable {
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("assignedLocation", assignedLocation != null ? assignedLocation.GetComponent<Saveable>().GetSavedIndex() : -1);
       data.Add("previousLocation", previousLocation.HasValue ? new float[] { previousLocation.Value.x, previousLocation.Value.y, previousLocation.Value.z } : null);
       data.Add("house", House == null ? null : (int?)House.GetComponent<Saveable>().GetSavedIndex());
       return data;
@@ -99,6 +91,5 @@ public class Worker : MonoBehaviour, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       var houseIndex = (int?)data["house"];
       House = houseIndex.HasValue ? SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(houseIndex.Value).GetComponent<Housing>() : null;
-      assignedLocation = (int)data["assignedLocation"] == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)data["assignedLocation"]).GetComponent<Assignable>();
    }
 }

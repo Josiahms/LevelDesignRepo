@@ -47,13 +47,32 @@ public class Selectable : MonoBehaviour {
 
    private void Update() {
       var selectionBox = SelectionManager.GetInstance().GetSelectionRect();
-      var isSelectionBoxOver = selectionBox.HasValue && selectionBox.Value.Contains((Vector2)Camera.main.WorldToScreenPoint(transform.position), true);
+      var isSelectionBoxOver = selectionBox.HasValue && CheckIfChildIsContained(transform);
 
       if (!selectionBox.HasValue && isMouseOver || isSelectionBoxOver) {
          SelectionManager.GetInstance().Hover(this);
       } else {
          SelectionManager.GetInstance().UnHover(this);
       }
+   }
+
+   private bool CheckIfChildIsContained(Transform current) {
+      if (current == null) {
+         return false;
+      }
+
+      if (SelectionManager.GetInstance().GetSelectionRect().Value.Contains((Vector2)Camera.main.WorldToScreenPoint(current.position), true)) {
+         return true;
+      }
+
+      for (int i = 0; i < current.childCount; i++) {
+         if (CheckIfChildIsContained(current.GetChild(i))) {
+            return true;
+         }
+      }
+
+      return false;
+
    }
 
    private void OnDestroy() {

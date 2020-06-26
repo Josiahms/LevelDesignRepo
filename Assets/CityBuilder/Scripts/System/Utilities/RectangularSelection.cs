@@ -43,7 +43,7 @@ public class RectangularSelection : MonoBehaviour {
    }
 
    private void Update() {
-      var mouseDelta =Input.mousePosition - rectTransform.anchoredPosition3D;
+      var mouseDelta = Input.mousePosition - rectTransform.anchoredPosition3D;
       rectTransform.sizeDelta = new Vector2(Mathf.Abs(mouseDelta.x), Mathf.Abs(mouseDelta.y));
       rectTransform.localScale = new Vector2(Mathf.Sign(mouseDelta.x), Mathf.Sign(mouseDelta.y));
    }

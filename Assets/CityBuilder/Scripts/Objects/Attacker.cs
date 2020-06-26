@@ -16,7 +16,7 @@ public class Attacker : MonoBehaviour {
    private float damage = 5;
 
    private Destructable destructableSelf;
-   private Destructable target;
+   private Waypoint target;
    private Coroutine attackCoroutine;
 
    // TODO: This spawns an attacker, not an enemy.  Change this to be generic and move enemy logic out.
@@ -31,10 +31,10 @@ public class Attacker : MonoBehaviour {
    private void Update() {
       // No need to switch targets if we are already very close to the existing target
       if ((target == null || (target.transform.position - transform.position).magnitude > 3)) {
-         target = FindObjectsOfType<Destructable>()
+         target = FindObjectsOfType<Waypoint>()
             .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
             .Where(x => targettingRange < 0 || Vector3.Magnitude(x.transform.position - transform.position) <= targettingRange)
-            .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam())
+            //.Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam())
             .FirstOrDefault();
       }
 
@@ -55,7 +55,7 @@ public class Attacker : MonoBehaviour {
       }
 
       if (GetComponent<Walker>().Arrived() && attackCoroutine == null) {
-         attackCoroutine = StartCoroutine(Attack());
+         //attackCoroutine = StartCoroutine(Attack());
       }
    }
 
@@ -69,9 +69,9 @@ public class Attacker : MonoBehaviour {
       while (GetComponent<Walker>().Arrived() && target != null) {
          GetComponent<Animator>().SetTrigger("Attack");
          yield return new WaitForSeconds(0.65f); // TODO: trigger off of animation
-         if (target != null) {
+         /*if (target != null) {
             target.OffsetHealth(-damage);
-         }
+         }*/
          yield return new WaitForSeconds(1); // TODO: Scale with game speed
       }
       attackCoroutine = null;

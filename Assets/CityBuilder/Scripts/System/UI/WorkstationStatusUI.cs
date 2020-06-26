@@ -32,14 +32,14 @@ public class WorkstationStatusUI : MonoBehaviour {
 
    private void Update() {
       circle.fillAmount = workstation.PercentComplete;
-      if (assignable.GetWorkerCount() == 0) {
+      if (assignable.GetAssigneeCount() == 0) {
          workerText.text = "";
       } else {
-         workerText.text = assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees();
+         workerText.text = assignable.GetAssigneeCount() + "/" + assignable.GetMaxAssignees();
       }
 
 
-      if (!workstation.IsFunctioning() && assignable.GetWorkerCount() > 0) {
+      if (!workstation.IsFunctioning() && assignable.GetAssigneeCount() > 0) {
          warning.enabled = true;
       } else {
          warning.enabled = false;

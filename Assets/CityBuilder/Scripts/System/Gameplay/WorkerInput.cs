@@ -7,17 +7,18 @@ public class WorkerInput : MonoBehaviour {
 
    private void Update() {
       if (Input.GetMouseButtonDown(1)) {
-         var selectedWorkers = SelectionManager.GetInstance().GetSelected().Select(x => x.GetComponent<Worker>()).Where(x => x != null).ToList();
-         if (selectedWorkers.Count > 0) {
+         var selectedAssignees = SelectionManager.GetInstance().GetSelected().Select(x => x.GetComponent<Assignee>()).Where(x => x != null).ToList();
+         if (selectedAssignees.Count > 0) {
             RaycastHit hitInfo;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, float.MaxValue)) {
                var assignable = hitInfo.collider.GetComponent<Assignable>();
                if (assignable != null) {
-                  selectedWorkers.ForEach(x => SetWorkerDestination(x, assignable));
+                  selectedAssignees.ForEach(x => SetAssignees(x, assignable));
                } else {
-                  for (int i = 0; i < selectedWorkers.Count; i++) {
+                  for (int i = 0; i < selectedAssignees.Count; i++) {
                      var offset = new Vector3(3 * (i % 5), 0, 3 * (i / 5));
-                     selectedWorkers[i].SetDestination(hitInfo.point + offset);
+                     selectedAssignees[i].target = null;
+                     selectedAssignees[i].GetComponent<Walker>().SetDestination(hitInfo.point + offset);
                   }
                }
             }
@@ -25,9 +26,9 @@ public class WorkerInput : MonoBehaviour {
       }
    }
 
-   private void SetWorkerDestination(Worker w, Assignable a) {
-      if (w.SetDestination(a)) {
-         SelectionManager.GetInstance().Deselect(w.GetComponent<Selectable>());
+   private void SetAssignees(Assignee assignee, Assignable assignable) {
+      if (assignee.SetDestination(assignable)) {
+         SelectionManager.GetInstance().Deselect(assignee.GetComponent<Selectable>());
       }
    }
 

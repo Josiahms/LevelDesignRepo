@@ -7,75 +7,70 @@ using UnityEngine.UI;
 public class Assignable : MonoBehaviour, ISaveable {
 
    [SerializeField]
+   private List<Assignee> allowableAssignments;
+
+   [SerializeField]
    private int maxAssignees = 5;
    public int GetMaxAssignees() { return maxAssignees; }
 
    [SerializeField]
    private List<Transform> spots;
 
-   private List<Worker> workers = new List<Worker>();
+   private List<Assignee> assignees = new List<Assignee>();
 
-   public void AddWorker() {
-      AddWorker(PopulationManager.GetInstance().GetNearestWorker(transform.position));
-   }
+   // Returns true if the assignee was added, or is already assigned to this location
+   public bool AddAssignee(Assignee assignee) {
 
-   // Returns true if the worker was added, or is already assigned to this location
-   public bool AddWorker(Worker worker) {
+      if (!assignees.Contains(assignee)) {
 
-      if (!workers.Contains(worker)) {
-
-         if (worker == null || workers.Count >= maxAssignees) {
+         if (assignee == null || assignees.Count >= maxAssignees) {
             return false;
          }
 
-         workers.Add(worker);
-         worker.SetDestination(this);
+         assignees.Add(assignee);
+         assignee.target = this;
       }
 
       return true;
    }
 
-   public void RemoveWorker() {
-      if (workers.Count > 0) {
-         var worker = workers
-            .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
-            .OrderBy(x => x.House == null ? float.MaxValue : Vector3.Distance(x.House.transform.position, transform.position))
-            .Last();
-         worker.SetDestination(null);
-         workers.Remove(worker);
+   public bool RemoveAssignee(Assignee assignee) {
+      if (assignees.Remove(assignee)) {
+         assignee.target = null;
+         return true;
       }
-   }
-
-   public bool RemoveWorker(Worker worker) {
-      return workers.Remove(worker);
+      return false;
    }
 
    public void OnDestroy() {
       try {
-         var resourceManager = PopulationManager.GetInstance();
-         foreach (var worker in workers) {
-            worker.SetDestination(null);
+         foreach (var assignee in assignees) {
+            assignee.target = null;
          }
-         workers.Clear();
+         assignees.Clear();
       } catch (Exception) {
 
       }
    }
 
-   public int GetWorkersInRange() {
-      return workers.Where(x => DayCycleManager.GetInstance().IsWorkDay() && (x.transform.position - transform.position).magnitude < 4).Count();
+   public int GetAssigneesInRange() {
+      return assignees.Where(x => DayCycleManager.GetInstance().IsWorkDay() && (x.transform.position - transform.position).magnitude < 4).Count();
    }
 
-   public int GetWorkerCount() {
-      return workers.Count;
+   public int GetAssigneeCount() {
+      return assignees.Count;
    }
 
-   public Transform GetSpotForWorker(Worker worker) {
-      if (!workers.Contains(worker)) {
+   public List<Assignee> GetAssignees() {
+      return assignees;
+   }
+
+   public Transform GetSpotForAssignee(Assignee assignee) {
+      if (!assignees.Contains(assignee)) {
          return transform;
       }
 
-      var index = workers.IndexOf(worker);
+      var index = assignees.IndexOf(assignee);
       if (index < spots.Count) {
          return spots[index];
       } 
@@ -84,7 +79,7 @@ public class Assignable : MonoBehaviour, ISaveable {
 
    public object OnSave() {
       var data = new Dictionary<string, object>();
-      data.Add("workers", workers.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
+      data.Add("assignees", assignees.Select(x => x.GetComponent<Saveable>().GetSavedIndex()).ToArray());
       return data;
    }
 
@@ -95,8 +90,8 @@ public class Assignable : MonoBehaviour, ISaveable {
    public void OnLoadDependencies(object savedData) {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
-      if (data.TryGetValue("workers", out result)) {
-         workers = ((int[])result).Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Worker>()).ToList();
+      if (data.TryGetValue("assignees", out result)) {
+         assignees = ((int[])result).Select(saveIndex => SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(saveIndex).GetComponent<Assignee>()).ToList();
       }
    }
 }

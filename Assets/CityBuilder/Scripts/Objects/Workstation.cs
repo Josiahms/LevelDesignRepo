@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,6 +33,21 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
       statusUI = WorkstationStatusUI.Instantiate(this);
    }
 
+   public void AddWorker() {
+      var worker = PopulationManager.GetInstance().GetNearestWorker(transform.position);
+      GetComponent<Assignable>().AddAssignee(worker.GetComponent<Assignee>());
+   }
+
+   public void RemoveWorker() {
+      if (GetComponent<Assignable>().GetAssigneeCount() > 0) {
+         var walker = GetComponent<Assignable>().GetAssignees()
+            .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
+            .OrderBy(x => x.GetComponent<Worker>().House == null ? float.MaxValue : Vector3.Distance(x.GetComponent<Worker>().House.transform.position, transform.position))
+            .Last();
+         GetComponent<Assignable>().RemoveAssignee(walker);
+      }
+   }
+
    public int TakeFromPile(int amount) {
       // Infinite Resources!
       if (quantity == -1) {
@@ -60,10 +76,10 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    private void Update() {
       var assignable = GetComponent<Assignable>();
       if (IsFunctioning()) {
-         progress += Time.deltaTime * assignable.GetWorkersInRange() * DayCycleManager.GetInstance().ClockMinuteRate;
+         progress += Time.deltaTime * assignable.GetAssigneesInRange() * DayCycleManager.GetInstance().ClockMinuteRate;
       }
 
-      if (assignable.GetWorkersInRange() == 0 || DayCycleManager.GetInstance().IsRestTime()) {
+      if (assignable.GetAssigneesInRange() == 0 || DayCycleManager.GetInstance().IsRestTime()) {
          progress = 0;
       }
       
@@ -105,7 +121,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    }
 
    public SimulationInformation GetSimulationInformation() {
-      var ratePerDay = DayCycleManager.MIN_IN_DAY / gatherPeriod * GetComponent<Assignable>().GetWorkerCount();
+      var ratePerDay = DayCycleManager.MIN_IN_DAY / gatherPeriod * GetComponent<Assignable>().GetAssigneeCount();
       var expirationTime = DayCycleManager.GetInstance().CurrentTime + (float)quantity / ratePerDay * DayCycleManager.MIN_IN_DAY;
       Debug.Log("Rate per day: " + ratePerDay + ", expiration time: " + expirationTime);
       return new SimulationInformation(type, ratePerDay, expirationTime);

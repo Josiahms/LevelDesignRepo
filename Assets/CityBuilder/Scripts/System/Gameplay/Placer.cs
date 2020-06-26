@@ -49,6 +49,7 @@ public class Placer : Singleton<Placer> {
          }
 
          if (CanPlace()) {
+            // TODO: The placer should not depend on selectable.
             placeableInstance.GetComponent<Selectable>().ChangeColor(Color.green);
          } else {
             placeableInstance.GetComponent<Selectable>().ChangeColor(Color.red);
@@ -64,7 +65,7 @@ public class Placer : Singleton<Placer> {
                   } else {
                      var buildSite = BuildSite.Instantiate(placeableInstance).GetComponent<Assignable>();
                      foreach (var worker in selectionManager.GetSelected().Where(s => s.GetComponent<Worker>() != null).Select(s => s.GetComponent<Worker>()).OrderBy(s => s.IsAssigned())) {
-                        if (!buildSite.AddWorker(worker)) {
+                        if (!buildSite.AddAssignee(worker.GetComponent<Assignee>())) {
                            break;
                         }
                      }

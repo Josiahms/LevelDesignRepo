@@ -850,6 +850,7 @@ GameObject:
   - component: {fileID: 381767954520279207}
   - component: {fileID: 3013195078251403899}
   - component: {fileID: 3250402766118064212}
+  - component: {fileID: -1260053926810517781}
   m_Layer: 0
   m_Name: Worker
   m_TagString: Untagged
@@ -946,7 +947,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31211aa72d775a24991644b8594a53b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deadZone: 1
   debug: 0
 --- !u!114 &4780387309193124067
 MonoBehaviour:
@@ -1010,11 +1010,18 @@ MonoBehaviour:
   isPlaced: 0
   instantBuild: 1
   deleteable: 1
-  upgradeable: 0
-  woodUpgradeCost: 0
-  stoneUpgradeCost: 0
-  metalUpgradeCost: 0
-  levels: []
+--- !u!114 &-1260053926810517781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216607914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb87730dc18f04868801419b1232767c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1271770409
 GameObject:
   m_ObjectHideFlags: 0

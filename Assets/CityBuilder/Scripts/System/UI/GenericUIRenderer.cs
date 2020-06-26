@@ -25,6 +25,12 @@ public class GenericUIRenderer : MonoBehaviour {
    private Button deleteButton;
    [SerializeField]
    private Button buildButton;
+   [SerializeField]
+   private Button chargeUp;
+   [SerializeField]
+   private Button chargeForward;
+   [SerializeField]
+   private Button chargeDown;
 
    private void Start() {
       DoUpdate();
@@ -46,11 +52,12 @@ public class GenericUIRenderer : MonoBehaviour {
       var selectable = selectedItem.GetComponent<Selectable>();
       var placeable = selectedItem.GetComponent<Placeable>();
       var upgradeable = selectedItem.GetComponent<Upgradeable>();
-      var assignable = selectedItem.GetComponent<Assignable>();
+      var workstation = selectedItem.GetComponent<Workstation>();
       var house = selectedItem.GetComponent<Housing>();
       var pile = selectedItem.GetComponent<Workstation>();
       var gridCenter = selectedItem.GetComponent<CentralNode>();
-      var buildingOptions = selectable.GetComponent<BuildingOptions>();
+      var buildingOptions = selectedItem.GetComponent<BuildingOptions>();
+      var waypoint = selectedItem.GetComponent<Waypoint>();
 
       if (selectable != null) {
          titleText.text = selectable.GetItemName();
@@ -66,22 +73,42 @@ public class GenericUIRenderer : MonoBehaviour {
       } else {
          upgradeButton.gameObject.SetActive(false);
       }
-      if (assignable != null) {
-         workerText.text = assignable.GetWorkerCount() + "/" + assignable.GetMaxAssignees();
+      if (workstation != null) {
+         var assignable = workstation.GetComponent<Assignable>();
+         workerText.text = assignable.GetAssigneeCount() + "/" + assignable.GetMaxAssignees();
          addWorkerButton.onClick.RemoveAllListeners();
-         addWorkerButton.onClick.AddListener(assignable.AddWorker);
+         addWorkerButton.onClick.AddListener(workstation.AddWorker);
          removeWorkerButton.onClick.RemoveAllListeners();
-         removeWorkerButton.onClick.AddListener(assignable.RemoveWorker);
+         removeWorkerButton.onClick.AddListener(workstation.RemoveWorker);
          workerText.gameObject.SetActive(true);
          addWorkerButton.gameObject.SetActive(true);
          removeWorkerButton.gameObject.SetActive(true);
          workerLabel.gameObject.SetActive(true);
+         workerLabel.text = "Workers";
       } else {
          workerText.gameObject.SetActive(false);
          addWorkerButton.gameObject.SetActive(false);
          removeWorkerButton.gameObject.SetActive(false);
          workerLabel.gameObject.SetActive(false);
       }
+      /*if (waypoint != null) {
+         var assignable = workstation.GetComponent<Assignable>();
+         workerText.text = assignable.GetAssigneeCount() + "/" + assignable.GetMaxAssignees();
+         addWorkerButton.onClick.RemoveAllListeners();
+         addWorkerButton.onClick.AddListener(waypoint.AddSoldier);
+         removeWorkerButton.onClick.RemoveAllListeners();
+         removeWorkerButton.onClick.AddListener(waypoint.RemoveSoldier);
+         workerText.gameObject.SetActive(true);
+         addWorkerButton.gameObject.SetActive(true);
+         removeWorkerButton.gameObject.SetActive(true);
+         workerLabel.gameObject.SetActive(true);
+         workerLabel.text = "Soliders";
+      } else {
+         workerText.gameObject.SetActive(false);
+         addWorkerButton.gameObject.SetActive(false);
+         removeWorkerButton.gameObject.SetActive(false);
+         workerLabel.gameObject.SetActive(false);
+      }*/
       if (house != null) {
          quantityText.text = house.Capacity.ToString();
          quantityLabel.text = "Inhabitants";
