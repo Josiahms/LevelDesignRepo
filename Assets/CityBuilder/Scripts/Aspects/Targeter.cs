@@ -1,7 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Targeter : MonoBehaviour {
+public class Targeter : MonoBehaviour, ISaveable {
 
    public Targetable target { get; private set; }
    public Vector3 targetLocation { get; private set; }
@@ -54,6 +55,27 @@ public class Targeter : MonoBehaviour {
    private void OnDestroy() {
       if (target != null) {
          target.RemoveTargeter(this);
+      }
+   }
+
+   public object OnSave() {
+      var data = new Dictionary<string, object>();
+      data.Add("target", target != null ? target.GetComponent<Saveable>().GetSavedIndex() : -1);
+      data.Add("targetLocation", new float[] {targetLocation.x, targetLocation.y, targetLocation.z});
+      return data;
+   }
+
+   public void OnLoad(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      var tl = (float[])data["targetLocation"];
+      targetLocation = new Vector3(tl[0], tl[1], tl[2]);
+   }
+
+   public void OnLoadDependencies(object savedData) {
+      var data = (Dictionary<string, object>)savedData;
+      object result = null;
+      if (data.TryGetValue("target", out result)) {
+         target = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Targetable>();
       }
    }
 }

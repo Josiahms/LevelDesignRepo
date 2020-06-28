@@ -35,7 +35,12 @@ public class Worker : MonoBehaviour, ISaveable {
    }
 
    private void Update() {
-      SetWalkerDestination(GetComponent<Targeter>().targetLocation);
+      var destination = GetComponent<Targeter>().targetLocation;
+      if (DayCycleManager.GetInstance().IsRestTime()) {
+         previousLocation = destination;
+      } else {
+         GetComponent<Walker>().SetDestination(destination, 0.7f);
+      }
    }
 
    private void OnDestroy() {
@@ -44,14 +49,6 @@ public class Worker : MonoBehaviour, ISaveable {
       }
       if (ResourceManager.GetInstance() != null) {
          PopulationManager.GetInstance().RemoveFromWorkforce(this);
-      }
-   }
-
-   private void SetWalkerDestination(Vector3? destination) {
-      if (DayCycleManager.GetInstance().IsRestTime()) {
-         previousLocation = destination;
-      } else {
-         GetComponent<Walker>().SetDestination(destination, 0.7f);
       }
    }
 
