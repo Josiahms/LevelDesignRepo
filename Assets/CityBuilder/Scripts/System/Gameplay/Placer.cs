@@ -64,7 +64,7 @@ public class Placer : Singleton<Placer> {
                      placeableInstance.Place();
                   } else {
                      var buildSite = BuildSite.Instantiate(placeableInstance).GetComponent<Targetable>();
-                     foreach (var worker in selectionManager.GetSelected().Where(s => s.GetComponent<Worker>() != null).Select(s => s.GetComponent<Worker>()).OrderBy(s => s.IsAssigned())) {
+                     foreach (var worker in selectionManager.GetSelected().Where(s => s.GetComponent<Worker>() != null).Select(s => s.GetComponent<Targeter>()).OrderBy(s => s.target != null)) {
                         if (!buildSite.AddTargeter(worker.GetComponent<Targeter>())) {
                            break;
                         }

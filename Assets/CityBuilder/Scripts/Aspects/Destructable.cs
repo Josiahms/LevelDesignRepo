@@ -13,10 +13,6 @@ public class Destructable : MonoBehaviour, ISaveable {
    private float maxHealth = 100;
    public float MaxHealth { get { return maxHealth; }}
 
-   [SerializeField]
-   private Team team;
-   public Team GetTeam() { return team;  }
-
    public float Health { get; private set; }
 
    private void Awake() {

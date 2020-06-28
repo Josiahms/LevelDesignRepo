@@ -35,11 +35,7 @@ public class Worker : MonoBehaviour, ISaveable {
    }
 
    private void Update() {
-      // TODO: Is there a better way to listen to assignment changes, or is this fine?
-      var assignment = GetComponent<Targeter>().target;
-      if (assignment != null) {
-         SetWalkerDestination((Vector3?)assignment.GetSpotForTargeter(GetComponent<Targeter>()).position);
-      }
+      SetWalkerDestination(GetComponent<Targeter>().targetLocation);
    }
 
    private void OnDestroy() {
@@ -49,18 +45,6 @@ public class Worker : MonoBehaviour, ISaveable {
       if (ResourceManager.GetInstance() != null) {
          PopulationManager.GetInstance().RemoveFromWorkforce(this);
       }
-   }
-
-   public void SetDestination(Vector3 destination) {
-      if (GetComponent<Targeter>().target != null) {
-         GetComponent<Targeter>().target.RemoveTargeter(GetComponent<Targeter>());
-         GetComponent<Targeter>().SetTarget(null);
-      }
-      SetWalkerDestination(destination);
-   }
-
-   public bool IsAssigned() {
-      return GetComponent<Targeter>().target != null;
    }
 
    private void SetWalkerDestination(Vector3? destination) {

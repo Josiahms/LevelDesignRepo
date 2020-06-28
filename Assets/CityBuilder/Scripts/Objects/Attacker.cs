@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(Teamable))]
 [RequireComponent(typeof(Targeter))]
 [RequireComponent(typeof(Destructable))]
 [RequireComponent(typeof(Walker))]
@@ -53,9 +54,7 @@ public class Attacker : MonoBehaviour {
             GetComponent<Walker>().SetDestination(target.transform.position, range);
          }
 
-         var team = GetComponent<Destructable>().GetTeam();
-         var targetDestructable = target.GetComponent<Destructable>();
-         if (attackCoroutine == null && GetComponent<Walker>().Arrived() && targetDestructable != null && targetDestructable.GetTeam() != team) {
+         if (attackCoroutine == null && GetComponent<Walker>().Arrived() && target.GetComponent<Destructable>() != null && GetComponent<Teamable>().IsHostileTo(target)) {
             attackCoroutine = StartCoroutine(Attack());
          }
       }
@@ -74,7 +73,7 @@ public class Attacker : MonoBehaviour {
          var target = GetComponent<Targeter>().target;
          if (target != null) {
             var destructableTarget = target.GetComponent<Destructable>();
-            if (destructableTarget != null && destructableTarget.GetTeam() != GetComponent<Destructable>().GetTeam()) {
+            if (destructableTarget != null && GetComponent<Teamable>().IsHostileTo(target)) {
                destructableTarget.OffsetHealth(-damage);
             }
          }

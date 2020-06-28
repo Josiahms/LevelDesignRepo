@@ -40,11 +40,11 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
 
    public void RemoveWorker() {
       if (GetComponent<Targetable>().GetTargeterCount() > 0) {
-         var walker = GetComponent<Targetable>().GetTargeters()
+         var targetable = GetComponent<Targetable>().GetTargeters()
             .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
             .OrderBy(x => x.GetComponent<Worker>().House == null ? float.MaxValue : Vector3.Distance(x.GetComponent<Worker>().House.transform.position, transform.position))
             .Last();
-         GetComponent<Targetable>().RemoveTargeter(walker);
+         GetComponent<Targetable>().RemoveTargeter(targetable);
       }
    }
 

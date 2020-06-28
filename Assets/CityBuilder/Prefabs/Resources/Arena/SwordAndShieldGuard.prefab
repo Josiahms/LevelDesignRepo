@@ -909,7 +909,6 @@ GameObject:
   - component: {fileID: 1406505383124513490}
   - component: {fileID: 6494503187969312662}
   - component: {fileID: 7177265074901215482}
-  - component: {fileID: -1458765313198938518}
   - component: {fileID: 7208321593679506459}
   - component: {fileID: -7681829690387563706}
   - component: {fileID: 1480840000}
@@ -990,20 +989,6 @@ CapsuleCollider:
   m_Height: 2.08
   m_Direction: 1
   m_Center: {x: 0, y: 1.03, z: 0}
---- !u!114 &-1458765313198938518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5428441914108931515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bbbc7a323620b64e95911e9812c3149, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: Guard
-  description: 
 --- !u!114 &7208321593679506459
 MonoBehaviour:
   m_ObjectHideFlags: 0

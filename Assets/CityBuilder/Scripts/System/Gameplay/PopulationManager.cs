@@ -8,7 +8,7 @@ public class PopulationManager : Singleton<PopulationManager>, ISaveable {
    private int starvingPeople = 0;
 
    private List<Worker> workers = new List<Worker>();
-   private List<Worker> IdleWorkers { get { return workers.Where(x => !x.IsAssigned()).ToList(); } }
+   private List<Worker> IdleWorkers { get { return workers.Where(x => x.GetComponent<Targeter>().target == null).ToList(); } }
    private List<Worker> HomelessWorkers { get { return workers.Where(x => x.House == null).ToList(); } }
 
    private List<Housing> houses = new List<Housing>();

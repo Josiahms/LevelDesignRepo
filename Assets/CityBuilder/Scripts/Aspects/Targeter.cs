@@ -4,10 +4,37 @@ using UnityEngine;
 public class Targeter : MonoBehaviour {
 
    public Targetable target { get; private set; }
+   public Vector3 targetLocation { get; private set; }
+
+   private void Start() { 
+      if (target == null) {
+         targetLocation = transform.position;
+      }
+   }
+
+   private void Update() {
+      if (target != null) {
+         targetLocation = target.GetSpotForTargeter(this).position;
+      }
+   }
+
+   public bool SetTarget(Vector3 target) {
+      if (SetTarget(null)) {
+         targetLocation = target;
+         return true;
+      }
+      return false;
+   }
 
    public bool SetTarget(Targetable newTarget) {
       if (target == newTarget) {
          return true;
+      }
+
+      if (target != null) {
+         var oldTarget = target;
+         target = null;
+         oldTarget.RemoveTargeter(this);
       }
 
       if (newTarget != null) {
@@ -16,8 +43,8 @@ public class Targeter : MonoBehaviour {
          }
       }
 
-      if (target != null) {
-         target.RemoveTargeter(this);
+      if (target == null) {
+         targetLocation = transform.position;
       }
 
       target = newTarget;
@@ -29,16 +56,4 @@ public class Targeter : MonoBehaviour {
          target.RemoveTargeter(this);
       }
    }
-
-   public bool SetDestination(Targetable assignment) {
-      if (assignment == null || assignment.AddTargeter(this)) {
-         if (target != null && target != assignment) {
-            target.RemoveTargeter(this);
-         }
-         target = assignment;
-         return true;
-      }
-      return false;
-   }
-
 }

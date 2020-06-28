@@ -2945,6 +2945,7 @@ GameObject:
   - component: {fileID: 419772713464807877}
   - component: {fileID: 688026633789085863}
   - component: {fileID: 7792168154164571844}
+  - component: {fileID: 4278991924700210919}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Untagged
@@ -3028,7 +3029,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  team: 0
 --- !u!114 &419772713464807877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3069,6 +3069,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80de678c1333a472ebd4fef3842b8e78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4278991924700210919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2598963964293032882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d56632d06e945a9ab9573bac2a51c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
 --- !u!1 &2709801515033100380
 GameObject:
   m_ObjectHideFlags: 0

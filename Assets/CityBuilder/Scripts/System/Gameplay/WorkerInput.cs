@@ -15,10 +15,11 @@ public class WorkerInput : MonoBehaviour {
                if (target != null) {
                   selectedTargeters.ForEach(x => SetTarget(x, target));
                } else {
-                  for (int i = 0; i < selectedTargeters.Count; i++) {
+                  for (int i = 0; i < selectedTargeters.Count(); i++) {
                      var offset = new Vector3(3 * (i % 5), 0, 3 * (i / 5));
-                     selectedTargeters[i].SetTarget(null);
-                     selectedTargeters[i].GetComponent<Walker>().SetDestination(hitInfo.point + offset);
+                     if (selectedTargeters[i].SetTarget(hitInfo.point + offset)) {
+                        SelectionManager.GetInstance().Deselect(selectedTargeters[i].GetComponent<Selectable>());
+                     }
                   }
                }
             }
@@ -27,9 +28,8 @@ public class WorkerInput : MonoBehaviour {
    }
 
    private void SetTarget(Targeter targeter, Targetable target) {
-      if (targeter.SetDestination(target)) {
+      if (targeter.SetTarget(target)) {
          SelectionManager.GetInstance().Deselect(targeter.GetComponent<Selectable>());
       }
    }
-
 }

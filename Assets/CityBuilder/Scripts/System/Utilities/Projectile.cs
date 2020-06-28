@@ -11,14 +11,14 @@ public class Projectile : MonoBehaviour {
    private Vector3 initialPosition;
    private Vector3 target;
    private float startTime;
-   private Team team;
+   private Teamable teamable;
 
-   public static Projectile Instantiate(Vector3 spawnPoint, Vector3 target, Vector3 oneSecondDeltaPosition, Team team, float damage) {
+   public static Projectile Instantiate(Vector3 spawnPoint, Vector3 target, Vector3 oneSecondDeltaPosition, Teamable teamable, float damage) {
       var instance = Instantiate(ResourceLoader.GetInstance().Arrow, spawnPoint, new Quaternion());
       instance.startTime = DayCycleManager.GetInstance().CurrentTime;
       instance.initialPosition = spawnPoint;
       instance.target = target + oneSecondDeltaPosition * (target - spawnPoint).magnitude / instance.velocity / DayCycleManager.GetInstance().ClockMinuteRate;
-      instance.team = team;
+      instance.teamable = teamable;
       instance.transform.LookAt(target);
       instance.damage = damage;
       Destroy(instance.gameObject, 1.2f);
@@ -38,7 +38,7 @@ public class Projectile : MonoBehaviour {
 
    public void OnTriggerEnter(Collider other) {
       var destructable = other.GetComponent<Destructable>();
-      if (destructable != null && destructable.GetTeam() != team) {
+      if (destructable != null && teamable.IsHostileTo(other)) {
          destructable.OffsetHealth(-damage);
          Destroy(gameObject);
       }

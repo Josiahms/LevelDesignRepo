@@ -509,6 +509,7 @@ GameObject:
   - component: {fileID: 148411821149268}
   - component: {fileID: 7965325381554528558}
   - component: {fileID: 8296172669471941418}
+  - component: {fileID: -7176043638870884153}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
@@ -568,6 +569,19 @@ MonoBehaviour:
   arrowSpawn: {fileID: 4260164782714380595}
   damage: 2
   range: 40
+--- !u!114 &-7176043638870884153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3916969639098695239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d56632d06e945a9ab9573bac2a51c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
 --- !u!1 &4082144780926732103
 GameObject:
   m_ObjectHideFlags: 0

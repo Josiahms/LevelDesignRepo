@@ -27,8 +27,7 @@ public class Archer : MonoBehaviour {
       if (target == null) {
          // TODO: The archer should know it's team, the concept of teams needs to be refactored.
          var enemy = FindObjectsOfType<Attacker>()
-            // TODO: refactor transform.parent.parent to something more reliable
-            .Where(x => x.GetComponent<Destructable>().GetTeam() != GetComponentInParent<Destructable>().GetTeam())
+            .Where(x => GetComponent<Teamable>().IsHostileTo(x))
             .Where(x => (x.transform.position - transform.position).magnitude < range)
             .FirstOrDefault();
          if (enemy != null) {
@@ -50,7 +49,7 @@ public class Archer : MonoBehaviour {
             curTime = dcm.CurrentTime;
             yield return new WaitUntil(() => dcm.CurrentTime > curTime + 0.5f);
             if (target != null) {
-               Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, target.GetComponent<Walker>().OneSecondDeltaPosition, Team.Player, damage);
+               Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, target.GetComponent<Walker>().OneSecondDeltaPosition, GetComponent<Teamable>(), damage);
                curTime = dcm.CurrentTime;
             }
             yield return new WaitUntil(() => dcm.CurrentTime > curTime + 3);
