@@ -17,7 +17,7 @@ public class WorkerInput : MonoBehaviour {
                } else {
                   for (int i = 0; i < selectedAssignees.Count; i++) {
                      var offset = new Vector3(3 * (i % 5), 0, 3 * (i / 5));
-                     selectedAssignees[i].target = null;
+                     selectedAssignees[i].SetTarget(null);
                      selectedAssignees[i].GetComponent<Walker>().SetDestination(hitInfo.point + offset);
                   }
                }

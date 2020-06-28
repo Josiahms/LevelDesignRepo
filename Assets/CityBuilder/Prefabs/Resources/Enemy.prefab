@@ -825,6 +825,8 @@ GameObject:
   - component: {fileID: 1126753138}
   - component: {fileID: 6172065158581877683}
   - component: {fileID: 7154035971043574816}
+  - component: {fileID: 699892592459075044}
+  - component: {fileID: 2171158429873343325}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -956,6 +958,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 35
   team: 1
+--- !u!114 &699892592459075044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4122160843543306898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowableAssignments:
+  - {fileID: 1480840000, guid: 696762a383dc85744becdafa613c40a1, type: 3}
+  maxAssignees: -1
+  spots: []
+--- !u!114 &2171158429873343325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4122160843543306898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb87730dc18f04868801419b1232767c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4206997590570594131
 GameObject:
   m_ObjectHideFlags: 0

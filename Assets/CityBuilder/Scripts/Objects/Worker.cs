@@ -54,7 +54,7 @@ public class Worker : MonoBehaviour, ISaveable {
    public void SetDestination(Vector3 destination) {
       if (GetComponent<Assignee>().target != null) {
          GetComponent<Assignee>().target.RemoveAssignee(GetComponent<Assignee>());
-         GetComponent<Assignee>().target = null;
+         GetComponent<Assignee>().SetTarget(null);
       }
       SetWalkerDestination(destination);
    }

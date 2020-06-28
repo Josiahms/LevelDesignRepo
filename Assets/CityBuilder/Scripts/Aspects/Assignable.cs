@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Assignable : MonoBehaviour, ISaveable {
 
    [SerializeField]
-   private List<Assignee> allowableAssignments;
+   private List<Component> allowableAssignments;
 
    [SerializeField]
    private int maxAssignees = 5;
@@ -21,31 +21,39 @@ public class Assignable : MonoBehaviour, ISaveable {
    // Returns true if the assignee was added, or is already assigned to this location
    public bool AddAssignee(Assignee assignee) {
 
-      if (!assignees.Contains(assignee)) {
-
-         if (assignee == null || assignees.Count >= maxAssignees) {
-            return false;
-         }
-
-         assignees.Add(assignee);
-         assignee.target = this;
+      if (assignee == null) {
+         return false;
       }
+
+      if (assignees.Contains(assignee)) {
+         return true;
+      }
+
+      if (maxAssignees > 0 && assignees.Count >= maxAssignees) {
+         return false;
+      }
+
+      if (allowableAssignments.Count() > 0 && allowableAssignments.Where(x => assignee.GetComponent(x.GetType()) != null).Count() == 0) {
+         Debug.Log(assignee.gameObject + " does not have a " + allowableAssignments[0].GetType() + " component");
+         return false;
+      }
+
+      assignees.Add(assignee);
+      assignee.SetTarget(this);
 
       return true;
    }
 
-   public bool RemoveAssignee(Assignee assignee) {
+   public void RemoveAssignee(Assignee assignee) {
       if (assignees.Remove(assignee)) {
-         assignee.target = null;
-         return true;
+         assignee.SetTarget(null);
       }
-      return false;
    }
 
    public void OnDestroy() {
       try {
          foreach (var assignee in assignees) {
-            assignee.target = null;
+            assignee.SetTarget(null);
          }
          assignees.Clear();
       } catch (Exception) {

@@ -3,21 +3,25 @@ using UnityEngine;
 
 public class Assignee : MonoBehaviour {
 
-   private Assignable _target;
-   public Assignable target { 
-      get { return _target; } 
-      set { 
-         if (value == _target) {
-            return;
+   public Assignable target { get; private set; }
+
+   public bool SetTarget(Assignable newTarget) {
+      if (target == newTarget) {
+         return true;
+      }
+
+      if (newTarget != null) {
+         if (!newTarget.AddAssignee(this)) {
+            return false;
          }
-         if (_target != null) {
-            _target.RemoveAssignee(this);
-         }
-         if (value != null) {
-            value.AddAssignee(this);
-         }
-         _target = value;
-      } 
+      }
+
+      if (target != null) {
+         target.RemoveAssignee(this);
+      }
+
+      target = newTarget;
+      return true;
    }
 
    private void OnDestroy() {
