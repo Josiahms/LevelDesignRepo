@@ -3638,7 +3638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxAssignees: 5
+  maxTargeters: 5
   spots:
   - {fileID: 7596381399073873037}
   - {fileID: 6206957658743323886}

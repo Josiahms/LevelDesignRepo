@@ -34,7 +34,7 @@ public class Waypoint : MonoBehaviour {
         /*var solider = FindObjectsOfType<Attacker>()
             .Where(x => x.GetTeam() == Team.Player)
             .FirstOrDefault();
-        GetComponent<Assignable>().AddAssignee(soldier);*/
+        GetComponent<Targetable>().AddTargeter(soldier);*/
     }
 
     public void RemoveSoldier() {

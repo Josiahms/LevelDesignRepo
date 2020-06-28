@@ -15,14 +15,14 @@ public class WorkstationStatusUI : MonoBehaviour {
    private Text warning;
 
    private Workstation workstation;
-   private Assignable assignable;
+   private Targetable target;
 
    public static WorkstationStatusUI Instantiate(Workstation workstation) {
       var instance = Instantiate(ResourceLoader.GetInstance().TimerCirclePreab, MainCanvas.Get().transform);
       instance.transform.SetAsFirstSibling();
       instance.GetComponent<AttachUIToTarget>().SetTarget(workstation.transform);
       instance.workstation = workstation;
-      instance.assignable = workstation.GetComponent<Assignable>();
+      instance.target = workstation.GetComponent<Targetable>();
       return instance;
    }
 
@@ -32,14 +32,14 @@ public class WorkstationStatusUI : MonoBehaviour {
 
    private void Update() {
       circle.fillAmount = workstation.PercentComplete;
-      if (assignable.GetAssigneeCount() == 0) {
+      if (target.GetTargeterCount() == 0) {
          workerText.text = "";
       } else {
-         workerText.text = assignable.GetAssigneeCount() + "/" + assignable.GetMaxAssignees();
+         workerText.text = target.GetTargeterCount() + "/" + target.GetMaxNumberOfTargeters();
       }
 
 
-      if (!workstation.IsFunctioning() && assignable.GetAssigneeCount() > 0) {
+      if (!workstation.IsFunctioning() && target.GetTargeterCount() > 0) {
          warning.enabled = true;
       } else {
          warning.enabled = false;

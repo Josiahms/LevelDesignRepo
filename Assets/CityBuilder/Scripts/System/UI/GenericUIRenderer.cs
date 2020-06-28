@@ -74,8 +74,8 @@ public class GenericUIRenderer : MonoBehaviour {
          upgradeButton.gameObject.SetActive(false);
       }
       if (workstation != null) {
-         var assignable = workstation.GetComponent<Assignable>();
-         workerText.text = assignable.GetAssigneeCount() + "/" + assignable.GetMaxAssignees();
+         var target = workstation.GetComponent<Targetable>();
+         workerText.text = target.GetTargeterCount() + "/" + target.GetMaxNumberOfTargeters();
          addWorkerButton.onClick.RemoveAllListeners();
          addWorkerButton.onClick.AddListener(workstation.AddWorker);
          removeWorkerButton.onClick.RemoveAllListeners();
@@ -92,8 +92,8 @@ public class GenericUIRenderer : MonoBehaviour {
          workerLabel.gameObject.SetActive(false);
       }
       /*if (waypoint != null) {
-         var assignable = workstation.GetComponent<Assignable>();
-         workerText.text = assignable.GetAssigneeCount() + "/" + assignable.GetMaxAssignees();
+         var target = workstation.GetComponent<Targetable>();
+         workerText.text = target.GetTargeterCount() + "/" + target.GetMaxNumberOfTargeters();
          addWorkerButton.onClick.RemoveAllListeners();
          addWorkerButton.onClick.AddListener(waypoint.AddSoldier);
          removeWorkerButton.onClick.RemoveAllListeners();

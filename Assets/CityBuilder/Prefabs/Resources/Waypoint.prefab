@@ -137,5 +137,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allowableAssignments:
   - {fileID: 11500000, guid: d5561dfe2ee77164dbfed67434a25dc5, type: 3}
-  maxAssignees: 5
+  maxTargeters: 5
   spots: []

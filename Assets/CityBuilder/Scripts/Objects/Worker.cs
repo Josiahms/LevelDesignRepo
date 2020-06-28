@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Assignable))]
+[RequireComponent(typeof(Targetable))]
 [RequireComponent(typeof(Walker))]
 public class Worker : MonoBehaviour, ISaveable {
 
@@ -36,9 +36,9 @@ public class Worker : MonoBehaviour, ISaveable {
 
    private void Update() {
       // TODO: Is there a better way to listen to assignment changes, or is this fine?
-      var assignment = GetComponent<Assignee>().target;
+      var assignment = GetComponent<Targeter>().target;
       if (assignment != null) {
-         SetWalkerDestination((Vector3?)assignment.GetSpotForAssignee(GetComponent<Assignee>()).position);
+         SetWalkerDestination((Vector3?)assignment.GetSpotForTargeter(GetComponent<Targeter>()).position);
       }
    }
 
@@ -52,15 +52,15 @@ public class Worker : MonoBehaviour, ISaveable {
    }
 
    public void SetDestination(Vector3 destination) {
-      if (GetComponent<Assignee>().target != null) {
-         GetComponent<Assignee>().target.RemoveAssignee(GetComponent<Assignee>());
-         GetComponent<Assignee>().SetTarget(null);
+      if (GetComponent<Targeter>().target != null) {
+         GetComponent<Targeter>().target.RemoveTargeter(GetComponent<Targeter>());
+         GetComponent<Targeter>().SetTarget(null);
       }
       SetWalkerDestination(destination);
    }
 
    public bool IsAssigned() {
-      return GetComponent<Assignee>().target != null;
+      return GetComponent<Targeter>().target != null;
    }
 
    private void SetWalkerDestination(Vector3? destination) {

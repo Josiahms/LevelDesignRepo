@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Selectable))]
-[RequireComponent(typeof(Assignable))]
+[RequireComponent(typeof(Targetable))]
 public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
 
    [SerializeField]
@@ -35,16 +35,16 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
 
    public void AddWorker() {
       var worker = PopulationManager.GetInstance().GetNearestWorker(transform.position);
-      GetComponent<Assignable>().AddAssignee(worker.GetComponent<Assignee>());
+      GetComponent<Targetable>().AddTargeter(worker.GetComponent<Targeter>());
    }
 
    public void RemoveWorker() {
-      if (GetComponent<Assignable>().GetAssigneeCount() > 0) {
-         var walker = GetComponent<Assignable>().GetAssignees()
+      if (GetComponent<Targetable>().GetTargeterCount() > 0) {
+         var walker = GetComponent<Targetable>().GetTargeters()
             .OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
             .OrderBy(x => x.GetComponent<Worker>().House == null ? float.MaxValue : Vector3.Distance(x.GetComponent<Worker>().House.transform.position, transform.position))
             .Last();
-         GetComponent<Assignable>().RemoveAssignee(walker);
+         GetComponent<Targetable>().RemoveTargeter(walker);
       }
    }
 
@@ -74,12 +74,12 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    }
 
    private void Update() {
-      var assignable = GetComponent<Assignable>();
+      var target = GetComponent<Targetable>();
       if (IsFunctioning()) {
-         progress += Time.deltaTime * assignable.GetAssigneesInRange() * DayCycleManager.GetInstance().ClockMinuteRate;
+         progress += Time.deltaTime * target.GetTargetersInRange() * DayCycleManager.GetInstance().ClockMinuteRate;
       }
 
-      if (assignable.GetAssigneesInRange() == 0 || DayCycleManager.GetInstance().IsRestTime()) {
+      if (target.GetTargetersInRange() == 0 || DayCycleManager.GetInstance().IsRestTime()) {
          progress = 0;
       }
       
@@ -121,7 +121,7 @@ public class Workstation : MonoBehaviour, ISaveable, ISimulatable {
    }
 
    public SimulationInformation GetSimulationInformation() {
-      var ratePerDay = DayCycleManager.MIN_IN_DAY / gatherPeriod * GetComponent<Assignable>().GetAssigneeCount();
+      var ratePerDay = DayCycleManager.MIN_IN_DAY / gatherPeriod * GetComponent<Targetable>().GetTargeterCount();
       var expirationTime = DayCycleManager.GetInstance().CurrentTime + (float)quantity / ratePerDay * DayCycleManager.MIN_IN_DAY;
       Debug.Log("Rate per day: " + ratePerDay + ", expiration time: " + expirationTime);
       return new SimulationInformation(type, ratePerDay, expirationTime);

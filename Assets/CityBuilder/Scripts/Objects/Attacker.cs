@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(Assignee))]
+[RequireComponent(typeof(Targeter))]
 [RequireComponent(typeof(Destructable))]
 [RequireComponent(typeof(Walker))]
 public class Attacker : MonoBehaviour {
@@ -30,7 +30,7 @@ public class Attacker : MonoBehaviour {
    }
 
    private void Update() {
-      var target = GetComponent<Assignee>().target;
+      var target = GetComponent<Targeter>().target;
       // No need to switch targets if we are already very close to the existing target
       /*if ((target == null || (target.transform.position - transform.position).magnitude > 3)) {
          target = FindObjectsOfType<Waypoint>()
@@ -38,7 +38,7 @@ public class Attacker : MonoBehaviour {
             .Where(x => targettingRange < 0 || Vector3.Magnitude(x.transform.position - transform.position) <= targettingRange)
             //.Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam())
             .FirstOrDefault()
-            .GetComponent<Assignable>();
+            .GetComponent<Targetable>();
       }*/
 
       if (target != null) {
@@ -68,10 +68,10 @@ public class Attacker : MonoBehaviour {
    }
 
    private IEnumerator Attack() {
-      while (GetComponent<Walker>().Arrived() && GetComponent<Assignee>().target != null) {
+      while (GetComponent<Walker>().Arrived() && GetComponent<Targeter>().target != null) {
          GetComponent<Animator>().SetTrigger("Attack");
          yield return new WaitForSeconds(0.65f); // TODO: trigger off of animation
-         var target = GetComponent<Assignee>().target;
+         var target = GetComponent<Targeter>().target;
          if (target != null) {
             var destructableTarget = target.GetComponent<Destructable>();
             if (destructableTarget != null && destructableTarget.GetTeam() != GetComponent<Destructable>().GetTeam()) {

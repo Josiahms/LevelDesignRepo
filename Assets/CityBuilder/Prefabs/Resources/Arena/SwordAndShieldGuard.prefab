@@ -915,8 +915,8 @@ GameObject:
   - component: {fileID: 1480840000}
   - component: {fileID: 1480840001}
   - component: {fileID: -7514587083118536331}
-  - component: {fileID: -630867754948607909}
-  - component: {fileID: 3655284976487570036}
+  - component: {fileID: 3087903277630220376}
+  - component: {fileID: 9059974987528178742}
   m_Layer: 0
   m_Name: SwordAndShieldGuard
   m_TagString: Untagged
@@ -1080,19 +1080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabPath: Arena/SwordAndShieldGuard
   savePosition: 1
---- !u!114 &-630867754948607909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5428441914108931515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb87730dc18f04868801419b1232767c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3655284976487570036
+--- !u!114 &3087903277630220376
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1104,10 +1092,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958d805d0f8b9cf45b10a14f7a1327a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowableAssignments:
-  - {fileID: 1126753138, guid: 21578f4d5a72ecf4fbfe2d2d0670a30c, type: 3}
-  maxAssignees: -1
+  allowableAssignments: []
+  maxTargeters: 5
   spots: []
+--- !u!114 &9059974987528178742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5428441914108931515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b90d812718347afa7aae6336aa561c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5891971817711746329
 GameObject:
   m_ObjectHideFlags: 0

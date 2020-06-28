@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SnapToCircleGrid))]
-[RequireComponent(typeof(Assignable))]
+[RequireComponent(typeof(Targetable))]
 [RequireComponent(typeof(Selectable))]
 public class BuildSite : MonoBehaviour, ISaveable {
 
@@ -31,7 +31,7 @@ public class BuildSite : MonoBehaviour, ISaveable {
 
 
    private void Update() {
-      var deltaPercent = DayCycleManager.GetInstance().ClockMinuteRate / 5 * Time.deltaTime * buildSpeed * GetComponent<Assignable>().GetAssigneesInRange();
+      var deltaPercent = DayCycleManager.GetInstance().ClockMinuteRate / 5 * Time.deltaTime * buildSpeed * GetComponent<Targetable>().GetTargetersInRange();
       deltaPercent = Mathf.Min(deltaPercent, 100 - percentComplete);
       percentComplete += deltaPercent;
       pendingInstance.transform.position += new Vector3(0, (deltaPercent / 100) * DELTA_Y, 0);
