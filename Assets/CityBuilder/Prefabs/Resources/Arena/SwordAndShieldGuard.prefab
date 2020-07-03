@@ -916,6 +916,7 @@ GameObject:
   - component: {fileID: -7514587083118536331}
   - component: {fileID: 3087903277630220376}
   - component: {fileID: 9059974987528178742}
+  - component: {fileID: 886495322018634013}
   m_Layer: 0
   m_Name: SwordAndShieldGuard
   m_TagString: Untagged
@@ -1050,7 +1051,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 125
-  team: 0
 --- !u!114 &-7514587083118536331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1092,6 +1092,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b90d812718347afa7aae6336aa561c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &886495322018634013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5428441914108931515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d56632d06e945a9ab9573bac2a51c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
 --- !u!1 &5891971817711746329
 GameObject:
   m_ObjectHideFlags: 0

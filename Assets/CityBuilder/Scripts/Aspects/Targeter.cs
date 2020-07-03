@@ -75,7 +75,9 @@ public class Targeter : MonoBehaviour, ISaveable {
       var data = (Dictionary<string, object>)savedData;
       object result = null;
       if (data.TryGetValue("target", out result)) {
-         target = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Targetable>();
+         if ((int)result != -1) {
+            target = SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)result).GetComponent<Targetable>();
+         }
       }
    }
 }

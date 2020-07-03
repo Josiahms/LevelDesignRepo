@@ -31,30 +31,42 @@ public class Attacker : MonoBehaviour {
    }
 
    private void Update() {
-      var target = GetComponent<Targeter>().target;
-      // No need to switch targets if we are already very close to the existing target
-      /*if ((target == null || (target.transform.position - transform.position).magnitude > 3)) {
-         target = FindObjectsOfType<Waypoint>()
+      var targeter = GetComponent<Targeter>();
+      if (targeter.target == null) {
+         targeter.SetTarget(FindObjectsOfType<Waypoint>()
             .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
             .Where(x => targettingRange < 0 || Vector3.Magnitude(x.transform.position - transform.position) <= targettingRange)
             //.Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam())
             .FirstOrDefault()
-            .GetComponent<Targetable>();
-      }*/
+            .GetComponent<Targetable>());
+      }
 
-      if (target != null) {
-         var results = Physics.RaycastAll(transform.position + Vector3.up * 0.5f, target.transform.position - transform.position);
-         var targetPoints = results.Where(x => x.transform.gameObject == target.gameObject);
+      if (targeter.target != null && targeter.target.GetComponent<Waypoint>() != null) {
+         var enemyTargetingWaypoint = targeter.target
+            .GetTargeters()
+            .Where(x => x.GetComponent<Attacker>() != null)
+            .Where(x => x.GetComponent<Targetable>() != null)
+            .Where(x => GetComponent<Teamable>().IsHostileTo(x))
+            .FirstOrDefault();
+
+         if (enemyTargetingWaypoint != null) {
+            targeter.SetTarget(enemyTargetingWaypoint.GetComponent<Targetable>());
+         }
+      }
+
+      if (targeter.target != null) {
+         var results = Physics.RaycastAll(transform.position + Vector3.up * 0.5f, targeter.target.transform.position - transform.position);
+         var targetPoints = results.Where(x => x.transform.gameObject == targeter.target.gameObject);
          if (targetPoints.Count() > 0) {
                var basePoint = targetPoints.First().point - Vector3.up * 0.5f;
                var distance = basePoint - transform.position;
                var destination = basePoint - Vector3.ClampMagnitude(distance, range);
-               GetComponent<Walker>().SetDestination(target.transform.position, (basePoint - target.transform.position).magnitude + range);
+               GetComponent<Walker>().SetDestination(targeter.target.transform.position, (basePoint - targeter.target.transform.position).magnitude + range);
          } else {
-            GetComponent<Walker>().SetDestination(target.transform.position, range);
+            GetComponent<Walker>().SetDestination(targeter.target.transform.position, range);
          }
 
-         if (attackCoroutine == null && GetComponent<Walker>().Arrived() && target.GetComponent<Destructable>() != null && GetComponent<Teamable>().IsHostileTo(target)) {
+         if (attackCoroutine == null && GetComponent<Walker>().Arrived() && targeter.target.GetComponent<Destructable>() != null && GetComponent<Teamable>().IsHostileTo(targeter.target)) {
             attackCoroutine = StartCoroutine(Attack());
          }
       }
