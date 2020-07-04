@@ -50,7 +50,13 @@ public class Archer : MonoBehaviour {
             curTime = dcm.CurrentTime;
             yield return new WaitUntil(() => dcm.CurrentTime > curTime + 0.5f);
             if (target != null) {
-               Projectile.Instantiate(arrowSpawn.position, target.transform.position + Vector3.up, target.GetComponent<Walker>().OneSecondDeltaPosition, Team.Player, damage);
+               Projectile.Instantiate(
+                  ResourceLoader.GetInstance().Arrow, 
+                  arrowSpawn.position, 
+                  target.transform.position + Vector3.up, 
+                  target.GetComponent<Walker>().OneSecondDeltaPosition, 
+                  Team.Player, 
+                  damage);
                curTime = dcm.CurrentTime;
             }
             yield return new WaitUntil(() => dcm.CurrentTime > curTime + 3);

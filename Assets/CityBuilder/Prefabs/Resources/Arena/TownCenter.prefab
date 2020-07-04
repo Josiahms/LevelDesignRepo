@@ -116,7 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   capacity: 25
-  startingAmount: 20
+  startingAmount: 15
   contents: []
 --- !u!114 &9115299940370494428
 MonoBehaviour:

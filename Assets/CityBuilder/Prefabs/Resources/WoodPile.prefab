@@ -880,7 +880,7 @@ MonoBehaviour:
   destroyWhenEmpty: 1
   type: 0
   quantity: 450
-  gatherPeriod: 150
+  gatherPeriod: 100
   canFunction: 1
 --- !u!114 &3268915829200757404
 MonoBehaviour:

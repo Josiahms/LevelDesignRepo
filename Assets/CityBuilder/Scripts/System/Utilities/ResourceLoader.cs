@@ -46,6 +46,10 @@ public class ResourceLoader : Singleton<ResourceLoader> {
    public Projectile Arrow { get { return arrow; } }
 
    [SerializeField]
+   private Projectile rock;
+   public Projectile Rock { get { return rock; } }
+
+   [SerializeField]
    private Attacker enemy;
    public Attacker Enemy { get { return enemy; } }
 }

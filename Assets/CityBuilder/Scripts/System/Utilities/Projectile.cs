@@ -5,7 +5,9 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
 
    private float damage = 5;
+   [SerializeField]
    private float velocity = 15;
+   [SerializeField]
    private float arc = 3;
 
    private Vector3 initialPosition;
@@ -13,8 +15,8 @@ public class Projectile : MonoBehaviour {
    private float startTime;
    private Team team;
 
-   public static Projectile Instantiate(Vector3 spawnPoint, Vector3 target, Vector3 oneSecondDeltaPosition, Team team, float damage) {
-      var instance = Instantiate(ResourceLoader.GetInstance().Arrow, spawnPoint, new Quaternion());
+   public static Projectile Instantiate(Projectile projectile, Vector3 spawnPoint, Vector3 target, Vector3 oneSecondDeltaPosition, Team team, float damage) {
+      var instance = Instantiate(projectile, spawnPoint, new Quaternion());
       instance.startTime = DayCycleManager.GetInstance().CurrentTime;
       instance.initialPosition = spawnPoint;
       instance.target = target + oneSecondDeltaPosition * (target - spawnPoint).magnitude / instance.velocity / DayCycleManager.GetInstance().ClockMinuteRate;
