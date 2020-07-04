@@ -6,6 +6,8 @@ public class Walker : MonoBehaviour, ISaveable {
 
    [SerializeField]
    private bool debug;
+   [SerializeField]
+   private float speed = 3;
 
    private Animator animator;
    private Vector3? destination;
@@ -51,7 +53,7 @@ public class Walker : MonoBehaviour, ISaveable {
       }
 
       // 5 is normal speed;
-      var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
+      //var speed = DayCycleManager.GetInstance().ClockMinuteRate / 5;
       AnimatedWalk(speed);
    }
 

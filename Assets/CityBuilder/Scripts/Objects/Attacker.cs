@@ -14,10 +14,15 @@ public class Attacker : MonoBehaviour {
    private float minRange = 1.3f;
    [SerializeField]
    private float damage = 5;
+   [SerializeField]
+   private float waypointLeashDistance = 5;
 
    private Destructable destructableSelf;
    private Destructable target;
    private Coroutine attackCoroutine;
+
+   private Waypoint.AttackerRelationship waypointRelationship;
+
 
    // TODO: This spawns an attacker, not an enemy.  Change this to be generic and move enemy logic out.
    public static Attacker Instantiate(Vector3 position) {
@@ -26,20 +31,36 @@ public class Attacker : MonoBehaviour {
 
    private void Start() {
       destructableSelf = GetComponent<Destructable>();
+      waypointRelationship = new Waypoint.AttackerRelationship(this);
+   }
+
+   public void SetWaypoint(Waypoint newWaypoint) {
+      waypointRelationship.waypoint = newWaypoint;
    }
 
    private void Update() {
-      // No need to switch targets if we are already very close to the existing target
+
+      if (waypointRelationship.waypoint == null) {
+         waypointRelationship.waypoint = FindObjectsOfType<Waypoint>()
+            .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
+            .FirstOrDefault();
+      }
+
       if ((target == null || (target.transform.position - transform.position).magnitude > 3)) {
          target = FindObjectsOfType<Destructable>()
             .OrderBy(x => Vector3.Magnitude(x.transform.position - transform.position))
             .Where(x => targettingRange < 0 || Vector3.Magnitude(x.transform.position - transform.position) <= targettingRange)
             .Where(x => x.enabled && x.GetTeam() != destructableSelf.GetTeam())
+            .Where(x => waypointRelationship.waypoint != null && Vector3.Magnitude(x.transform.position - waypointRelationship.waypoint.transform.position) < waypointLeashDistance)
             .FirstOrDefault();
       }
 
       if (target == null) {
-         GetComponent<Walker>().SetDestination(null);
+         if (waypointRelationship != null) {
+            GetComponent<Walker>().SetDestination(waypointRelationship.waypoint.transform.position);
+         } else {
+            GetComponent<Walker>().SetDestination(null);
+         }
          return;
       }
 
@@ -63,6 +84,8 @@ public class Attacker : MonoBehaviour {
       if (destructableSelf.Health <= 0 && EnemySpawner.GetInstance() != null) {
          EnemySpawner.GetInstance().RemoveEnemy();
       }
+
+      waypointRelationship.waypoint = null;
    }
 
    private IEnumerator Attack() {
