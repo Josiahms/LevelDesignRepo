@@ -2647,8 +2647,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5507e85bd0dd45488b8c5b7a9241c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destroyWhenEmpty: 1
   type: 3
-  quantity: 300
+  quantity: 150
   gatherPeriod: 130
   canFunction: 1
 --- !u!65 &1667967063186191141
