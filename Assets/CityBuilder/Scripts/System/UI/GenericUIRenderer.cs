@@ -25,6 +25,14 @@ public class GenericUIRenderer : MonoBehaviour {
    private Button deleteButton;
    [SerializeField]
    private Button buildButton;
+   [SerializeField]
+   private Button waypointButtonUp;
+   [SerializeField]
+   private Button waypointButtonRight;
+   [SerializeField]
+   private Button waypointButtonDown;
+   [SerializeField]
+   private Button waypointButtonLeft;
 
    private void Start() {
       DoUpdate();
@@ -51,6 +59,7 @@ public class GenericUIRenderer : MonoBehaviour {
       var pile = selectedItem.GetComponent<Workstation>();
       var gridCenter = selectedItem.GetComponent<CentralNode>();
       var buildingOptions = selectable.GetComponent<BuildingOptions>();
+      var waypoint = selectable.GetComponent<Waypoint>();
 
       if (selectable != null) {
          titleText.text = selectable.GetItemName();
@@ -104,6 +113,40 @@ public class GenericUIRenderer : MonoBehaviour {
          buildButton.gameObject.SetActive(true);
       } else {
          buildButton.gameObject.SetActive(false);
+      }
+
+      waypointButtonUp.gameObject.SetActive(false);
+      waypointButtonRight.gameObject.SetActive(false);
+      waypointButtonDown.gameObject.SetActive(false);
+      waypointButtonLeft.gameObject.SetActive(false);
+
+      waypointButtonUp.onClick.RemoveAllListeners();
+      waypointButtonRight.onClick.RemoveAllListeners();
+      waypointButtonDown.onClick.RemoveAllListeners();
+      waypointButtonLeft.onClick.RemoveAllListeners();
+
+      if (waypoint != null) {
+         var connectedWaypoints = waypoint.GetConnectedWaypoints();
+         foreach (var connectedWaypoint in connectedWaypoints) {
+            var direction = Quaternion.AngleAxis(45, Vector3.up) * (connectedWaypoint.transform.position - waypoint.transform.position).normalized;
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z)) {
+               if (direction.x < 0) {
+                  waypointButtonLeft.gameObject.SetActive(true);
+                  waypointButtonLeft.onClick.AddListener(() => waypoint.Charge(connectedWaypoint));
+               } else {
+                  waypointButtonRight.gameObject.SetActive(true);
+                  waypointButtonRight.onClick.AddListener(() => waypoint.Charge(connectedWaypoint));
+               }
+            } else {
+               if (direction.z < 0) {
+                  waypointButtonDown.gameObject.SetActive(true);
+                  waypointButtonDown.onClick.AddListener(() => waypoint.Charge(connectedWaypoint));
+               } else {
+                  waypointButtonUp.gameObject.SetActive(true);
+                  waypointButtonUp.onClick.AddListener(() => waypoint.Charge(connectedWaypoint));
+               }
+            }
+         }
       }
    }
 }

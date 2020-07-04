@@ -38,6 +38,10 @@ public class Attacker : MonoBehaviour {
       waypointRelationship.waypoint = newWaypoint;
    }
 
+   public void MoveNext() {
+      waypointRelationship.MoveNext();
+   }
+
    private void Update() {
 
       if (waypointRelationship.waypoint == null) {
@@ -57,7 +61,7 @@ public class Attacker : MonoBehaviour {
 
       if (target == null) {
          if (waypointRelationship != null) {
-            GetComponent<Walker>().SetDestination(waypointRelationship.waypoint.transform.position);
+            GetComponent<Walker>().SetDestination(waypointRelationship.waypoint.transform.position, 2.5f);
          } else {
             GetComponent<Walker>().SetDestination(null);
          }

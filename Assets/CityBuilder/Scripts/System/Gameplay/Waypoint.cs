@@ -16,6 +16,12 @@ public class Waypoint : MonoBehaviour {
          this.attacker = attacker;
       }
 
+      public void MoveNext() {
+         if (waypoint != null && waypoint.connectedWaypoints[0] != null) {
+            SetWaypoint(waypoint.connectedWaypoints[0]);
+         }
+      }
+
       private void SetWaypoint(Waypoint newWaypoint) {
          if (_waypoint != null) {
             _waypoint.attackers.Remove(attacker);
@@ -31,7 +37,8 @@ public class Waypoint : MonoBehaviour {
    }
 
    [SerializeField]
-   private Waypoint nextWaypoint;
+   private List<Waypoint> connectedWaypoints;
+   public List<Waypoint> GetConnectedWaypoints() { return connectedWaypoints;  }
 
    private List<Attacker> attackers = new List<Attacker>();
 
@@ -39,22 +46,22 @@ public class Waypoint : MonoBehaviour {
       return new List<Attacker>(attackers);
    }
 
-   private List<Attacker> GetAttackersInRange() {
+   public List<Attacker> GetAttackersInRange() {
       // TODO: This really needs to change.
       return attackers.Where(x => Vector3.Magnitude(x.transform.position - transform.position) < 5).ToList();
    }
 
-   public void Charge() {
-      GetAttackersInRange().ForEach(x => x.SetWaypoint(nextWaypoint));
+   public void Charge(Waypoint target) {
+      if (connectedWaypoints.Contains(target)) {
+         GetAttackersInRange()
+            .Where(x => x.GetComponent<Destructable>().GetTeam() == Team.Player) // TODO: Probably not a safe assumption to use player
+            .ToList()
+            .ForEach(x => x.SetWaypoint(target));
+      }
    }
 
    private void Update() {
-      var attackersInRange = GetAttackersInRange();
-      // At least 4 attackers to charge and more than 8 assigned
-      if (attackersInRange.Count >= 4  && attackers.Count > 8) {
-         Charge();
-      }
-
+      var attackersInRange = GetAttackersInRange().ToList();
       if (attackersInRange.Count > 0) {
          var team = attackersInRange[0].GetComponent<Destructable>().GetTeam();
          if (attackersInRange.All(x => x.GetComponent<Destructable>().GetTeam() == team)) {
