@@ -213,7 +213,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2054965506783236702}
+  - component: {fileID: 1406121443382208121}
   - component: {fileID: -2535895937072198843}
+  - component: {fileID: 8772954997950906603}
   - component: {fileID: 2467922153528072192}
   - component: {fileID: 3902826344524404417}
   m_Layer: 0
@@ -239,6 +241,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1406121443382208121
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2572393833494620396}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.52, y: 2.76, z: 5.06}
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!95 &-2535895937072198843
 Animator:
   serializedVersion: 3
@@ -258,6 +273,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8772954997950906603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2572393833494620396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bbbc7a323620b64e95911e9812c3149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Catapult
+  description: Fling rocks at your enemy
 --- !u!114 &2467922153528072192
 MonoBehaviour:
   m_ObjectHideFlags: 0

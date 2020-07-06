@@ -22,6 +22,8 @@ public class Catapult : MonoBehaviour {
 
    private Animator animator;
 
+   private bool loaded = true;
+
    private void Start() {
       animator = GetComponent<Animator>();
    }
@@ -31,6 +33,7 @@ public class Catapult : MonoBehaviour {
 
       animator.SetFloat("Turn", 0);
       animator.SetFloat("Forward", 0);
+      animator.ResetTrigger("Attack");
 
       var angleToTarget = Vector3.Angle(transform.forward, target.position - transform.position);
       var rightAngleToTarget = Vector3.Angle(transform.right, target.position - transform.position);
@@ -38,14 +41,14 @@ public class Catapult : MonoBehaviour {
       if (distanceToTarget < fleeRange) {
          // TODO: Flee
       } else if (distanceToTarget < attackRange) {
-         if (angleToTarget > 1) {
+         if (angleToTarget > 5) {
             // Target while in range
             animator.SetFloat("Turn", rightAngleToTarget < 90 ? 1 : -1);
          } else {
             animator.SetTrigger("Attack");
          }
       } else {
-         if (angleToTarget > 1) {
+         if (angleToTarget > 5) {
             // Get on course
             animator.SetFloat("Turn", rightAngleToTarget < 90 ? 1 : -1);
          } else {
@@ -57,12 +60,14 @@ public class Catapult : MonoBehaviour {
    }
 
    public void DoneReloading() {
+      loaded = true;
       foreach(var transform in rockSpawns) {
          transform.gameObject.SetActive(true);
       }
    }
 
    public void LaunchRocks() {
+      loaded = false;
       foreach (var transform in rockSpawns) {
          transform.gameObject.SetActive(false);
          var offset = Random.insideUnitCircle * spread;
