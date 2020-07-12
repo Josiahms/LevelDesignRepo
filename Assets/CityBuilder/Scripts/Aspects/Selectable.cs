@@ -29,6 +29,11 @@ public class Selectable : MonoBehaviour {
       outline.OutlineColor = Color.clear;
    }
 
+   public bool IsSelected() {
+      // TODO: This could be more efficient
+      return SelectionManager.GetInstance().GetSelected().Contains(this);
+   }
+
    public void ChangeColor(Color color) {
       outline.OutlineColor = color;
    }
@@ -67,7 +72,5 @@ public class Selectable : MonoBehaviour {
             selectionManager.UnHover(this);
          }
       }
-
-
    }
 }

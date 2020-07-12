@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Selectable))]
 [RequireComponent(typeof(Animator))]
-public class Catapult : MonoBehaviour {
+public class Catapult : MonoBehaviour, IInstructable {
 
    [SerializeField]
    private float spread = 2.5f;
@@ -26,6 +27,7 @@ public class Catapult : MonoBehaviour {
 
    private void Start() {
       animator = GetComponent<Animator>();
+      target.GetComponent<CapsuleCollider>().radius = spread * 1.2f;
    }
 
    private void Update() {
@@ -44,7 +46,7 @@ public class Catapult : MonoBehaviour {
          if (angleToTarget > 5) {
             // Target while in range
             animator.SetFloat("Turn", rightAngleToTarget < 90 ? 1 : -1);
-         } else {
+         } else if (target.GetComponent<CatapultTarget>().HasTargets()) {
             animator.SetTrigger("Attack");
          }
       } else {
@@ -54,9 +56,10 @@ public class Catapult : MonoBehaviour {
          } else {
             // Move forward
             animator.SetFloat("Forward", 1);
-            
          }
       }
+
+      target.GetChild(0).gameObject.SetActive(GetComponent<Selectable>().IsSelected());
    }
 
    public void DoneReloading() {
@@ -75,4 +78,7 @@ public class Catapult : MonoBehaviour {
       }
    }
 
+   public void OnInstruct(Vector3 location, GameObject target, List<Selectable> originalSelection) {
+      this.target.position = new Vector3(location.x, transform.position.y, location.z);
+   }
 }

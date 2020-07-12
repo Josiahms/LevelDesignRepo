@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Walker))]
-public class Worker : MonoBehaviour, ISaveable {
+public class Worker : MonoBehaviour, ISaveable, IInstructable {
 
    private Vector3? previousLocation;
    private Assignable assignedLocation;
@@ -100,5 +101,17 @@ public class Worker : MonoBehaviour, ISaveable {
       var houseIndex = (int?)data["house"];
       House = houseIndex.HasValue ? SaveManager.GetInstance().FindLoadedInstanceBySaveIndex(houseIndex.Value).GetComponent<Housing>() : null;
       assignedLocation = (int)data["assignedLocation"] == -1 ? null : SaveManager.GetInstance().FindLoadedInstanceBySaveIndex((int)data["assignedLocation"]).GetComponent<Assignable>();
+   }
+
+   public void OnInstruct(Vector3 location, GameObject target, List<Selectable> originalSelection) {
+      if (target == null || target.GetComponent<Assignable>() == null) {
+         var selectedWorkers = originalSelection.Select(x => x.GetComponent<Worker>()).Where(x => x != null).ToList();
+         var i = selectedWorkers.IndexOf(this);
+         var offset = new Vector3(3 * (i % 5), 0, 3 * (i / 5));
+         SetDestination(location + offset);
+      } else {
+         SetDestination(target.GetComponent<Assignable>());
+      }
+      SelectionManager.GetInstance().Deselect(GetComponent<Selectable>());
    }
 }
