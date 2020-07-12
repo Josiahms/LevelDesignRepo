@@ -28,7 +28,11 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    }
 
    private void OnClick() {
-      Placer.GetInstance().SetPlaceable(placeablePrefab);
+      if (placeablePrefab.IsPredeterminedLocation()) {
+         Placer.GetInstance().PlaceInstance(placeablePrefab, SelectionManager.GetInstance().GetSelected().Where(x => x.GetComponent<Waypoint>() != null).First().transform);
+      } else {
+         Placer.GetInstance().SetPlaceable(placeablePrefab);
+      }
       buildDrawer.SetActive(false);
       if (overlay != null) {
          Destroy(overlay.gameObject);

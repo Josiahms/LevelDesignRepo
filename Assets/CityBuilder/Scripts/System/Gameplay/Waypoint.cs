@@ -39,6 +39,8 @@ public class Waypoint : MonoBehaviour {
    [SerializeField]
    private List<Waypoint> connectedWaypoints;
    public List<Waypoint> GetConnectedWaypoints() { return connectedWaypoints;  }
+   [SerializeField]
+   private Renderer flag;
 
    private List<Attacker> attackers = new List<Attacker>();
 
@@ -65,12 +67,12 @@ public class Waypoint : MonoBehaviour {
       if (attackersInRange.Count > 0) {
          var team = attackersInRange[0].GetComponent<Destructable>().GetTeam();
          if (attackersInRange.All(x => x.GetComponent<Destructable>().GetTeam() == team)) {
-            GetComponent<Renderer>().material.color = team == Team.Player ? Color.blue : Color.red;
+            flag.material.color = team == Team.Player ? Color.blue : Color.red;
          } else {
-            GetComponent<Renderer>().material.color = Color.yellow;
+            flag.material.color = Color.yellow;
          }
       } else {
-         GetComponent<Renderer>().material.color = Color.white;
+         flag.material.color = Color.white;
       }
    }
 

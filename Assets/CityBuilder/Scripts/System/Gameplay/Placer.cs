@@ -11,6 +11,12 @@ public class Placer : Singleton<Placer> {
       return placeableInstance;
    }
 
+   public void PlaceInstance(Placeable prefab, Transform location) {
+      SetPlaceable(prefab);
+      placeableInstance.transform.position = location.position;
+      Place();
+   }
+
    public void SetPlaceable(Placeable prefab) {
       if (placeableInstance != null) {
          placeableInstance.Remove();
@@ -54,31 +60,35 @@ public class Placer : Singleton<Placer> {
             placeableInstance.GetComponent<Selectable>().ChangeColor(Color.red);
          }
 
-         var selectionManager = SelectionManager.GetInstance();
          if (Physics.Raycast(cameraRay, out hitInfo, float.MaxValue, LayerMask.GetMask("Ground"))) {
             placeableInstance.transform.position = hitInfo.point;
             if (CanPlace() && Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
-               if (ResourceManager.GetInstance().OffsetAll(-placeableInstance.GetWoodCost(), -placeableInstance.GetStoneCost(), -placeableInstance.GetMetalCost(), -placeableInstance.GetFoodCost())) {
-                  if (placeableInstance.GetInstantBuild()) {
-                     placeableInstance.Place();
-                  } else {
-                     var buildSite = BuildSite.Instantiate(placeableInstance).GetComponent<Assignable>();
-                     foreach (var worker in selectionManager.GetSelected().Where(s => s.GetComponent<Worker>() != null).Select(s => s.GetComponent<Worker>()).OrderBy(s => s.IsAssigned())) {
-                        if (!buildSite.AddWorker(worker)) {
-                           break;
-                        }
-                     }
-                  }
-                  placeableInstance.GetComponent<Selectable>().ChangeColor(Color.clear);
-                  placeableInstance = null;
-                  selectionManager.DeselectAll();
-                  selectionManager.Enable();
-               }
+               Place();
             } else if (Input.GetMouseButtonUp(1)) {
                ClearPlaceable();
                return;
             }
          }
+      }
+   }
+
+   private void Place() {
+      var selectionManager = SelectionManager.GetInstance();
+      if (ResourceManager.GetInstance().OffsetAll(-placeableInstance.GetWoodCost(), -placeableInstance.GetStoneCost(), -placeableInstance.GetMetalCost(), -placeableInstance.GetFoodCost())) {
+         if (placeableInstance.GetInstantBuild()) {
+            placeableInstance.Place();
+         } else {
+            var buildSite = BuildSite.Instantiate(placeableInstance).GetComponent<Assignable>();
+            foreach (var worker in selectionManager.GetSelected().Where(s => s.GetComponent<Worker>() != null).Select(s => s.GetComponent<Worker>()).OrderBy(s => s.IsAssigned())) {
+               if (!buildSite.AddWorker(worker)) {
+                  break;
+               }
+            }
+         }
+         placeableInstance.GetComponent<Selectable>().ChangeColor(Color.clear);
+         placeableInstance = null;
+         selectionManager.DeselectAll();
+         selectionManager.Enable();
       }
    }
 

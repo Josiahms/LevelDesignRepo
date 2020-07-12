@@ -41,6 +41,10 @@ public class Placeable : MonoBehaviour, ISaveable, IDestructable {
    public bool GetInstantBuild() { return instantBuild; }
 
    [SerializeField]
+   private bool predeterminedLocation;
+   public bool IsPredeterminedLocation() { return predeterminedLocation; }
+
+   [SerializeField]
    private bool deleteable = true;
    public bool Deleteable { get { return deleteable;  } }
 
